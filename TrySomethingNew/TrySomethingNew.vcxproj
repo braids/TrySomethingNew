@@ -68,7 +68,9 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>F:\SDL\SDL2-2.0.5\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -90,11 +92,18 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>F:\SDL\SDL2-2.0.5\include;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>F:\SDL\SDL2-2.0.5\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies);SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_mixer.lib</AdditionalDependencies>
+      <SubSystem>Windows</SubSystem>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /Y /E "$(ProjDir)res" "$(OutDir)res\" &amp; xcopy /Y "$(ProjDir)*.dll" "$(OutDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -110,6 +119,33 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="libpng16-16.dll" />
+    <None Include="SDL2.dll" />
+    <None Include="SDL2_image.dll" />
+    <None Include="SDL2_mixer.dll" />
+    <None Include="zlib1.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Assets.cpp" />
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="GameObjects\GameObject.cpp" />
+    <ClCompile Include="Graphics.cpp" />
+    <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="Scenes\Level1.cpp" />
+    <ClCompile Include="Scenes\Scene.cpp" />
+    <ClCompile Include="Scenes\TitleScreen.cpp" />
+    <ClCompile Include="TSN.cpp" />
+    <ClCompile Include="Timer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Assets.h" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="GameObjects\GameObject.h" />
+    <ClInclude Include="Graphics.h" />
+    <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="Scenes\Scene.h" />
+    <ClInclude Include="TSN.h" />
+    <ClInclude Include="Timer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
