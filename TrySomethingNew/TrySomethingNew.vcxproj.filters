@@ -79,4 +79,20 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Font Include="res\font\PrintChar21.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\img\blank.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\img\title.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="res\snd\title-10db.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+  </ItemGroup>
 </Project>

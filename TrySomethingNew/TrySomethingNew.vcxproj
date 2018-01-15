@@ -147,6 +147,16 @@
     <ClInclude Include="TSN.h" />
     <ClInclude Include="Timer.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Font Include="res\font\PrintChar21.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\img\blank.png" />
+    <Image Include="res\img\title.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="res\snd\title-10db.wav" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
