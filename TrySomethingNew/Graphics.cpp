@@ -102,7 +102,14 @@ TTF_Font* Graphics::LoadFont(std::string filePath, int size) {
 
 
 void Graphics::Render() {
-	SDL_RenderSetScale(mRenderer, DScaleXRatio(), DScaleYRatio());
+	// Get window scale ratio
+	int windowWidth = 0;
+	int windowHeight = 0;
+	SDL_GetWindowSize(this->mWindow, &windowWidth, &windowHeight);
+	float WScaleRatioX = (float)windowWidth / SCREEN_WIDTH;
+	float WScaleRatioY = (float)windowHeight / SCREEN_HEIGHT;
+	// Set render scale. Game area scaled to draw area (DScaleRatio), then scaled to window area (WScaleRatio).
+	SDL_RenderSetScale(mRenderer, DScaleXRatio() * WScaleRatioX, DScaleYRatio() * WScaleRatioY);
 	SDL_RenderPresent(mRenderer);
 }
 
