@@ -17,25 +17,41 @@ void Scene::Init(SceneManager * manager) {
 
 ImageData* Scene::AddText(std::string _text, int _x, int _y) {
 	// Init Image and ImageData
-	Assets::Image* textImage = new Assets::Image();
 	ImageData* textImageData = new ImageData();
 	
 	// Generate text image
-	textImage->texture = this->mManager->GetGraphics()->LoadText(
+	textImageData->GetImage()->texture = this->mManager->GetGraphics()->LoadText(
 			this->mManager->GetAssets()->fonts.PrintChar21_8,
 			_text,
 			255,
 			255,
 			255,
 			0);
-	textImage->rect = Graphics::CreateRect(0, 0, 0, 0);
-	SDL_QueryTexture(textImage->texture, NULL, NULL, &(textImage->rect->w), &(textImage->rect->h));
+	textImageData->GetImage()->rect = Graphics::CreateRect(0, 0, 0, 0);
+	SDL_QueryTexture(textImageData->GetImage()->texture, NULL, NULL, &(textImageData->GetImage()->rect->w), &(textImageData->GetImage()->rect->h));
 	
 	// Store text image in image data
-	textImageData->SetImage(textImage);
+	textImageData->CreateDrawRect();
 	textImageData->SetDrawRectXY(_x, _y);
-	
+	textImageData->SetDrawAngle(0.0);
+	textImageData->SetText(_text);
 	// Store in scene image vector
 	this->mImages.push_back(textImageData);
+
+	return textImageData;
+}
+
+void Scene::UpdateText(ImageData * textImage) {
+	// Update texture with new text
+	textImage->SetTexture(this->mManager->GetGraphics()->LoadText(
+		this->mManager->GetAssets()->fonts.PrintChar21_8,
+		*(textImage->GetText()),
+		255,
+		255,
+		255,
+		0));
+	// Set new image rect size
+	SDL_QueryTexture(textImage->GetImage()->texture, NULL, NULL, &(textImage->GetImage()->rect->w), &(textImage->GetImage()->rect->h));
+	textImage->UpdateDrawRect();
 }
 
