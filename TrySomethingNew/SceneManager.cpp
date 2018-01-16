@@ -29,14 +29,17 @@ bool SceneManager::Init() {
 
 	// Initialize SDL Graphics
 	this->mGraphics = Graphics::Instance();
-
+	this->mAssets = Assets::Instance();
+	
 	// Initialize sound
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 	Mix_AllocateChannels(16);
 
+	mAssets->LoadAssets();
+
 	// Add scenes here
 	this->AddScene(new TitleScreen());
-	this->AddScene(new Level1());
+	this->AddScene(new MainMenu());
 
 	// Initialize scenes
 	for (int i = 0; i < (int) this->sceneList.size(); i++)

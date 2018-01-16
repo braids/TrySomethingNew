@@ -14,12 +14,12 @@ class SceneManager;
 // Class forward decs
 class Scene;
 class TitleScreen;
-class Level1;
+class MainMenu;
 
 //// Scene name enum
 enum SceneName {
 	Scene_TitleScreen,	// Title Screen
-	Scene_Level1		// Level 1
+	Scene_MainMenu		// Level 1
 };
 
 //// Scene class
@@ -47,7 +47,6 @@ public:
 	void SetSceneName(SceneName name) { this->mSceneName = name; }
 
 	// Scene virtual funcs
-	virtual void LoadAssets() = 0;
 	virtual void LoadGameObjects() = 0;
 	virtual void SceneStart() = 0;
 	virtual void HandleEvent(SDL_Event* Event) = 0;
@@ -58,13 +57,12 @@ public:
 //// Title screen scene class
 class TitleScreen : public Scene {
 protected:
-	bool StartLevel1;
+	bool StartMainMenu;
 public:
 	// Scene ctor
 	TitleScreen();
 
 	// Scene funcs
-	void LoadAssets();
 	void LoadGameObjects();
 	void SceneStart();
 	void HandleEvent(SDL_Event* Event);
@@ -72,17 +70,16 @@ public:
 	void Render();
 };
 
-//// Level 1 scene class
-class Level1 : public Scene {
+//// MainMenu scene class
+class MainMenu : public Scene {
 protected:
-	bool ExitToMainMenu;
+	bool ExitToTitleScreen;
 
 public:
 	// Scene ctor
-	Level1();
+	MainMenu();
 
 	// Scene funcs
-	void LoadAssets();
 	void LoadGameObjects();
 	void SceneStart();
 	void HandleEvent(SDL_Event* Event);

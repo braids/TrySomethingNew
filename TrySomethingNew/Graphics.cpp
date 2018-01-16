@@ -1,4 +1,7 @@
 #include "Graphics.h"
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 
 Graphics* Graphics::sInstance = NULL;
 bool Graphics::sInitialized = false;
@@ -44,7 +47,7 @@ bool Graphics::Init()
 	return true;
 }
 
-SDL_Texture * Graphics::LoadTexture(std::string filePath) {
+SDL_Texture* Graphics::LoadTexture(std::string filePath) {
 	SDL_Texture* texture = NULL;
 
 	SDL_Surface* surface = IMG_Load(filePath.c_str());
@@ -60,6 +63,37 @@ SDL_Texture * Graphics::LoadTexture(std::string filePath) {
 	SDL_FreeSurface(surface);
 
 	return texture;
+}
+
+SDL_Texture* Graphics::LoadText(TTF_Font* font, std::string text, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
+	SDL_Texture* texture = NULL;
+
+	SDL_Color color = { 255, 255, 255, 0 };
+	
+	color = { r, g, b, a };
+
+	SDL_Surface* surface = TTF_RenderText_Solid(font, text.c_str(), color);
+
+	if (surface == NULL)
+		return NULL;
+
+	texture = SDL_CreateTextureFromSurface(mRenderer, surface);
+
+	if (texture == NULL)
+		return NULL;
+
+	SDL_FreeSurface(surface);
+
+	return texture;
+}
+
+TTF_Font* Graphics::LoadFont(std::string filePath, int size) {
+	TTF_Font* font = TTF_OpenFont(filePath.c_str(), size);
+
+	if (font == NULL)
+		return NULL;
+
+	return font;
 }
 
 
@@ -118,7 +152,7 @@ SDL_Rect * Graphics::Fullscreen()
 	return FullscreenRect;
 }
 
-SDL_Rect* Graphics::TextureRectXY(SDL_Texture * texture, int x, int y)
+SDL_Rect* Graphics::TextureRectXY(SDL_Texture* texture, int x, int y)
 {
 	SDL_Rect* rect = new SDL_Rect();
 
@@ -129,7 +163,7 @@ SDL_Rect* Graphics::TextureRectXY(SDL_Texture * texture, int x, int y)
 	return rect;
 }
 
-SDL_Rect* Graphics::CenterTextureRectX(SDL_Texture * texture, int y)
+SDL_Rect* Graphics::CenterTextureRectX(SDL_Texture* texture, int y)
 {
 	SDL_Rect* rect = new SDL_Rect();
 
@@ -140,19 +174,19 @@ SDL_Rect* Graphics::CenterTextureRectX(SDL_Texture * texture, int y)
 	return rect;
 }
 
-void Graphics::DrawTexture(SDL_Texture * texture) {
+void Graphics::DrawTexture(SDL_Texture* texture) {
 	Graphics::DrawTexture(texture, NULL, 0);
 }
 
-void Graphics::DrawTexture(SDL_Texture * texture, SDL_Rect* rect) {
+void Graphics::DrawTexture(SDL_Texture* texture, SDL_Rect* rect) {
 	Graphics::DrawTexture(texture, rect, 0);
 }
 
-void Graphics::DrawTexture(SDL_Texture * texture, SDL_Rect* rect, double angle) {
+void Graphics::DrawTexture(SDL_Texture* texture, SDL_Rect* rect, double angle) {
 	SDL_RenderCopyEx(mRenderer, texture, NULL, rect, angle, NULL, SDL_RendererFlip::SDL_FLIP_NONE);
 }
 
-void Graphics::DrawTextureAtLocation(SDL_Texture * texture, SDL_Rect* spriterect, SDL_Rect* rect, double angle) {
+void Graphics::DrawTextureAtLocation(SDL_Texture* texture, SDL_Rect* spriterect, SDL_Rect* rect, double angle) {
 	SDL_RenderCopyEx(mRenderer, texture, spriterect, rect, angle, NULL, SDL_RendererFlip::SDL_FLIP_NONE);
 }
 

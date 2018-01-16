@@ -19,6 +19,7 @@ protected:
 	Uint32			timeStep;
 
 	Graphics*			mGraphics;	// Scene renderer pointer
+	Assets*				mAssets;
 	Scene*				mCurrent;	// Current active scene
 	Scene*				mNext;		// Next active scene
 	std::vector<Scene*>	sceneList;	// Vector of all scenes
@@ -34,6 +35,7 @@ public:
 	void AddScene(Scene* scene) { this->sceneList.push_back(scene); }
 	Scene* GetScene() { return this->mCurrent; }
 	Graphics* GetGraphics() { return this->mGraphics; }
+	Assets* GetAssets() { return this->mAssets; }
 	bool IsScene(SceneName scene) { return this->mCurrent == this->sceneList[scene]; }
 	void Update() { this->mCurrent->Update(this->timeStep); }
 

@@ -17,6 +17,13 @@ void Assets::Release() {
 	sInstance = NULL;
 }
 
+void Assets::LoadAssets() {
+	this->images.Title = { Assets::Instance()->GetTexture("title.png"), Graphics::Fullscreen() };
+	this->images.Blank = { Assets::Instance()->GetTexture("blank.png"), Graphics::Fullscreen() };
+	this->music.TitleMusic = Assets::Instance()->GetMusic("title-10db.ogg");
+	this->fonts.PrintChar21_8 = Assets::Instance()->GetFont("PrintChar21.ttf", 8);
+}
+
 // Assets ctor
 Assets::Assets() {
 
@@ -55,4 +62,16 @@ Mix_Music* Assets::GetMusic(std::string name) {
 	fullPath.append("res/snd/" + name);
 
 	return Mix_LoadMUS(fullPath.c_str());
+}
+
+TTF_Font* Assets::GetFont(std::string name, int size) {
+	std::string fullPath = SDL_GetBasePath();
+	fullPath.append("res/font/" + name);
+	std::string fullPathSize = fullPath;
+	fullPathSize.append(std::to_string(size));
+
+	if (mFonts[fullPathSize] == NULL)
+		mFonts[fullPathSize] = Graphics::Instance()->LoadFont(fullPath, size);
+
+	return mFonts[fullPathSize];
 }
