@@ -35,27 +35,6 @@ public:
 	double GetdAngle() { return this->dang; }
 };
 
-class ImageData {
-protected:
-	Assets::Image*	mImage;
-	SDL_Rect*		mDrawRect;
-	double			DrawAngle;
-
-public:
-	void SetImage(Assets::Image* _image) { 
-		this->mImage = _image; 
-		this->mDrawRect = Graphics::CreateRect(0, 0, 0, 0);
-		this->mDrawRect->w = this->mImage->rect->w;
-		this->mDrawRect->h = this->mImage->rect->h;
-	}
-	
-	Assets::Image*	GetImage() { return this->mImage; }
-	SDL_Rect*		GetDrawRect() { return this->mDrawRect; }
-	double			GetDrawAngle() { return this->DrawAngle; }
-	void			SetDrawRect(SDL_Rect* _drawrect) { this->mDrawRect = _drawrect; }
-	void			SetDrawAngle(double _angle) { this->DrawAngle = _angle; }
-};
-
 class GameObject {
 protected:
 	Position mPosition;

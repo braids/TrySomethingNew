@@ -28,9 +28,9 @@ protected:
 	SceneName		mSceneName; // Current scene name (pulled from enum)
 	bool			mActive;	// Scene is active or inactive
 	SceneManager*	mManager;	// Parent scene manager pointer
-	Assets*			mAssets;	// Scene assets pointer
 	Camera			mCamera;
-	std::vector<GameObject*> mGameObjects;
+	std::vector<ImageData*>		mImages;
+	std::vector<GameObject*>	mGameObjects;
 
 public:
 	// Scene ctor/dtor
@@ -45,6 +45,7 @@ public:
 	bool IsActive() const { return this->mActive; }
 	void SetManager(SceneManager* manager) { this->mManager = manager; }
 	void SetSceneName(SceneName name) { this->mSceneName = name; }
+	ImageData* AddText(std::string _text, int _x, int _y);
 
 	// Scene virtual funcs
 	virtual void LoadGameObjects() = 0;

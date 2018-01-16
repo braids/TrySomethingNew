@@ -10,6 +10,9 @@
 typedef std::map<std::string, SDL_Texture*> TextureList;
 typedef std::map<std::string, TTF_Font*> FontList;
 
+class Assets;
+class ImageData;
+
 class Assets {
 private:
 	static Assets* sInstance;
@@ -51,6 +54,30 @@ public:
 		Mix_Music* TitleMusic;
 		Mix_Music* ExampleMusic;
 	} music;
+};
+
+class ImageData {
+protected:
+	Assets::Image*	mImage;
+	SDL_Rect*		mDrawRect;
+	double			DrawAngle;
+
+public:
+	void SetTexture(SDL_Texture* _texture) { this->mImage->texture = _texture; }
+	void SetImage(Assets::Image* _image) {
+		this->mImage = _image;
+		this->mDrawRect = Graphics::CreateRect(this->mImage->rect->w, this->mImage->rect->h, 0, 0);
+		this->DrawAngle = 0.0;
+	}
+
+	Assets::Image*	GetImage() { return this->mImage; }
+	SDL_Rect*		GetDrawRect() { return this->mDrawRect; }
+	double			GetDrawAngle() { return this->DrawAngle; }
+	void			SetDrawRect(SDL_Rect* _drawrect) { this->mDrawRect = _drawrect; }
+	void			SetDrawRectX(int _x) { this->mDrawRect->x = _x; }
+	void			SetDrawRectY(int _y) { this->mDrawRect->y = _y; }
+	void			SetDrawRectXY(int _x, int _y) { this->mDrawRect->x = _x; this->mDrawRect->y = _y; }
+	void			SetDrawAngle(double _angle) { this->DrawAngle = _angle; }
 };
 
 #endif

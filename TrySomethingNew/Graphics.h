@@ -44,7 +44,8 @@ public:
 	void ResetDrawColor();
 
 	static SDL_Rect* CreateRect(int w, int h, int x, int y);
-	static SDL_Rect* Fullscreen();
+	void Fullscreen(bool _setFullscreen);
+	static SDL_Rect* FullscreenRect();
 
 	static SDL_Rect* TextureRectXY(SDL_Texture* texture, int x, int y);
 	static SDL_Rect* CenterTextureRectX(SDL_Texture* texture, int y);

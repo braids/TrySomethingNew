@@ -20,6 +20,7 @@ Graphics::~Graphics() {
 	mRenderer = NULL;
 
 	IMG_Quit();
+	TTF_Quit();
 	SDL_Quit();
 }
 
@@ -40,6 +41,9 @@ bool Graphics::Init()
 	SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, 255);
 
 	if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG))
+		return false;
+
+	if (TTF_Init() < 0)
 		return false;
 
 	mBackBuffer = SDL_GetWindowSurface(mWindow);
@@ -140,7 +144,14 @@ SDL_Rect* Graphics::CreateRect(int w, int h, int x, int y) {
 	return rect;
 }
 
-SDL_Rect * Graphics::Fullscreen()
+void Graphics::Fullscreen(bool _setFullscreen) {
+	if(_setFullscreen)
+		SDL_SetWindowFullscreen(this->mWindow, SDL_WINDOW_FULLSCREEN_DESKTOP);
+	else
+		SDL_SetWindowFullscreen(this->mWindow, 0);
+}
+
+SDL_Rect* Graphics::FullscreenRect()
 {
 	SDL_Rect* FullscreenRect = new SDL_Rect();
 

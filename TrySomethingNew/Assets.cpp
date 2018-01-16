@@ -18,8 +18,8 @@ void Assets::Release() {
 }
 
 void Assets::LoadAssets() {
-	this->images.Title = { Assets::Instance()->GetTexture("title.png"), Graphics::Fullscreen() };
-	this->images.Blank = { Assets::Instance()->GetTexture("blank.png"), Graphics::Fullscreen() };
+	this->images.Title = { Assets::Instance()->GetTexture("title.png"), Graphics::FullscreenRect() };
+	this->images.Blank = { Assets::Instance()->GetTexture("blank.png"), Graphics::FullscreenRect() };
 	this->music.TitleMusic = Assets::Instance()->GetMusic("title-10db.ogg");
 	this->fonts.PrintChar21_8 = Assets::Instance()->GetFont("PrintChar21.ttf", 8);
 }

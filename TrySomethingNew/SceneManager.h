@@ -17,6 +17,7 @@ protected:
 	Uint32			currTick;
 	Uint32			lastTick;
 	Uint32			timeStep;
+	bool Fullscreen;
 
 	Graphics*			mGraphics;	// Scene renderer pointer
 	Assets*				mAssets;
@@ -37,6 +38,8 @@ public:
 	Graphics* GetGraphics() { return this->mGraphics; }
 	Assets* GetAssets() { return this->mAssets; }
 	bool IsScene(SceneName scene) { return this->mCurrent == this->sceneList[scene]; }
+	bool IsFullscreen() { return this->Fullscreen; }
+	void SetFullscreen(bool _fullscreen) { this->Fullscreen = _fullscreen; }
 	void Update() { this->mCurrent->Update(this->timeStep); }
 
 	// Scene manager funcs

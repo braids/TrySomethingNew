@@ -5,9 +5,11 @@
 SceneManager::SceneManager() {
 	// Set SDL Graphics NULL on creation
 	this->mGraphics = NULL;
-
+	this->mAssets = NULL;
 	// We're not quitting yet
 	this->quitGame = false;
+	//Set fullscreen off
+	this->Fullscreen = false;
 
 	// Set timer values
 	currTick = 0;
@@ -18,8 +20,9 @@ SceneManager::SceneManager() {
 SceneManager::~SceneManager() {
 	// Release/free SDL Graphics
 	Graphics::Release();
+	Assets::Release();
 	this->mGraphics = NULL;
-
+	this->mAssets = NULL;
 	// Quit SDL_Mixer
 	Mix_Quit();
 }

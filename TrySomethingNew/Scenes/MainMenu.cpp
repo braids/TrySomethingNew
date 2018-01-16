@@ -18,13 +18,25 @@ void MainMenu::SceneStart() {
 	this->ExitToTitleScreen = false;
 
 	this->LoadGameObjects();
+
+	this->mImages.clear();
+	this->AddText("N)EW GAME", 108, 64);
+	this->AddText("L)OAD GAME", 108, 80);
+	this->AddText("Q)UIT", 108, 96);
+	this->AddText("W)INDOW MODE", 100, 176);
 }
 
 void MainMenu::HandleEvent(SDL_Event * Event) {
 	switch (Event->type) {
 	case SDL_KEYDOWN:
 		if (Event->key.keysym.sym == SDLK_ESCAPE) this->ExitToTitleScreen = true;
+		if (Event->key.keysym.sym == SDLK_q) this->mManager->quitGame = true;
 		if (Event->key.keysym.sym == SDLK_r && Event->key.repeat == 0) this->SceneStart();
+		if (Event->key.keysym.sym == SDLK_w) {
+			bool fullscreen = this->mManager->IsFullscreen();
+			this->mManager->GetGraphics()->Fullscreen(!fullscreen);
+			this->mManager->SetFullscreen(!fullscreen);
+		}
 		break;
 
 	case SDL_KEYUP:
@@ -44,6 +56,16 @@ void MainMenu::Update(Uint32 timeStep) {
 void MainMenu::Render() {
 	// Render graphics to buffer
 	// If I find any game logic in here, I'll slap myself silly
+
+	for (int i = 0; i < (int) this->mImages.size(); i++) {
+		this->mManager->GetGraphics()->DrawTextureAtLocation(
+			this->mImages[i]->GetImage()->texture,
+			this->mImages[i]->GetImage()->rect,
+			this->mImages[i]->GetDrawRect(),
+			this->mImages[i]->GetDrawAngle()
+		);
+	}
+
 	for (int i = 0; i < (int) this->mGameObjects.size(); i++) {
 		this->mManager->GetGraphics()->DrawTextureAtLocation(
 			this->mGameObjects[i]->GetImageData()->GetImage()->texture, 
