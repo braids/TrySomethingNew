@@ -20,10 +20,11 @@
     <None Include="SDL2.dll" />
     <None Include="SDL2_image.dll" />
     <None Include="SDL2_mixer.dll" />
-    <None Include="res\snd\title-10db.ogg" />
     <None Include="libogg-0.dll" />
     <None Include="SDL2_ttf.dll" />
     <None Include="libfreetype-6.dll" />
+    <None Include="res\snd\intro.ogg" />
+    <None Include="res\snd\title.ogg" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Assets.cpp">
@@ -54,6 +55,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Scenes\MainMenu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Scenes\Intro.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

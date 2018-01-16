@@ -16,6 +16,7 @@ void MainMenu::LoadGameObjects() {
 
 void MainMenu::SceneStart() {
 	this->ExitToTitleScreen = false;
+	this->StartNewGame = false;
 
 	this->LoadGameObjects();
 
@@ -30,6 +31,7 @@ void MainMenu::HandleEvent(SDL_Event * Event) {
 	switch (Event->type) {
 	case SDL_KEYDOWN:
 		if (Event->key.keysym.sym == SDLK_ESCAPE) this->ExitToTitleScreen = true;
+		if (Event->key.keysym.sym == SDLK_n) this->StartNewGame = true;
 		if (Event->key.keysym.sym == SDLK_q) this->mManager->quitGame = true;
 		if (Event->key.keysym.sym == SDLK_r && Event->key.repeat == 0) this->SceneStart();
 		if (Event->key.keysym.sym == SDLK_w) {
@@ -51,6 +53,8 @@ void MainMenu::Update(Uint32 timeStep) {
 	// Return to title screen if quitting
 	if (this->ExitToTitleScreen)
 		this->mManager->StartScene(Scene_TitleScreen);
+	if (this->StartNewGame)
+		this->mManager->StartScene(Scene_Intro);
 }
 
 void MainMenu::Render() {

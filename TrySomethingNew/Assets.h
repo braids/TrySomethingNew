@@ -52,7 +52,7 @@ public:
 
 	struct Music {
 		Mix_Music* TitleMusic;
-		Mix_Music* ExampleMusic;
+		Mix_Music* IntroMusic;
 	} music;
 };
 
@@ -60,24 +60,39 @@ class ImageData {
 protected:
 	Assets::Image*	mImage;
 	SDL_Rect*		mDrawRect;
-	double			DrawAngle;
-
+	double*			DrawAngle;
+	std::string*	ImageText;
 public:
+	ImageData() {
+		this->mImage = new Assets::Image();
+		this->DrawAngle = new double(0.0);
+		this->ImageText = new std::string("");
+	}
+	
+	// Texture methods
 	void SetTexture(SDL_Texture* _texture) { this->mImage->texture = _texture; }
+	// Image methods
 	void SetImage(Assets::Image* _image) {
 		this->mImage = _image;
 		this->mDrawRect = Graphics::CreateRect(this->mImage->rect->w, this->mImage->rect->h, 0, 0);
-		this->DrawAngle = 0.0;
+		*(this->DrawAngle) = 0.0;
 	}
-
 	Assets::Image*	GetImage() { return this->mImage; }
+	// DrawRect methods
 	SDL_Rect*		GetDrawRect() { return this->mDrawRect; }
-	double			GetDrawAngle() { return this->DrawAngle; }
+	void			CreateDrawRect() { this->mDrawRect = Graphics::CreateRect(this->mImage->rect->w, this->mImage->rect->h, 0, 0); }
+	void			UpdateDrawRect() { this->mDrawRect->w = this->mImage->rect->w; this->mDrawRect->h = this->mImage->rect->h; }
 	void			SetDrawRect(SDL_Rect* _drawrect) { this->mDrawRect = _drawrect; }
 	void			SetDrawRectX(int _x) { this->mDrawRect->x = _x; }
 	void			SetDrawRectY(int _y) { this->mDrawRect->y = _y; }
 	void			SetDrawRectXY(int _x, int _y) { this->mDrawRect->x = _x; this->mDrawRect->y = _y; }
-	void			SetDrawAngle(double _angle) { this->DrawAngle = _angle; }
+	// DrawAngle methods
+	double			GetDrawAngle() { return *(this->DrawAngle); }
+	void			SetDrawAngle(double _angle) { *(this->DrawAngle) = _angle; }
+	// ImageText methods
+	std::string*	GetText() { return this->ImageText; }
+	void			SetText(std::string _text) { *(this->ImageText) = _text; }
+
 };
 
 #endif

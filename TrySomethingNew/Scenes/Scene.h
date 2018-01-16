@@ -19,7 +19,8 @@ class MainMenu;
 //// Scene name enum
 enum SceneName {
 	Scene_TitleScreen,	// Title Screen
-	Scene_MainMenu		// Level 1
+	Scene_MainMenu,		// Main menu
+	Scene_Intro			// Intro
 };
 
 //// Scene class
@@ -46,6 +47,7 @@ public:
 	void SetManager(SceneManager* manager) { this->mManager = manager; }
 	void SetSceneName(SceneName name) { this->mSceneName = name; }
 	ImageData* AddText(std::string _text, int _x, int _y);
+	void UpdateText(ImageData* textImage);
 
 	// Scene virtual funcs
 	virtual void LoadGameObjects() = 0;
@@ -75,10 +77,32 @@ public:
 class MainMenu : public Scene {
 protected:
 	bool ExitToTitleScreen;
-
+	bool StartNewGame;
 public:
 	// Scene ctor
 	MainMenu();
+
+	// Scene funcs
+	void LoadGameObjects();
+	void SceneStart();
+	void HandleEvent(SDL_Event* Event);
+	void Update(Uint32 timeStep);
+	void Render();
+};
+
+//// Intro scene class
+class Intro : public Scene {
+protected:
+	bool ExitToTitleScreen;
+	bool EditName;
+	std::string* ShopName;
+	struct {
+		ImageData* EnterShopName;
+		ImageData* ShopNameEntry;
+	} TextObjects;
+public:
+	// Scene ctor
+	Intro();
 
 	// Scene funcs
 	void LoadGameObjects();

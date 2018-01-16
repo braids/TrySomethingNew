@@ -122,7 +122,8 @@
     <None Include="libfreetype-6.dll" />
     <None Include="libogg-0.dll" />
     <None Include="libpng16-16.dll" />
-    <None Include="res\snd\title-10db.ogg" />
+    <None Include="res\snd\intro.ogg" />
+    <None Include="res\snd\title.ogg" />
     <None Include="SDL2.dll" />
     <None Include="SDL2_image.dll" />
     <None Include="SDL2_mixer.dll" />
@@ -135,6 +136,7 @@
     <ClCompile Include="GameObjects\GameObject.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="Scenes\Intro.cpp" />
     <ClCompile Include="Scenes\MainMenu.cpp" />
     <ClCompile Include="Scenes\Scene.cpp" />
     <ClCompile Include="Scenes\TitleScreen.cpp" />

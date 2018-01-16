@@ -1,6 +1,7 @@
 #include "Assets.h"
 #include "Graphics.h"
 #include "SceneManager.h"
+#include "Scenes\Scene.h"
 
 SceneManager::SceneManager() {
 	// Set SDL Graphics NULL on creation
@@ -43,6 +44,7 @@ bool SceneManager::Init() {
 	// Add scenes here
 	this->AddScene(new TitleScreen());
 	this->AddScene(new MainMenu());
+	this->AddScene(new Intro());
 
 	// Initialize scenes
 	for (int i = 0; i < (int) this->sceneList.size(); i++)
