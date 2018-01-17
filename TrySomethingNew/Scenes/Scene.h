@@ -47,7 +47,7 @@ public:
 	void SetManager(SceneManager* manager) { this->mManager = manager; }
 	void SetSceneName(SceneName name) { this->mSceneName = name; }
 	ImageData* AddText(std::string _text, int _x, int _y);
-	void UpdateText(ImageData* textImage);
+	TextBox* AddTextBox(size_t _size, int _x, int _y);
 
 	// Scene virtual funcs
 	virtual void LoadGameObjects() = 0;
@@ -98,8 +98,10 @@ protected:
 	std::string* ShopName;
 	struct {
 		ImageData* EnterShopName;
-		ImageData* ShopNameEntry;
 	} TextObjects;
+	struct {
+		TextBox* ShopNameEntry;
+	} TextBoxObjects;
 public:
 	// Scene ctor
 	Intro();

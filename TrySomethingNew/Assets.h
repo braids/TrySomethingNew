@@ -62,15 +62,25 @@ protected:
 	SDL_Rect*		mDrawRect;
 	double*			DrawAngle;
 	std::string*	ImageText;
+	bool			Visible;
 public:
 	ImageData() {
 		this->mImage = new Assets::Image();
 		this->DrawAngle = new double(0.0);
 		this->ImageText = new std::string("");
+		this->Visible = true;
 	}
 	
 	// Texture methods
-	void SetTexture(SDL_Texture* _texture) { this->mImage->texture = _texture; }
+	void SetTexture(SDL_Texture* _texture) { 
+		// Set image texture
+		this->mImage->texture = _texture; 
+		// If no image rect exists, create one
+		if (this->mImage->rect == nullptr)
+			this->mImage->rect = Graphics::CreateRect(0, 0, 0, 0);
+		// Set image rect
+		SDL_QueryTexture(this->mImage->texture, NULL, NULL, &(this->mImage->rect->w), &(this->mImage->rect->h));
+	}
 	// Image methods
 	void SetImage(Assets::Image* _image) {
 		this->mImage = _image;
@@ -92,7 +102,55 @@ public:
 	// ImageText methods
 	std::string*	GetText() { return this->ImageText; }
 	void			SetText(std::string _text) { *(this->ImageText) = _text; }
+	// Visibility methods
+	bool			IsVisible() { return this->Visible; }
+	void			SetVisible(bool _visible) { this->Visible = _visible; }
 
+};
+
+class TextBox : public ImageData {
+protected:
+	size_t MaxLength;
+	bool Active;
+public:
+	TextBox() {
+		this->SetDrawRect(Graphics::CreateRect(0, 0, 0, 0));
+		this->MaxLength = 0;
+		this->Active = false;
+	}
+	TextBox(int _size, int _x, int _y) {
+		this->SetDrawRect(Graphics::CreateRect(0, 0, _x, _y));
+		this->MaxLength = _size;
+		this->Active = false;
+	}
+	void AppendText(std::string _text) {
+		// If there is space in the text box and the box is active, append text and update
+		if (this->ImageText->length() < this->MaxLength && this->IsActive()) {
+			this->ImageText->append(_text);
+			this->UpdateTextBox();
+		}
+	}
+	void DeleteText() {
+		// If the text box has characters and is active, delete the last character and update
+		if (this->ImageText->length() > 0 && this->IsActive()) {
+			this->ImageText->pop_back();
+			this->UpdateTextBox();
+		}
+	}
+	void UpdateTextBox() {
+		// Get current image text
+		std::string text = *this->GetText();
+		// If less than max length and text box is active, append a *
+		if (text.length() < this->MaxLength && this->IsActive())
+			text.append("*");
+		// Set image texture
+		this->SetTexture(Graphics::Instance()->LoadText(
+			Assets::Instance()->fonts.PrintChar21_8, text, 255,	255, 255, 0));
+		// Update draw rect
+		this->UpdateDrawRect();
+	}
+	bool IsActive() { return this->Active; }
+	void SetActive(bool _active) { this->Active = _active; this->UpdateTextBox(); }
 };
 
 #endif

@@ -19,13 +19,17 @@ SceneManager::SceneManager() {
 }
 
 SceneManager::~SceneManager() {
+	// Quit SDL_Mixer
+	Mix_FreeMusic(mAssets->music.TitleMusic);
+	Mix_FreeMusic(mAssets->music.IntroMusic);
+	mAssets->music.TitleMusic = NULL;
+	mAssets->music.IntroMusic = NULL;
+	Mix_Quit();
 	// Release/free SDL Graphics
 	Graphics::Release();
 	Assets::Release();
 	this->mGraphics = NULL;
 	this->mAssets = NULL;
-	// Quit SDL_Mixer
-	Mix_Quit();
 }
 
 bool SceneManager::Init() {
