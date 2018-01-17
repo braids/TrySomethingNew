@@ -96,14 +96,11 @@ public:
 //// Intro scene class
 class Intro : public Scene {
 protected:
-	bool ExitToTitleScreen;
-	bool EditName;
-	std::string* ShopName;
-	bool ShopNamed;
 	struct {
 		ImageData* Wall1;
 		ImageData* Wall2;
 	} Images;
+	
 	struct {
 		ImageData* OpeningDate;
 		ImageData* OpeningLocation;
@@ -113,32 +110,42 @@ protected:
 		ImageData* EnterShopName;
 		ImageData* ShopIsSetUp;
 	} TextObjects;
+	
 	struct {
 		TextBox* ShopNameEntry;
 	} TextBoxObjects;
+	
 	struct {
 		EventTimer* IntroDate1;
 		EventTimer* IntroDate2;
 		EventTimer* IntroText1;
 		EventTimer* IntroText2;
 	} EventTimers;
+	
 	struct {
-		bool OpeningText1;
-		bool OpeningText2;
-		bool OpeningText3;
-		bool OpeningText4;
-		bool EnterShopName;
+		bool ExitToTitleScreen;
+		bool EditName;
+		bool ShopNamed;
 	} EventFlags;
 public:
 	// Scene ctor
 	Intro();
 
 	// Scene funcs
+	void ResetFlags();
 	void LoadGameObjects();
+	void LoadEventTimers();
+	void LoadImagesText();
 	void SceneStart();
 	void HandleEvent(SDL_Event* Event);
 	void Update(Uint32 timeStep);
 	void Render();
+
+	// Scene Events
+	void SEvent_1();
+	void SEvent_2();
+	void SEvent_3();
+	void SEvent_4();
 };
 
 #endif

@@ -10,42 +10,30 @@ Intro::Intro() {
 	this->SetSceneName(Scene_Intro);
 }
 
+void Intro::ResetFlags() {
+	// Set flags to false
+	this->EventFlags.ExitToTitleScreen = false;
+	this->EventFlags.EditName = false;
+	this->EventFlags.ShopNamed = false;
+}
+
 void Intro::LoadGameObjects() {
 	this->mGameObjects.clear();
 }
 
-void Intro::SceneStart() {
-	// Set flags to false
-	this->ExitToTitleScreen = false;
-	this->EditName = false;
-	this->ShopNamed = false;
-	this->EventFlags.OpeningText1 = true;
-	this->EventFlags.OpeningText2 = false;
-	this->EventFlags.OpeningText3 = false;
-	this->EventFlags.OpeningText4 = false;
-	this->EventFlags.EnterShopName = false;
-	
-	// Init event timers
-	this->EventTimers.IntroDate1 = nullptr;
-	this->EventTimers.IntroDate2 = nullptr;
-	this->EventTimers.IntroText1 = nullptr;
-	this->EventTimers.IntroText2 = nullptr;
-
-	// Play intro music
-	Mix_PlayMusic(this->mManager->GetAssets()->music.IntroMusic, -1);
-	
-	// Load game objects
-	this->LoadGameObjects();
-
-	// Clear any existing drawn text.
-	this->mImages.clear();
+void Intro::LoadEventTimers() {
 	this->mEventTimers.clear();
 
-	// Event timer
-	this->EventTimers.IntroDate1 = this->AddEventTimer(new EventTimer(&this->EventFlags.OpeningText1, 2500, &this->EventTimers.IntroDate2));
-	this->EventTimers.IntroDate2 = this->AddEventTimer(new EventTimer(&this->EventFlags.OpeningText2, 2500, &this->EventTimers.IntroText1));
-	this->EventTimers.IntroText1 = this->AddEventTimer(new EventTimer(&this->EventFlags.OpeningText3, 9000, &this->EventTimers.IntroText2));
-	this->EventTimers.IntroText2 = this->AddEventTimer(new EventTimer(&this->EventFlags.OpeningText4, 9000));
+	// Init event timers
+	this->EventTimers.IntroDate1 = this->AddEventTimer(new EventTimer(std::bind(&Intro::SEvent_1, this), (Uint32) 2500));
+	this->EventTimers.IntroDate2 = this->AddEventTimer(new EventTimer(std::bind(&Intro::SEvent_2, this), (Uint32) 2500));
+	this->EventTimers.IntroText1 = this->AddEventTimer(new EventTimer(std::bind(&Intro::SEvent_3, this), (Uint32) 9000));
+	this->EventTimers.IntroText2 = this->AddEventTimer(new EventTimer(std::bind(&Intro::SEvent_4, this), (Uint32) 9000));
+}
+
+void Intro::LoadImagesText() {
+	// Clear any existing drawn text.
+	this->mImages.clear();
 
 	// Image objects
 	this->Images.Wall1 = new ImageData();
@@ -67,29 +55,48 @@ void Intro::SceneStart() {
 
 	for (std::vector<ImageData*>::iterator it = this->mImages.begin(); it != this->mImages.end(); it++)
 		(*it)->SetVisible(false);
+}
 
-	this->TextObjects.OpeningDate->SetVisible(true);
-	this->EventTimers.IntroDate1->StartEventTimer();
+void Intro::SceneStart() {
+	// Play intro music
+	Mix_PlayMusic(this->mManager->GetAssets()->music.IntroMusic, -1);
+	
+	// Reset Flags
+	this->ResetFlags();
 
 	// Start with text entry off
 	SDL_StopTextInput();
+
+	// Load Game Objects
+	this->LoadGameObjects();
+	// Load Event Timers
+	this->LoadEventTimers();
+	// Load Images and Text Images
+	this->LoadImagesText();
+
+	// Display date text
+	this->TextObjects.OpeningDate->SetVisible(true);
+	// Start screen timer
+	this->EventTimers.IntroDate1->StartEventTimer();
 }
 
 void Intro::HandleEvent(SDL_Event * Event) {
 	switch (Event->type) {
 	case SDL_KEYDOWN:
-		if (Event->key.keysym.sym == SDLK_ESCAPE) this->ExitToTitleScreen = true;
+		if (Event->key.keysym.sym == SDLK_ESCAPE) this->EventFlags.ExitToTitleScreen = true;
 		if (Event->key.keysym.sym == SDLK_RETURN) {
 			// Stop text entry when enter is pressed.
-			if (SDL_IsTextInputActive() && this->EditName) {
-				this->EditName = false;
+			if (SDL_IsTextInputActive() && this->EventFlags.EditName) {
+				// Set state flags
+				this->EventFlags.EditName = false;
+				this->EventFlags.ShopNamed = true;
+				// Stop text input and disable text box
 				SDL_StopTextInput();
 				this->TextBoxObjects.ShopNameEntry->SetActive(false);
-				this->ShopNamed = true;
 			}
 		}
 		// If we're editing and hit backspace, erase a character.
-		if (this->EditName && Event->key.keysym.sym == SDLK_BACKSPACE) {
+		if (this->EventFlags.EditName && Event->key.keysym.sym == SDLK_BACKSPACE) {
 			this->TextBoxObjects.ShopNameEntry->DeleteText();
 		}
 		break;
@@ -99,7 +106,7 @@ void Intro::HandleEvent(SDL_Event * Event) {
 
 	case SDL_TEXTINPUT:
 		// As long as we are editing the name and it's less than 25 characters, add characters.
-		if (this->EditName) {
+		if (this->EventFlags.EditName) {
 			this->TextBoxObjects.ShopNameEntry->AppendText(Event->text.text);
 		}
 		break;
@@ -115,64 +122,16 @@ void Intro::Update(Uint32 timeStep) {
 	// Update timers
 	this->UpdateEventTimers();
 	
-	// If intro screens are done, start shop name entry
-	if (!this->EventFlags.OpeningText1 && 
-			!this->EventFlags.OpeningText2 && 
-			!this->EventFlags.OpeningText3 && 
-			!this->EventFlags.OpeningText4)
-		this->EventFlags.EnterShopName = true;
-
 	// Return to title screen if quitting
-	if (this->ExitToTitleScreen) {
+	if (this->EventFlags.ExitToTitleScreen) {
 		// Stop current music
 		Mix_HaltMusic();
 		// Go to title.
 		this->mManager->StartScene(Scene_TitleScreen);
 	}
 
-	// Display intro screens
-	if (this->EventFlags.OpeningText1) {
-		
-	}
-	else if (this->EventFlags.OpeningText2) {
-		if (this->TextObjects.OpeningDate->IsVisible())
-			this->TextObjects.OpeningLocation->SetVisible(true);
-	}
-	else if (this->EventFlags.OpeningText3) {
-		if (this->TextObjects.OpeningLocation->IsVisible()) {
-			this->TextObjects.OpeningDate->SetVisible(false);
-			this->TextObjects.OpeningLocation->SetVisible(false);
-			
-			this->Images.Wall1->SetVisible(true);
-			this->TextObjects.IntroText1->SetVisible(true);
-		}	
-	}
-	else if (this->EventFlags.OpeningText4) {
-		if (this->TextObjects.IntroText1->IsVisible()) {
-			this->Images.Wall1->SetVisible(false);
-			this->TextObjects.IntroText1->SetVisible(false);
-			
-			this->Images.Wall2->SetVisible(true);
-			this->TextObjects.IntroText2->SetVisible(true);
-		}	
-	}
-	// Display name entry screen
-	else if (this->EventFlags.EnterShopName) {
-		if (this->TextObjects.IntroText2->IsVisible()) {
-			this->Images.Wall2->SetVisible(false);
-			this->TextObjects.IntroText2->SetVisible(false);
-
-			this->TextObjects.SettingBlurb->SetVisible(true);
-			this->TextObjects.EnterShopName->SetVisible(true);
-			this->TextBoxObjects.ShopNameEntry->SetVisible(true);
-			this->EditName = true;
-			SDL_StartTextInput();
-			this->TextBoxObjects.ShopNameEntry->SetActive(this->EditName);
-		}
-		if (ShopNamed)
-			this->TextObjects.ShopIsSetUp->SetVisible(true);
-		this->ShopName = this->TextBoxObjects.ShopNameEntry->GetText();
-	}
+	if (this->EventFlags.ShopNamed && !this->TextObjects.ShopIsSetUp->IsVisible())
+		this->TextObjects.ShopIsSetUp->SetVisible(true);
 }
 
 void Intro::Render() {
@@ -187,4 +146,57 @@ void Intro::Render() {
 			this->mImages[i]->GetDrawAngle()
 		);
 	}
+}
+
+void Intro::SEvent_1() {
+	// Show location text
+	this->TextObjects.OpeningLocation->SetVisible(true);
+	
+	// Start screen timer
+	this->EventTimers.IntroDate2->StartEventTimer();
+}
+
+
+void Intro::SEvent_2() {
+	// Hide date/time text
+	this->TextObjects.OpeningDate->SetVisible(false);
+	this->TextObjects.OpeningLocation->SetVisible(false);
+
+	// Show image and text
+	this->Images.Wall1->SetVisible(true);
+	this->TextObjects.IntroText1->SetVisible(true);
+
+	// Start screen timer
+	this->EventTimers.IntroText1->StartEventTimer();
+}
+
+void Intro::SEvent_3() {
+	// Hide previous image and text
+	this->Images.Wall1->SetVisible(false);
+	this->TextObjects.IntroText1->SetVisible(false);
+
+	// Show image and text
+	this->Images.Wall2->SetVisible(true);
+	this->TextObjects.IntroText2->SetVisible(true);
+
+	//Start screen timer
+	this->EventTimers.IntroText2->StartEventTimer();
+}
+
+void Intro::SEvent_4() {
+	// Hide previous image and text
+	this->Images.Wall2->SetVisible(false);
+	this->TextObjects.IntroText2->SetVisible(false);
+
+	// Show text
+	this->TextObjects.SettingBlurb->SetVisible(true);
+	this->TextObjects.EnterShopName->SetVisible(true);
+	
+	// Create text box
+	this->TextBoxObjects.ShopNameEntry->SetVisible(true);
+	
+	// Enable text entry
+	SDL_StartTextInput();
+	this->EventFlags.EditName = true;
+	this->TextBoxObjects.ShopNameEntry->SetActive(this->EventFlags.EditName);
 }
