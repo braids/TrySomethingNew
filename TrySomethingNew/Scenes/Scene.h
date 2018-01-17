@@ -32,6 +32,7 @@ protected:
 	Camera			mCamera;
 	std::vector<ImageData*>		mImages;
 	std::vector<GameObject*>	mGameObjects;
+	std::vector<EventTimer*>	mEventTimers;
 
 public:
 	// Scene ctor/dtor
@@ -48,6 +49,8 @@ public:
 	void SetSceneName(SceneName name) { this->mSceneName = name; }
 	ImageData* AddText(std::string _text, int _x, int _y);
 	TextBox* AddTextBox(size_t _size, int _x, int _y);
+	EventTimer* AddEventTimer(EventTimer* _eventTimer);
+	void UpdateEventTimers();
 
 	// Scene virtual funcs
 	virtual void LoadGameObjects() = 0;
@@ -96,12 +99,36 @@ protected:
 	bool ExitToTitleScreen;
 	bool EditName;
 	std::string* ShopName;
+	bool ShopNamed;
 	struct {
+		ImageData* Wall1;
+		ImageData* Wall2;
+	} Images;
+	struct {
+		ImageData* OpeningDate;
+		ImageData* OpeningLocation;
+		ImageData* IntroText1;
+		ImageData* IntroText2;
+		ImageData* SettingBlurb;
 		ImageData* EnterShopName;
+		ImageData* ShopIsSetUp;
 	} TextObjects;
 	struct {
 		TextBox* ShopNameEntry;
 	} TextBoxObjects;
+	struct {
+		EventTimer* IntroDate1;
+		EventTimer* IntroDate2;
+		EventTimer* IntroText1;
+		EventTimer* IntroText2;
+	} EventTimers;
+	struct {
+		bool OpeningText1;
+		bool OpeningText2;
+		bool OpeningText3;
+		bool OpeningText4;
+		bool EnterShopName;
+	} EventFlags;
 public:
 	// Scene ctor
 	Intro();

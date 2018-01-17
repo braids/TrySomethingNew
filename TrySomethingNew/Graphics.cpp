@@ -76,7 +76,7 @@ SDL_Texture* Graphics::LoadText(TTF_Font* font, std::string text, Uint8 r, Uint8
 	
 	color = { r, g, b, a };
 
-	SDL_Surface* surface = TTF_RenderText_Solid(font, text.c_str(), color);
+	SDL_Surface* surface = TTF_RenderText_Blended_Wrapped(font, text.c_str(), color, GAMEAREA_WIDTH - 7);
 
 	if (surface == NULL)
 		return NULL;

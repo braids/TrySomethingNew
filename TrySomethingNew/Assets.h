@@ -37,6 +37,8 @@ public:
 	struct Images {
 		Image Title;
 		Image Blank;
+		Image Wall1;
+		Image Wall2;
 		// Placeholder Spritesheet images
 		Image SpriteSheet1D[1];
 		Image SpriteSheet2D[1][1];
