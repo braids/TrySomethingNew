@@ -20,6 +20,8 @@ void Assets::Release() {
 void Assets::LoadAssets() {
 	this->images.Title = { Assets::Instance()->GetTexture("title.png"), Graphics::FullscreenRect() };
 	this->images.Blank = { Assets::Instance()->GetTexture("blank.png"), Graphics::FullscreenRect() };
+	this->images.Wall1 = { Assets::Instance()->GetTexture("wall1.png"), Graphics::CreateRect(280, 162, 0, 0) };
+	this->images.Wall2 = { Assets::Instance()->GetTexture("wall2.png"), Graphics::CreateRect(280, 162, 0, 0) };
 	this->music.TitleMusic = Assets::Instance()->GetMusic("title.ogg");
 	this->music.IntroMusic = Assets::Instance()->GetMusic("intro.ogg");
 	this->fonts.PrintChar21_8 = Assets::Instance()->GetFont("PrintChar21.ttf", 8);
