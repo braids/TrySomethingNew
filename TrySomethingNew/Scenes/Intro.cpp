@@ -30,8 +30,8 @@ void Intro::SceneStart() {
 	
 	// Text objects
 	this->TextObjects.EnterShopName = this->AddText("SHOP NAME:", 8, 8);
-	this->TextObjects.ShopNameEntry = this->AddText("", 8, 16);
-	this->ShopName = this->TextObjects.ShopNameEntry->GetText();
+	this->TextBoxObjects.ShopNameEntry = this->AddTextBox(25, 8, 16);
+	this->ShopName = this->TextBoxObjects.ShopNameEntry->GetText();
 
 	// Start with text entry off
 	SDL_StopTextInput();
@@ -54,9 +54,8 @@ void Intro::HandleEvent(SDL_Event * Event) {
 			}
 		}
 		// If we're editing and hit backspace, erase a character.
-		if (this->EditName && Event->key.keysym.sym == SDLK_BACKSPACE && this->ShopName->length() > 0) {
-			this->ShopName->pop_back();
-			this->UpdateText(this->TextObjects.ShopNameEntry);
+		if (this->EditName && Event->key.keysym.sym == SDLK_BACKSPACE) {
+			this->TextBoxObjects.ShopNameEntry->DeleteText();
 		}
 		break;
 
@@ -65,9 +64,8 @@ void Intro::HandleEvent(SDL_Event * Event) {
 
 	case SDL_TEXTINPUT:
 		// As long as we are editing the name and it's less than 25 characters, add characters.
-		if (this->EditName && this->ShopName->length() < 25) {
-			this->ShopName->append(Event->text.text);
-			this->UpdateText(this->TextObjects.ShopNameEntry);
+		if (this->EditName) {
+			this->TextBoxObjects.ShopNameEntry->AppendText(Event->text.text);
 		}
 		break;
 	case SDL_TEXTEDITING:
@@ -86,12 +84,15 @@ void Intro::Update(Uint32 timeStep) {
 		// Go to title.
 		this->mManager->StartScene(Scene_TitleScreen);
 	}
+
+	this->TextBoxObjects.ShopNameEntry->SetActive(this->EditName);
 }
 
 void Intro::Render() {
 	// Render graphics to buffer
 	// If I find any game logic in here, I'll slap myself silly
 	for (int i = 0; i < (int) this->mImages.size(); i++) {
+		if(this->mImages[i]->IsVisible())
 		this->mManager->GetGraphics()->DrawTextureAtLocation(
 			this->mImages[i]->GetImage()->texture,
 			this->mImages[i]->GetImage()->rect,
