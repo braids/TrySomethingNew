@@ -160,6 +160,7 @@ public:
 class Market : public Scene {
 protected:
 	std::vector<ImageData*> MarketText;
+	TextBox* ActiveSelection;
 
 	struct {
 		// Title
@@ -191,6 +192,9 @@ protected:
 		ImageData* PosterCost;
 		ImageData* NewsAdName;
 		ImageData* NewsAdCost;
+		// Selection
+		ImageData* SelectItem;
+		ImageData* EnterQty;
 		// Options
 		ImageData* BuyOption;
 		ImageData* ForecastOption;
@@ -205,7 +209,23 @@ protected:
 	} TextObjects;
 
 	struct {
+		//TextBox* Selection;
+		TextBox* BierQty;
+		TextBox* BockwurstQty;
+		TextBox* MettigelQty;
+		TextBox* CurrywurstQty;
+		TextBox* StreetSheetQty;
+		TextBox* USADAYQty;
+		TextBox* SignQty;
+		TextBox* PosterQty;
+		TextBox* NewsAdQty;
+	} TextBoxObjects;
+
+	struct {
 		bool ExitToTitleScreen;
+		bool MainSelection;
+		bool SelectBuyItem;
+		bool EnterItemQty;
 	} EventFlags;
 
 public:
@@ -228,10 +248,20 @@ public:
 		this->MarketText.push_back(textImage);
 		return textImage; 
 	}
+	TextBox* AddMarketTextBox(Uint32 _size, int _x, int _y) {
+		TextBox* textBox = this->AddTextBox(_size, _x, _y);
+		this->MarketText.push_back(textBox);
+		return textBox;
+	}
 
 	// Market Events
 	void SEvent_ShowMarketText();
 	void SEvent_HideMarketText();
+	// Buy Item
+	void SEvent_SelectBuy();
+	void SEvent_SelectGuide();
+	void SEvent_SetBuyItem(SDL_Keycode _key);
+	void SEvent_EndItemQtyEntry();
 };
 
 #endif

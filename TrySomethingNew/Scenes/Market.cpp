@@ -13,6 +13,9 @@ Market::Market() {
 void Market::ResetFlags() {
 	// Set flags to false
 	this->EventFlags.ExitToTitleScreen = false;
+	this->EventFlags.MainSelection = false;
+	this->EventFlags.SelectBuyItem = false;
+	this->EventFlags.EnterItemQty = false;
 }
 
 void Market::LoadGameObjects() {
@@ -61,6 +64,9 @@ void Market::LoadImagesText() {
 	this->TextObjects.PosterCost = this->AddMarketText("DM20", 161, 117);
 	this->TextObjects.NewsAdName = this->AddMarketText("9) NEWSPAPER AD", 7, 126);
 	this->TextObjects.NewsAdCost = this->AddMarketText("DM20", 161, 126);
+	// Selection
+	this->TextObjects.SelectItem = this->AddText("- SELECT ITEM #", 7, 153);
+	this->TextObjects.EnterQty = this->AddText("- ENTER QUANTITY", 7, 153);
 	// Options
 	this->TextObjects.BuyOption = this->AddMarketText("B)UY", 7, 180);
 	this->TextObjects.ForecastOption = this->AddMarketText("F)ORECAST", 49, 180);
@@ -73,6 +79,16 @@ void Market::LoadImagesText() {
 	this->TextObjects.EventHeader = this->AddText("LOCAL EVENTS", 105, 9);
 	this->TextObjects.EventInfo = this->AddText("", 105, 9);
 	
+	this->TextBoxObjects.BierQty = this->AddMarketTextBox(2, 210, 36);
+	this->TextBoxObjects.BockwurstQty = this->AddMarketTextBox(2, 210, 45);
+	this->TextBoxObjects.MettigelQty = this->AddMarketTextBox(2, 210, 54);
+	this->TextBoxObjects.CurrywurstQty = this->AddMarketTextBox(2, 210, 63);
+	this->TextBoxObjects.StreetSheetQty = this->AddMarketTextBox(2, 210, 81);
+	this->TextBoxObjects.USADAYQty = this->AddMarketTextBox(2, 210, 90);
+	this->TextBoxObjects.SignQty = this->AddMarketTextBox(2, 210, 108);
+	this->TextBoxObjects.PosterQty = this->AddMarketTextBox(2, 210, 117);
+	this->TextBoxObjects.NewsAdQty = this->AddMarketTextBox(2, 210, 126);
+
 	for (std::vector<ImageData*>::iterator it = this->mImages.begin(); it != this->mImages.end(); it++)
 		(*it)->SetVisible(false);
 }
@@ -80,7 +96,6 @@ void Market::LoadImagesText() {
 void Market::SceneStart() {
 	// Play intro music
 	Mix_HaltMusic();
-	//Mix_PlayMusic(this->mManager->GetAssets()->music.IntroMusic, -1);
 
 	// Reset Flags
 	this->ResetFlags();
@@ -97,19 +112,44 @@ void Market::SceneStart() {
 
 	// Display main market text
 	this->SEvent_ShowMarketText();
+	this->EventFlags.MainSelection = true;
 }
 
 void Market::HandleEvent(SDL_Event * Event) {
 	switch (Event->type) {
 	case SDL_KEYDOWN:
-		if (Event->key.keysym.sym == SDLK_ESCAPE) this->EventFlags.ExitToTitleScreen = true;
+		// Start
+		if (Event->key.keysym.sym == SDLK_ESCAPE) 
+			this->EventFlags.ExitToTitleScreen = true;
+		// Trigger if starting buy process
+		if (this->EventFlags.MainSelection) {
+			if (Event->key.keysym.sym == SDLK_b)
+				this->SEvent_SelectBuy();
+			if (Event->key.keysym.sym == SDLK_l)
+				this->EventFlags.ExitToTitleScreen = true;
+		}
+		// Selecting item to buy
+		if (this->EventFlags.SelectBuyItem) {
+			this->SEvent_SetBuyItem(Event->key.keysym.sym);
+		}
+		// Enterting item quantity
+		if (this->EventFlags.EnterItemQty) {
+			if(Event->key.keysym.sym == SDLK_BACKSPACE)
+				this->ActiveSelection->DeleteText();
+			if (Event->key.keysym.sym == SDLK_RETURN)
+				this->SEvent_EndItemQtyEntry();
+		}
 		break;
 
 	case SDL_KEYUP:
 		break;
 
 	case SDL_TEXTINPUT:
+		if (this->EventFlags.EnterItemQty) {
+			this->ActiveSelection->AppendText(Event->text.text);
+		}
 		break;
+
 	case SDL_TEXTEDITING:
 		break;
 
@@ -153,4 +193,94 @@ void Market::SEvent_ShowMarketText() {
 void Market::SEvent_HideMarketText() {
 	for (std::vector<ImageData*>::iterator it = this->MarketText.begin(); it != this->MarketText.end(); it++)
 		(*it)->SetVisible(false);
+}
+
+void Market::SEvent_SelectBuy() {
+	this->EventFlags.MainSelection = false;
+	this->TextObjects.SelectItem->SetVisible(true);
+	this->EventFlags.SelectBuyItem = true;
+}
+
+void Market::SEvent_SetBuyItem(SDL_Keycode _key) {
+	// Seelct item to purchase
+	switch (_key) {
+	case SDLK_1:
+		this->ActiveSelection = this->TextBoxObjects.BierQty;
+		break;
+
+	case SDLK_2:
+		this->ActiveSelection = this->TextBoxObjects.BockwurstQty;
+		break;
+
+	case SDLK_3:
+		this->ActiveSelection = this->TextBoxObjects.MettigelQty;
+		break;
+
+	case SDLK_4:
+		this->ActiveSelection = this->TextBoxObjects.CurrywurstQty;
+		break;
+
+	case SDLK_5:
+		this->ActiveSelection = this->TextBoxObjects.StreetSheetQty;
+		break;
+
+	case SDLK_6:
+		this->ActiveSelection = this->TextBoxObjects.USADAYQty;
+		break;
+
+	case SDLK_7:
+		this->ActiveSelection = this->TextBoxObjects.SignQty;
+		break;
+
+	case SDLK_8:
+		this->ActiveSelection = this->TextBoxObjects.PosterQty;
+		break;
+
+	case SDLK_9:
+		this->ActiveSelection = this->TextBoxObjects.NewsAdQty;
+		break;
+
+	case SDLK_RETURN:
+		// If enter is pressed, return to main selection
+		this->EventFlags.SelectBuyItem = false;
+		this->TextObjects.SelectItem->SetVisible(false);
+		this->EventFlags.MainSelection = true;
+		return;
+		break;
+
+	default:
+		// Ignore all other input
+		return;
+		break;
+	}
+	
+	// Move into quantity entry state
+	this->EventFlags.SelectBuyItem = false;
+	this->EventFlags.EnterItemQty = true;
+	
+	// Show ENTER QUANITITY text
+	this->TextObjects.SelectItem->SetVisible(false);
+	this->TextObjects.EnterQty->SetVisible(true);
+	
+	// Flush buffered text input
+	SDL_PumpEvents();
+
+	// Enable text entry for item quantity
+	SDL_StartTextInput();
+	this->ActiveSelection->SetActive(true);
+}
+
+void Market::SEvent_EndItemQtyEntry() {
+	// Get quantity entered. Invalid input will convert to 0.
+	int quantity = std::atoi(this->ActiveSelection->GetText()->c_str());
+	
+	// Set text to sanitized number.
+	this->ActiveSelection->SetText(std::to_string(quantity));
+	
+	// Stop text entry and return to main selection
+	SDL_StopTextInput();
+	this->ActiveSelection->SetActive(false);
+	this->EventFlags.EnterItemQty = false;
+	this->TextObjects.EnterQty->SetVisible(false);
+	this->EventFlags.MainSelection = true;
 }
