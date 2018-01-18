@@ -85,6 +85,7 @@ class MainMenu : public Scene {
 protected:
 	bool ExitToTitleScreen;
 	bool StartNewGame;
+	bool LoadGame;
 
 public:
 	// Scene ctor
@@ -158,8 +159,18 @@ public:
 
 class Market : public Scene {
 protected:
+	std::vector<ImageData*> MarketText;
+
 	struct {
+		// Title
 		ImageData* MarketTitle;
+		// Headers
+		ImageData* Foods;
+		ImageData* Newspapers;
+		ImageData* Ads;
+		ImageData* Cost;
+		ImageData* Qty;
+		ImageData* Total;
 		// Items
 		ImageData* BierName;
 		ImageData* BierCost;
@@ -183,7 +194,9 @@ protected:
 		// Options
 		ImageData* BuyOption;
 		ImageData* ForecastOption;
+		ImageData* GuideOption;
 		ImageData* LeaveOption;
+		ImageData* SaveOption;
 		// Forecast
 		ImageData* WeatherHeader;
 		ImageData* WeatherInfo;
@@ -209,7 +222,14 @@ public:
 	void Update(Uint32 timeStep);
 	void Render();
 
-	// Scene Events
+	// Market funcs
+	ImageData* AddMarketText(std::string _text, int _x, int _y) { 
+		ImageData* textImage = this->AddText(_text, _x, _y);
+		this->MarketText.push_back(textImage);
+		return textImage; 
+	}
+
+	// Market Events
 	void SEvent_ShowMarketText();
 	void SEvent_HideMarketText();
 };
