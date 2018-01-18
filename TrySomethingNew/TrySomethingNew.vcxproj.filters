@@ -25,6 +25,7 @@
     <None Include="libfreetype-6.dll" />
     <None Include="res\snd\intro.ogg" />
     <None Include="res\snd\title.ogg" />
+    <None Include="res\snd\market.ogg" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Assets.cpp">

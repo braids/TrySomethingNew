@@ -38,6 +38,9 @@ void Market::LoadImagesText() {
 	// Text objects
 	// Market Title
 	this->TextObjects.MarketTitle = this->AddMarketText("DER MARKT", 112, 9);
+	// Purchase signs
+	this->TextObjects.MultSigns = this->AddMarketText("x\nx\nx\nx\n\nx\nx\n\nx\nx\nx", 196, 36);
+	this->TextObjects.EqualSigns = this->AddMarketText("=\n=\n=\n=\n\n=\n=\n\n=\n=\n=", 231, 36);
 	// Items
 	this->TextObjects.Foods = this->AddMarketText("-FOODS-", 21, 27);
 	this->TextObjects.Cost = this->AddMarketText("COST", 161, 27);
@@ -94,9 +97,9 @@ void Market::LoadImagesText() {
 }
 
 void Market::SceneStart() {
-	// Play intro music
+	// Play Market music
 	Mix_HaltMusic();
-
+	
 	// Reset Flags
 	this->ResetFlags();
 

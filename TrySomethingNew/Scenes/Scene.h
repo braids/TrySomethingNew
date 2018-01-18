@@ -159,7 +159,13 @@ public:
 
 class Market : public Scene {
 protected:
+	// Main market screen text and text boxes
 	std::vector<ImageData*> MarketText;
+	// Forecast text
+	std::vector<ImageData*> ForecastText;
+	// Guide text
+	std::vector<ImageData*> GuideText;
+
 	TextBox* ActiveSelection;
 
 	struct {
@@ -172,6 +178,9 @@ protected:
 		ImageData* Cost;
 		ImageData* Qty;
 		ImageData* Total;
+		// Purchse symbols
+		ImageData* MultSigns;
+		ImageData* EqualSigns;
 		// Items
 		ImageData* BierName;
 		ImageData* BierCost;
@@ -259,9 +268,13 @@ public:
 	void SEvent_HideMarketText();
 	// Buy Item
 	void SEvent_SelectBuy();
-	void SEvent_SelectGuide();
 	void SEvent_SetBuyItem(SDL_Keycode _key);
 	void SEvent_EndItemQtyEntry();
+	void SEvent_SelectForecast();
+	void SEvent_ExitForecast();
+	void SEvent_SelectGuide();
+	void SEvent_SelectGuideItem(SDL_Keycode _key);
+	void SEvent_ExitGuide();
 };
 
 #endif
