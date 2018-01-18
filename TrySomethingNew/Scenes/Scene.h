@@ -15,12 +15,15 @@ class SceneManager;
 class Scene;
 class TitleScreen;
 class MainMenu;
+class Intro;
+class Market;
 
 //// Scene name enum
 enum SceneName {
 	Scene_TitleScreen,	// Title Screen
 	Scene_MainMenu,		// Main menu
-	Scene_Intro			// Intro
+	Scene_Intro,		// Intro
+	Scene_Market		// Market
 };
 
 //// Scene class
@@ -64,6 +67,7 @@ public:
 class TitleScreen : public Scene {
 protected:
 	bool StartMainMenu;
+
 public:
 	// Scene ctor
 	TitleScreen();
@@ -81,6 +85,7 @@ class MainMenu : public Scene {
 protected:
 	bool ExitToTitleScreen;
 	bool StartNewGame;
+
 public:
 	// Scene ctor
 	MainMenu();
@@ -120,6 +125,7 @@ protected:
 		EventTimer* IntroDate2;
 		EventTimer* IntroText1;
 		EventTimer* IntroText2;
+		EventTimer* ToMarket;
 	} EventTimers;
 	
 	struct {
@@ -127,6 +133,7 @@ protected:
 		bool EditName;
 		bool ShopNamed;
 	} EventFlags;
+
 public:
 	// Scene ctor
 	Intro();
@@ -146,6 +153,65 @@ public:
 	void SEvent_2();
 	void SEvent_3();
 	void SEvent_4();
+	void SEvent_ToMarket();
+};
+
+class Market : public Scene {
+protected:
+	struct {
+		ImageData* MarketTitle;
+		// Items
+		ImageData* BierName;
+		ImageData* BierCost;
+		ImageData* BockwurstName;
+		ImageData* BockwurstCost;
+		ImageData* MettigelName;
+		ImageData* MettigelCost;
+		ImageData* CurrywurstName;
+		ImageData* CurrywurstCost;
+		ImageData* StreetSheetName;
+		ImageData* StreetSheetCost;
+		ImageData* USADAYName;
+		ImageData* USADAYCost;
+		// Ads
+		ImageData* SignName;
+		ImageData* SignCost;
+		ImageData* PosterName;
+		ImageData* PosterCost;
+		ImageData* NewsAdName;
+		ImageData* NewsAdCost;
+		// Options
+		ImageData* BuyOption;
+		ImageData* ForecastOption;
+		ImageData* LeaveOption;
+		// Forecast
+		ImageData* WeatherHeader;
+		ImageData* WeatherInfo;
+		ImageData* EventHeader;
+		ImageData* EventInfo;
+	} TextObjects;
+
+	struct {
+		bool ExitToTitleScreen;
+	} EventFlags;
+
+public:
+	// Scene ctor
+	Market();
+
+	// Scene funcs
+	void ResetFlags();
+	void LoadGameObjects();
+	void LoadEventTimers();
+	void LoadImagesText();
+	void SceneStart();
+	void HandleEvent(SDL_Event* Event);
+	void Update(Uint32 timeStep);
+	void Render();
+
+	// Scene Events
+	void SEvent_ShowMarketText();
+	void SEvent_HideMarketText();
 };
 
 #endif

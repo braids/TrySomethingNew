@@ -49,6 +49,7 @@ bool SceneManager::Init() {
 	this->AddScene(new TitleScreen());
 	this->AddScene(new MainMenu());
 	this->AddScene(new Intro());
+	this->AddScene(new Market());
 
 	// Initialize scenes
 	for (int i = 0; i < (int) this->sceneList.size(); i++)
