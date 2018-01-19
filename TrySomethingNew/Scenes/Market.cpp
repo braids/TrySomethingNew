@@ -47,26 +47,35 @@ void Market::LoadImagesText() {
 	this->TextObjects.Qty = this->AddMarketText("QTY", 203, 27);
 	this->TextObjects.Total = this->AddMarketText("TOTAL", 238, 27);
 	this->TextObjects.BierName = this->AddMarketText("1) BIER", 7, 36);
-	this->TextObjects.BierCost = this->AddMarketText("DM20", 161, 36);
+	this->TextObjects.BierCost = this->AddMarketText("DM 4", 161, 36);
+	this->TextObjects.BierTotal = this->AddMarketText("0", 245, 36);
 	this->TextObjects.BockwurstName = this->AddMarketText("2) BOCKWURST", 7, 45);
-	this->TextObjects.BockwurstCost = this->AddMarketText("DM20", 161, 45);
+	this->TextObjects.BockwurstCost = this->AddMarketText("DM 2", 161, 45);
+	this->TextObjects.BockwurstTotal = this->AddMarketText("0", 245, 45);
 	this->TextObjects.MettigelName = this->AddMarketText("3) METTIGEL", 7, 54);
-	this->TextObjects.MettigelCost = this->AddMarketText("DM20", 161, 54);
+	this->TextObjects.MettigelCost = this->AddMarketText("DM 4", 161, 54);
+	this->TextObjects.MettigelTotal = this->AddMarketText("0", 245, 54);
 	this->TextObjects.CurrywurstName = this->AddMarketText("4) CURRYWURST", 7, 63);
-	this->TextObjects.CurrywurstCost = this->AddMarketText("DM20", 161, 63);
+	this->TextObjects.CurrywurstCost = this->AddMarketText("DM 6", 161, 63);
+	this->TextObjects.CurrywurstTotal = this->AddMarketText("0", 245, 63);
 	this->TextObjects.Newspapers = this->AddMarketText("-NEWSPAPERS-", 21, 72);
 	this->TextObjects.StreetSheetName = this->AddMarketText("5) DIE STRAßENZEITUNG", 7, 81);
-	this->TextObjects.StreetSheetCost = this->AddMarketText("DM20", 161, 81);
+	this->TextObjects.StreetSheetCost = this->AddMarketText("DM 3", 161, 81);
+	this->TextObjects.StreetSheetTotal = this->AddMarketText("0", 245, 81);
 	this->TextObjects.USADAYName = this->AddMarketText("6) USA DAY", 7, 90);
-	this->TextObjects.USADAYCost = this->AddMarketText("DM20", 161, 90);
+	this->TextObjects.USADAYCost = this->AddMarketText("DM 7", 161, 90);
+	this->TextObjects.USADAYTotal = this->AddMarketText("0", 245, 90);
 	// Ads
 	this->TextObjects.Ads = this->AddMarketText("-ADS-", 21, 99);
 	this->TextObjects.SignName = this->AddMarketText("7) WOOD SIGN", 7, 108);
-	this->TextObjects.SignCost = this->AddMarketText("DM20", 161, 108);
+	this->TextObjects.SignCost = this->AddMarketText("DM 5", 161, 108);
+	this->TextObjects.SignTotal = this->AddMarketText("0", 245, 108);
 	this->TextObjects.PosterName = this->AddMarketText("8) WALL POSTER", 7, 117);
-	this->TextObjects.PosterCost = this->AddMarketText("DM20", 161, 117);
+	this->TextObjects.PosterCost = this->AddMarketText("DM10", 161, 117);
+	this->TextObjects.PosterTotal = this->AddMarketText("0", 245, 117);
 	this->TextObjects.NewsAdName = this->AddMarketText("9) NEWSPAPER AD", 7, 126);
-	this->TextObjects.NewsAdCost = this->AddMarketText("DM20", 161, 126);
+	this->TextObjects.NewsAdCost = this->AddMarketText("DM15", 161, 126);
+	this->TextObjects.NewsAdTotal = this->AddMarketText("0", 245, 126);
 	// Selection
 	this->TextObjects.SelectItem = this->AddText("- SELECT ITEM #", 7, 153);
 	this->TextObjects.EnterQty = this->AddText("- ENTER QUANTITY", 7, 153);
@@ -209,38 +218,56 @@ void Market::SEvent_SetBuyItem(SDL_Keycode _key) {
 	switch (_key) {
 	case SDLK_1:
 		this->ActiveSelection = this->TextBoxObjects.BierQty;
+		this->ActivePrice = &this->Prices.Bier;
+		this->ActiveTotal = this->TextObjects.BierTotal;
 		break;
 
 	case SDLK_2:
 		this->ActiveSelection = this->TextBoxObjects.BockwurstQty;
+		this->ActivePrice = &this->Prices.Bockwurst;
+		this->ActiveTotal = this->TextObjects.BockwurstTotal;
 		break;
 
 	case SDLK_3:
 		this->ActiveSelection = this->TextBoxObjects.MettigelQty;
+		this->ActivePrice = &this->Prices.Mettigel;
+		this->ActiveTotal = this->TextObjects.MettigelTotal;
 		break;
 
 	case SDLK_4:
 		this->ActiveSelection = this->TextBoxObjects.CurrywurstQty;
+		this->ActivePrice = &this->Prices.Currywurst;
+		this->ActiveTotal = this->TextObjects.CurrywurstTotal;
 		break;
 
 	case SDLK_5:
 		this->ActiveSelection = this->TextBoxObjects.StreetSheetQty;
+		this->ActivePrice = &this->Prices.StreetSheet;
+		this->ActiveTotal = this->TextObjects.StreetSheetTotal;
 		break;
 
 	case SDLK_6:
 		this->ActiveSelection = this->TextBoxObjects.USADAYQty;
+		this->ActivePrice = &this->Prices.USADAY;
+		this->ActiveTotal = this->TextObjects.USADAYTotal;
 		break;
 
 	case SDLK_7:
 		this->ActiveSelection = this->TextBoxObjects.SignQty;
+		this->ActivePrice = &this->Prices.Sign;
+		this->ActiveTotal = this->TextObjects.SignTotal;
 		break;
 
 	case SDLK_8:
 		this->ActiveSelection = this->TextBoxObjects.PosterQty;
+		this->ActivePrice = &this->Prices.Poster;
+		this->ActiveTotal = this->TextObjects.PosterTotal;
 		break;
 
 	case SDLK_9:
 		this->ActiveSelection = this->TextBoxObjects.NewsAdQty;
+		this->ActivePrice = &this->Prices.NewsAd;
+		this->ActiveTotal = this->TextObjects.NewsAdTotal;
 		break;
 
 	case SDLK_RETURN:
@@ -276,7 +303,11 @@ void Market::SEvent_SetBuyItem(SDL_Keycode _key) {
 void Market::SEvent_EndItemQtyEntry() {
 	// Get quantity entered. Invalid input will convert to 0.
 	int quantity = std::atoi(this->ActiveSelection->GetText()->c_str());
-	
+	int price = *(this->ActivePrice);
+	// Set total price
+	int total = quantity * price;
+	this->ActiveTotal->SetText(std::to_string(total));
+
 	// Set text to sanitized number.
 	this->ActiveSelection->SetText(std::to_string(quantity));
 	

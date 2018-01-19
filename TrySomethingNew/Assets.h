@@ -103,7 +103,13 @@ public:
 	void			SetDrawAngle(double _angle) { *(this->DrawAngle) = _angle; }
 	// ImageText methods
 	std::string*	GetText() { return this->ImageText; }
-	void			SetText(std::string _text) { *(this->ImageText) = _text; }
+	void			SetText(std::string _text) { 
+		*(this->ImageText) = _text; 
+		this->SetTexture(Graphics::Instance()->LoadText(
+			Assets::Instance()->fonts.PrintChar21_8, _text, 255, 255, 255, 0));
+		// Update draw rect
+		this->UpdateDrawRect();
+	}
 	// Visibility methods
 	bool			IsVisible() { return this->Visible; }
 	void			SetVisible(bool _visible) { this->Visible = _visible; }

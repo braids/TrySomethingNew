@@ -166,7 +166,21 @@ protected:
 	// Guide text
 	std::vector<ImageData*> GuideText;
 
-	TextBox* ActiveSelection;
+	TextBox*	ActiveSelection;
+	int*		ActivePrice;
+	ImageData*	ActiveTotal;
+
+	struct {
+		int Bier = 4;
+		int Bockwurst = 2;
+		int Mettigel = 4;
+		int Currywurst = 6;
+		int StreetSheet = 3;
+		int USADAY = 7;
+		int Sign = 5;
+		int Poster = 10;
+		int NewsAd = 15;
+	} Prices;
 
 	struct {
 		// Title
@@ -184,23 +198,32 @@ protected:
 		// Items
 		ImageData* BierName;
 		ImageData* BierCost;
+		ImageData* BierTotal;
 		ImageData* BockwurstName;
 		ImageData* BockwurstCost;
+		ImageData* BockwurstTotal;
 		ImageData* MettigelName;
 		ImageData* MettigelCost;
+		ImageData* MettigelTotal;
 		ImageData* CurrywurstName;
 		ImageData* CurrywurstCost;
+		ImageData* CurrywurstTotal;
 		ImageData* StreetSheetName;
 		ImageData* StreetSheetCost;
+		ImageData* StreetSheetTotal;
 		ImageData* USADAYName;
 		ImageData* USADAYCost;
+		ImageData* USADAYTotal;
 		// Ads
 		ImageData* SignName;
 		ImageData* SignCost;
+		ImageData* SignTotal;
 		ImageData* PosterName;
 		ImageData* PosterCost;
+		ImageData* PosterTotal;
 		ImageData* NewsAdName;
 		ImageData* NewsAdCost;
+		ImageData* NewsAdTotal;
 		// Selection
 		ImageData* SelectItem;
 		ImageData* EnterQty;
