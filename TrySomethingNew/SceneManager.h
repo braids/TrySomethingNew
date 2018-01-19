@@ -5,6 +5,7 @@
 #include <vector>
 #include "Assets.h"
 #include "Timer.h"
+#include "Data\PlayerData.h"
 #include "Scenes\Scene.h"
 
 // Class forward decs
@@ -24,6 +25,7 @@ protected:
 	Scene*				mCurrent;	// Current active scene
 	Scene*				mNext;		// Next active scene
 	std::vector<Scene*>	sceneList;	// Vector of all scenes
+	PlayerData*			mPlayerData;
 
 public:
 	bool quitGame;
@@ -37,6 +39,7 @@ public:
 	Scene* GetScene() { return this->mCurrent; }
 	Graphics* GetGraphics() { return this->mGraphics; }
 	Assets* GetAssets() { return this->mAssets; }
+	PlayerData* GetPlayerData() { return this->mPlayerData; }
 	bool IsScene(SceneName scene) { return this->mCurrent == this->sceneList[scene]; }
 	bool IsFullscreen() { return this->Fullscreen; }
 	void SetFullscreen(bool _fullscreen) { this->Fullscreen = _fullscreen; }

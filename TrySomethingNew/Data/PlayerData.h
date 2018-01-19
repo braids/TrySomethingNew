@@ -14,6 +14,8 @@ protected:
 public:
 	PlayerData();
 
+	void ResetPlayerData();
+
 	ItemData* GetInventoryItem(ItemName _name);
 	bool HasInventoryItem(ItemName _name);
 	void SetInventoryQty(ItemName _name, int _qty);

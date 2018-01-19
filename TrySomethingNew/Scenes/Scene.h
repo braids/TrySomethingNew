@@ -5,6 +5,7 @@
 #include <vector>
 #include "Assets.h"
 #include "Camera.h"
+#include "Data\PlayerData.h"
 #include "GameObjects\GameObject.h"
 #include "Timer.h"
 
@@ -33,6 +34,7 @@ protected:
 	bool			mActive;	// Scene is active or inactive
 	SceneManager*	mManager;	// Parent scene manager pointer
 	Camera			mCamera;
+	PlayerData*		mPlayerData;
 	std::vector<ImageData*>		mImages;
 	std::vector<GameObject*>	mGameObjects;
 	std::vector<EventTimer*>	mEventTimers;
@@ -50,6 +52,7 @@ public:
 	bool IsActive() const { return this->mActive; }
 	void SetManager(SceneManager* manager) { this->mManager = manager; }
 	void SetSceneName(SceneName name) { this->mSceneName = name; }
+	void SetPlayerData(PlayerData* _player) { this->mPlayerData = _player; }
 	ImageData* AddText(std::string _text, int _x, int _y);
 	TextBox* AddTextBox(size_t _size, int _x, int _y);
 	EventTimer* AddEventTimer(EventTimer* _eventTimer);

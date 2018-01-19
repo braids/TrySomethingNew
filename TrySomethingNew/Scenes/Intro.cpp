@@ -75,6 +75,9 @@ void Intro::SceneStart() {
 	// Load Images and Text Images
 	this->LoadImagesText();
 
+	// Reset player data
+	this->mPlayerData->ResetPlayerData();
+
 	// Display date text
 	this->TextObjects.OpeningDate->SetVisible(true);
 	// Start screen timer
@@ -91,6 +94,8 @@ void Intro::HandleEvent(SDL_Event * Event) {
 				// Set state flags
 				this->EventFlags.EditName = false;
 				this->EventFlags.ShopNamed = true;
+				// Set player shop name
+				this->mPlayerData->SetName( *(this->TextBoxObjects.ShopNameEntry->GetText()) );
 				// Stop text input and disable text box
 				SDL_StopTextInput();
 				this->TextBoxObjects.ShopNameEntry->SetActive(false);

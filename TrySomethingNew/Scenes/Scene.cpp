@@ -1,5 +1,6 @@
 #include "Assets.h"
 #include "Graphics.h"
+#include "Data\PlayerData.h"
 #include "Scene.h"
 #include "SceneManager.h"
 
@@ -13,6 +14,7 @@ Scene::~Scene() {
 
 void Scene::Init(SceneManager * manager) {
 	this->SetManager(manager);
+	this->SetPlayerData(mManager->GetPlayerData());
 }
 
 ImageData* Scene::AddText(std::string _text, int _x, int _y) {

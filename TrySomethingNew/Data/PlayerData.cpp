@@ -5,6 +5,10 @@
 #include "Data\PlayerData.h"
 
 PlayerData::PlayerData() {
+	this->ResetPlayerData();
+}
+
+void PlayerData::ResetPlayerData() {
 	this->ShopName = "";
 	int Money = 50;
 	int Day = 1;
