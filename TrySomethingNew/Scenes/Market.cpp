@@ -16,6 +16,9 @@ void Market::ResetFlags() {
 	this->EventFlags.MainSelection = false;
 	this->EventFlags.SelectBuyItem = false;
 	this->EventFlags.EnterItemQty = false;
+	this->EventFlags.ShowForecast = false;
+	this->EventFlags.SelectGuideItem = false;
+	this->EventFlags.ShowGuide = false;
 }
 
 void Market::LoadGameObjects() {
@@ -130,16 +133,23 @@ void Market::SceneStart() {
 void Market::HandleEvent(SDL_Event * Event) {
 	switch (Event->type) {
 	case SDL_KEYDOWN:
-		// Start
+		//// Exit event
 		if (Event->key.keysym.sym == SDLK_ESCAPE) 
 			this->EventFlags.ExitToTitleScreen = true;
-		// Trigger if starting buy process
+		
+		//// Main selection
 		if (this->EventFlags.MainSelection) {
 			if (Event->key.keysym.sym == SDLK_b)
 				this->SEvent_SelectBuy();
+			if (Event->key.keysym.sym == SDLK_f)
+				this->SEvent_SelectForecast();
+			if (Event->key.keysym.sym == SDLK_g)
+				this->SEvent_SelectGuide();
 			if (Event->key.keysym.sym == SDLK_l)
 				this->EventFlags.ExitToTitleScreen = true;
 		}
+
+		//// Buy
 		// Selecting item to buy
 		if (this->EventFlags.SelectBuyItem) {
 			this->SEvent_SetBuyItem(Event->key.keysym.sym);
@@ -147,10 +157,29 @@ void Market::HandleEvent(SDL_Event * Event) {
 		// Enterting item quantity
 		if (this->EventFlags.EnterItemQty) {
 			if(Event->key.keysym.sym == SDLK_BACKSPACE)
-				this->ActiveSelection->DeleteText();
+				this->ActiveBuySelection->DeleteText();
 			if (Event->key.keysym.sym == SDLK_RETURN)
 				this->SEvent_EndItemQtyEntry();
 		}
+
+		//// Forecast
+		// Exiting Forecast screen
+		if (this->EventFlags.ShowForecast) {
+			if (Event->key.keysym.sym == SDLK_RETURN)
+				this->SEvent_ExitForecast();
+		}
+
+		//// Guide
+		// Selecting item to inspect
+		if (this->EventFlags.SelectGuideItem) {
+			this->SEvent_SetGuideItem(Event->key.keysym.sym);
+		}
+		// Exiting Guide screen
+		if (this->EventFlags.ShowGuide) {
+			if (Event->key.keysym.sym == SDLK_RETURN)
+				this->SEvent_ExitGuide();
+		}
+
 		break;
 
 	case SDL_KEYUP:
@@ -158,7 +187,7 @@ void Market::HandleEvent(SDL_Event * Event) {
 
 	case SDL_TEXTINPUT:
 		if (this->EventFlags.EnterItemQty) {
-			this->ActiveSelection->AppendText(Event->text.text);
+			this->ActiveBuySelection->AppendText(Event->text.text);
 		}
 		break;
 
@@ -207,6 +236,26 @@ void Market::SEvent_HideMarketText() {
 		(*it)->SetVisible(false);
 }
 
+void Market::SEvent_ShowForecast() {
+	for (std::vector<ImageData*>::iterator it = this->ForecastText.begin(); it != this->ForecastText.end(); it++)
+		(*it)->SetVisible(true);
+}
+
+void Market::SEvent_HideForecast() {
+	for (std::vector<ImageData*>::iterator it = this->ForecastText.begin(); it != this->ForecastText.end(); it++)
+		(*it)->SetVisible(false);
+}
+
+void Market::SEvent_ShowGuide() {
+	for (std::vector<ImageData*>::iterator it = this->GuideText.begin(); it != this->GuideText.end(); it++)
+		(*it)->SetVisible(true);
+}
+
+void Market::SEvent_HideGuide() {
+	for (std::vector<ImageData*>::iterator it = this->GuideText.begin(); it != this->GuideText.end(); it++)
+		(*it)->SetVisible(false);
+}
+
 void Market::SEvent_SelectBuy() {
 	this->EventFlags.MainSelection = false;
 	this->TextObjects.SelectItem->SetVisible(true);
@@ -214,60 +263,60 @@ void Market::SEvent_SelectBuy() {
 }
 
 void Market::SEvent_SetBuyItem(SDL_Keycode _key) {
-	// Seelct item to purchase
+	// Select item to purchase
 	switch (_key) {
 	case SDLK_1:
-		this->ActiveSelection = this->TextBoxObjects.BierQty;
-		this->ActivePrice = &this->Prices.Bier;
-		this->ActiveTotal = this->TextObjects.BierTotal;
+		this->ActiveBuySelection = this->TextBoxObjects.BierQty;
+		this->ActiveBuyPrice = &this->Prices.Bier;
+		this->ActiveBuyTotal = this->TextObjects.BierTotal;
 		break;
 
 	case SDLK_2:
-		this->ActiveSelection = this->TextBoxObjects.BockwurstQty;
-		this->ActivePrice = &this->Prices.Bockwurst;
-		this->ActiveTotal = this->TextObjects.BockwurstTotal;
+		this->ActiveBuySelection = this->TextBoxObjects.BockwurstQty;
+		this->ActiveBuyPrice = &this->Prices.Bockwurst;
+		this->ActiveBuyTotal = this->TextObjects.BockwurstTotal;
 		break;
 
 	case SDLK_3:
-		this->ActiveSelection = this->TextBoxObjects.MettigelQty;
-		this->ActivePrice = &this->Prices.Mettigel;
-		this->ActiveTotal = this->TextObjects.MettigelTotal;
+		this->ActiveBuySelection = this->TextBoxObjects.MettigelQty;
+		this->ActiveBuyPrice = &this->Prices.Mettigel;
+		this->ActiveBuyTotal = this->TextObjects.MettigelTotal;
 		break;
 
 	case SDLK_4:
-		this->ActiveSelection = this->TextBoxObjects.CurrywurstQty;
-		this->ActivePrice = &this->Prices.Currywurst;
-		this->ActiveTotal = this->TextObjects.CurrywurstTotal;
+		this->ActiveBuySelection = this->TextBoxObjects.CurrywurstQty;
+		this->ActiveBuyPrice = &this->Prices.Currywurst;
+		this->ActiveBuyTotal = this->TextObjects.CurrywurstTotal;
 		break;
 
 	case SDLK_5:
-		this->ActiveSelection = this->TextBoxObjects.StreetSheetQty;
-		this->ActivePrice = &this->Prices.StreetSheet;
-		this->ActiveTotal = this->TextObjects.StreetSheetTotal;
+		this->ActiveBuySelection = this->TextBoxObjects.StreetSheetQty;
+		this->ActiveBuyPrice = &this->Prices.StreetSheet;
+		this->ActiveBuyTotal = this->TextObjects.StreetSheetTotal;
 		break;
 
 	case SDLK_6:
-		this->ActiveSelection = this->TextBoxObjects.USADAYQty;
-		this->ActivePrice = &this->Prices.USADAY;
-		this->ActiveTotal = this->TextObjects.USADAYTotal;
+		this->ActiveBuySelection = this->TextBoxObjects.USADAYQty;
+		this->ActiveBuyPrice = &this->Prices.USADAY;
+		this->ActiveBuyTotal = this->TextObjects.USADAYTotal;
 		break;
 
 	case SDLK_7:
-		this->ActiveSelection = this->TextBoxObjects.SignQty;
-		this->ActivePrice = &this->Prices.Sign;
-		this->ActiveTotal = this->TextObjects.SignTotal;
+		this->ActiveBuySelection = this->TextBoxObjects.SignQty;
+		this->ActiveBuyPrice = &this->Prices.Sign;
+		this->ActiveBuyTotal = this->TextObjects.SignTotal;
 		break;
 
 	case SDLK_8:
-		this->ActiveSelection = this->TextBoxObjects.PosterQty;
-		this->ActivePrice = &this->Prices.Poster;
-		this->ActiveTotal = this->TextObjects.PosterTotal;
+		this->ActiveBuySelection = this->TextBoxObjects.PosterQty;
+		this->ActiveBuyPrice = &this->Prices.Poster;
+		this->ActiveBuyTotal = this->TextObjects.PosterTotal;
 		break;
 
 	case SDLK_9:
-		this->ActiveSelection = this->TextBoxObjects.NewsAdQty;
-		this->ActivePrice = &this->Prices.NewsAd;
-		this->ActiveTotal = this->TextObjects.NewsAdTotal;
+		this->ActiveBuySelection = this->TextBoxObjects.NewsAdQty;
+		this->ActiveBuyPrice = &this->Prices.NewsAd;
+		this->ActiveBuyTotal = this->TextObjects.NewsAdTotal;
 		break;
 
 	case SDLK_RETURN:
@@ -297,24 +346,118 @@ void Market::SEvent_SetBuyItem(SDL_Keycode _key) {
 
 	// Enable text entry for item quantity
 	SDL_StartTextInput();
-	this->ActiveSelection->SetActive(true);
+	this->ActiveBuySelection->SetActive(true);
 }
 
 void Market::SEvent_EndItemQtyEntry() {
 	// Get quantity entered. Invalid input will convert to 0.
-	int quantity = std::atoi(this->ActiveSelection->GetText()->c_str());
-	int price = *(this->ActivePrice);
+	int quantity = std::atoi(this->ActiveBuySelection->GetText()->c_str());
+	int price = *(this->ActiveBuyPrice);
 	// Set total price
 	int total = quantity * price;
-	this->ActiveTotal->SetText(std::to_string(total));
+	this->ActiveBuyTotal->SetText(std::to_string(total));
 
 	// Set text to sanitized number.
-	this->ActiveSelection->SetText(std::to_string(quantity));
+	this->ActiveBuySelection->SetText(std::to_string(quantity));
 	
 	// Stop text entry and return to main selection
 	SDL_StopTextInput();
-	this->ActiveSelection->SetActive(false);
+	this->ActiveBuySelection->SetActive(false);
 	this->EventFlags.EnterItemQty = false;
 	this->TextObjects.EnterQty->SetVisible(false);
 	this->EventFlags.MainSelection = true;
 }
+
+void Market::SEvent_SelectForecast() {
+	this->EventFlags.MainSelection = false;
+	this->SEvent_HideMarketText();
+	this->EventFlags.ShowForecast = true;
+	this->SEvent_ShowForecast();
+}
+
+void Market::SEvent_ExitForecast() {
+	this->EventFlags.ShowForecast = false;
+	this->SEvent_HideForecast();
+	this->EventFlags.MainSelection = true;
+	this->SEvent_ShowMarketText();
+}
+
+void Market::SEvent_SelectGuide() {
+	this->EventFlags.MainSelection = false;
+	this->TextObjects.SelectItem->SetVisible(true);
+	this->EventFlags.SelectGuideItem = true;
+}
+
+void Market::SEvent_SetGuideItem(SDL_Keycode _key) {
+	// Select item to purchase
+	switch (_key) {
+	case SDLK_1:
+		this->ActiveGuideText = this->TextBoxObjects.BierQty;
+		break;
+
+	case SDLK_2:
+		this->ActiveGuideText = this->TextBoxObjects.BockwurstQty;
+		break;
+
+	case SDLK_3:
+		this->ActiveGuideText = this->TextBoxObjects.MettigelQty;
+		break;
+
+	case SDLK_4:
+		this->ActiveGuideText = this->TextBoxObjects.CurrywurstQty;
+		break;
+
+	case SDLK_5:
+		this->ActiveGuideText = this->TextBoxObjects.StreetSheetQty;
+		break;
+
+	case SDLK_6:
+		this->ActiveGuideText = this->TextBoxObjects.USADAYQty;
+		break;
+
+	case SDLK_7:
+		this->ActiveGuideText = this->TextBoxObjects.SignQty;
+		break;
+
+	case SDLK_8:
+		this->ActiveGuideText = this->TextBoxObjects.PosterQty;
+		break;
+
+	case SDLK_9:
+		this->ActiveGuideText = this->TextBoxObjects.NewsAdQty;
+		break;
+
+	case SDLK_RETURN:
+		// If enter is pressed, return to main selection
+		this->EventFlags.SelectGuideItem = false;
+		this->TextObjects.SelectItem->SetVisible(false);
+		this->EventFlags.MainSelection = true;
+		return;
+		break;
+
+	default:
+		// Ignore all other input
+		return;
+		break;
+	}
+
+	// Move into guide display state
+	this->EventFlags.SelectGuideItem = false;
+	this->EventFlags.ShowGuide = true;
+
+	// Show Guide text
+	this->SEvent_HideMarketText();
+	this->TextObjects.SelectItem->SetVisible(false);
+	this->SEvent_ShowGuide();
+
+	// Flush buffered text input
+	SDL_PumpEvents();
+}
+
+void Market::SEvent_ExitGuide() {
+	this->EventFlags.ShowGuide = false;
+	this->SEvent_HideGuide();
+	this->EventFlags.MainSelection = true;
+	this->SEvent_ShowMarketText();
+}
+

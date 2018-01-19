@@ -166,9 +166,13 @@ protected:
 	// Guide text
 	std::vector<ImageData*> GuideText;
 
-	TextBox*	ActiveSelection;
-	int*		ActivePrice;
-	ImageData*	ActiveTotal;
+	TextBox*	ActiveBuySelection;
+	int*		ActiveBuyPrice;
+	ImageData*	ActiveBuyTotal;
+
+	ImageData*	ActiveForecastWeatherText;
+	ImageData*	ActiveForecastEventText;
+	ImageData*	ActiveGuideText;
 
 	struct {
 		int Bier = 4;
@@ -233,11 +237,23 @@ protected:
 		ImageData* GuideOption;
 		ImageData* LeaveOption;
 		ImageData* SaveOption;
+		// Press Return for Forecast/Guide
+		ImageData* PressReturn;
 		// Forecast
 		ImageData* WeatherHeader;
 		ImageData* WeatherInfo;
 		ImageData* EventHeader;
 		ImageData* EventInfo;
+		// Guide
+		ImageData* BierDesc;
+		ImageData* BockwurstDesc;
+		ImageData* MettigelDesc;
+		ImageData* CurrywurstDesc;
+		ImageData* StreetSheetDesc;
+		ImageData* USADAYDesc;
+		ImageData* SignDesc;
+		ImageData* PosterDesc;
+		ImageData* NewsAdDesc;
 	} TextObjects;
 
 	struct {
@@ -258,6 +274,9 @@ protected:
 		bool MainSelection;
 		bool SelectBuyItem;
 		bool EnterItemQty;
+		bool ShowForecast;
+		bool SelectGuideItem;
+		bool ShowGuide;
 	} EventFlags;
 
 public:
@@ -286,17 +305,24 @@ public:
 		return textBox;
 	}
 
-	// Market Events
+	//// Events
+	// Show/Hide Events
 	void SEvent_ShowMarketText();
 	void SEvent_HideMarketText();
-	// Buy Item
+	void SEvent_ShowForecast();
+	void SEvent_HideForecast();
+	void SEvent_ShowGuide();
+	void SEvent_HideGuide();
+	// Buy
 	void SEvent_SelectBuy();
 	void SEvent_SetBuyItem(SDL_Keycode _key);
 	void SEvent_EndItemQtyEntry();
+	// Forecast
 	void SEvent_SelectForecast();
 	void SEvent_ExitForecast();
+	// Guide
 	void SEvent_SelectGuide();
-	void SEvent_SelectGuideItem(SDL_Keycode _key);
+	void SEvent_SetGuideItem(SDL_Keycode _key);
 	void SEvent_ExitGuide();
 };
 
