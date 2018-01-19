@@ -40,7 +40,7 @@ void Market::LoadImagesText() {
 
 	// Text objects
 	// Market Title
-	this->TextObjects.MarketTitle = this->AddMarketText("DER MARKT", 112, 9);
+	this->TextObjects.MarketTitle = this->AddMarketText("DER MORGENMARKT", 91, 9);
 	// Purchase signs
 	this->TextObjects.MultSigns = this->AddMarketText("x\nx\nx\nx\n\nx\nx\n\nx\nx\nx", 196, 36);
 	this->TextObjects.EqualSigns = this->AddMarketText("=\n=\n=\n=\n\n=\n=\n\n=\n=\n=", 231, 36);
@@ -88,12 +88,24 @@ void Market::LoadImagesText() {
 	this->TextObjects.GuideOption = this->AddMarketText("G)UIDE", 126, 180);
 	this->TextObjects.LeaveOption = this->AddMarketText("L)EAVE", 182, 180);
 	this->TextObjects.SaveOption = this->AddMarketText("S)AVE", 238, 180);
+	// Press Return
+	this->TextObjects.PressReturn = this->AddText("- PRESS RETURN -", 84, 180);
 	// Forecast
 	this->TextObjects.WeatherHeader = this->AddText("WEATHER FORECAST:", 105, 9);
 	this->TextObjects.WeatherInfo = this->AddText("", 105, 9);
 	this->TextObjects.EventHeader = this->AddText("LOCAL EVENTS", 105, 9);
 	this->TextObjects.EventInfo = this->AddText("", 105, 9);
-	
+	// Guide Descriptions
+	this->TextObjects.BierDesc = this->AddText("                 BIER\n\n    GERMANS OF ALL WALKS OF LIFE ENJOY THIS ALCOHOLIC DRINK. YOU CAN BE SURE THAT ANYONE PASSING BY WILL ENJOY THIS FROSTY COLD BEVERAGE.\n\nPREFERRED BY :\n    EAST & WEST BERLINERS", 7, 9);
+	this->TextObjects.BockwurstDesc = this->AddText("               BOCKWURST\n\n    A SIMMERED SAUSAGE MADE WITH VEAL AND PORK, POPULAR IN EAST GERMANY AND OFTEN SERVED WITH A SMALL PIECE OF BREAD AND A DOLLOP OF MUSTARD. A CHEAP AND TASTY SNACK.\n\nPREFERRED BY:\n    EAST BERLINERS", 7, 9);
+	this->TextObjects.MettigelDesc = this->AddText("               METTIGEL\n\n    METT IS A MIXTURE OF RAW MINCED PORK, SALT, PEPPER, AND CHOPPED ONION AND IS USUALLY SERVED ON A BREAD ROLL. METTIGEL IS A FUN TAKE WHERE THE METT IS SHAPED LIKE A HEDGEHOG AND  QUARTERED ONION SLICES ARE USED AS SPIKES.\n\nPREFERRED BY:\n    EAST & WEST BERLINERS", 7, 9);
+	this->TextObjects.CurrywurstDesc = this->AddText("              CURRYWURST\n\n    A STEAMED, FRIED BRATWURST TOPPED WITH CURRYWURST SAUCE (TYPICALLY CURRY POWDER AND KETCHUP) SERVED WITH FRENCH FRIES. THIS IS A POPULAR SNACK BOTH DURING THE DAY AND LATE AT NIGHT.  COMES WITH ONE CURRYWURST FORK.\n\nPREFERRED BY:\n    WEST BERLINERS", 7, 9);
+	this->TextObjects.StreetSheetDesc = this->AddText("          DIE STRAßENZEITUNG\n\n    \"THE STREET SHEET\" WAS WIDELY READ IN EAST GERMANY AND PROVIDED INFO ON UNDERGROUND EVENTS FROWNED ON BY THE GDR. WITH THE FALL OF THE WALL, THIS PAPER NOW REPORTS ON ALL MANNER OF  LIFE IN EAST AND WEST GERMANY.\n\nPREFERRED BY:\n    EAST BERLINERS", 7, 9);
+	this->TextObjects.USADAYDesc = this->AddText("               USA DAY\n\n    THIS GERMAN TABLOID REPORTS ON THE RICH AND FAMOUS IN HOLLYWOOD. ITS WILD STORIES AND SALACIOUS DETAILS HAVE  MADE IT POPULAR WITH PEOPLE WHO WANT TO KNOW WHO'S WHO.\n\nPREFERRED BY:\n    WEST BERLINERS", 7, 9);
+	this->TextObjects.SignDesc = this->AddText("               WOOD SIGN\n\n    A SCRAP PIECE OF WOOD WITH YOUR SHOP'S NAME AND AN ARROW SCRAWLED ON IT. PERFECT FOR CHEAP MARKETING. NOT PERFECT FOR GETTING THE WORD OUT.\n\nVISIBILITY:\n    LOW", 7, 9);
+	this->TextObjects.PosterDesc = this->AddText("              WALL POSTER\n\n    A PAPER POSTER THAT CAN BE AFFIXED TO A WALL WITH SOME GLUE. THE SHOP'S NAME IS PROMINENTLY DISPLAYED ALONG WITH THE ADDRESS IN A VERY TASTEFUL TYPEFACE.\n\nVISIBILITY:\n    MEDIUM", 7, 9);
+	this->TextObjects.NewsAdDesc = this->AddText("             NEWSPAPER AD\n\n    GET MAXIMUM EXPOSURE WITH AN AD IN THE PAPER! YOUR SHOP WILL BE FEATURED NEXT TO THE POPULAR COMIC \"DIE FETTE ORANGE KATZE\" AND WILL BE SEEN BY ALL BERLINERS.\n\nVISIBILITY:\n    HIGH", 7, 9);
+	// Buy quantity text boxes
 	this->TextBoxObjects.BierQty = this->AddMarketTextBox(2, 210, 36);
 	this->TextBoxObjects.BockwurstQty = this->AddMarketTextBox(2, 210, 45);
 	this->TextBoxObjects.MettigelQty = this->AddMarketTextBox(2, 210, 54);
@@ -237,23 +249,21 @@ void Market::SEvent_HideMarketText() {
 }
 
 void Market::SEvent_ShowForecast() {
-	for (std::vector<ImageData*>::iterator it = this->ForecastText.begin(); it != this->ForecastText.end(); it++)
-		(*it)->SetVisible(true);
+	this->TextObjects.PressReturn->SetVisible(true);
 }
 
 void Market::SEvent_HideForecast() {
-	for (std::vector<ImageData*>::iterator it = this->ForecastText.begin(); it != this->ForecastText.end(); it++)
-		(*it)->SetVisible(false);
+	this->TextObjects.PressReturn->SetVisible(false);
 }
 
 void Market::SEvent_ShowGuide() {
-	for (std::vector<ImageData*>::iterator it = this->GuideText.begin(); it != this->GuideText.end(); it++)
-		(*it)->SetVisible(true);
+	this->ActiveGuideText->SetVisible(true);
+	this->TextObjects.PressReturn->SetVisible(true);
 }
 
 void Market::SEvent_HideGuide() {
-	for (std::vector<ImageData*>::iterator it = this->GuideText.begin(); it != this->GuideText.end(); it++)
-		(*it)->SetVisible(false);
+	this->ActiveGuideText->SetVisible(false);
+	this->TextObjects.PressReturn->SetVisible(false);
 }
 
 void Market::SEvent_SelectBuy() {
@@ -392,39 +402,39 @@ void Market::SEvent_SetGuideItem(SDL_Keycode _key) {
 	// Select item to purchase
 	switch (_key) {
 	case SDLK_1:
-		this->ActiveGuideText = this->TextBoxObjects.BierQty;
+		this->ActiveGuideText = this->TextObjects.BierDesc;
 		break;
 
 	case SDLK_2:
-		this->ActiveGuideText = this->TextBoxObjects.BockwurstQty;
+		this->ActiveGuideText = this->TextObjects.BockwurstDesc;
 		break;
 
 	case SDLK_3:
-		this->ActiveGuideText = this->TextBoxObjects.MettigelQty;
+		this->ActiveGuideText = this->TextObjects.MettigelDesc;
 		break;
 
 	case SDLK_4:
-		this->ActiveGuideText = this->TextBoxObjects.CurrywurstQty;
+		this->ActiveGuideText = this->TextObjects.CurrywurstDesc;
 		break;
 
 	case SDLK_5:
-		this->ActiveGuideText = this->TextBoxObjects.StreetSheetQty;
+		this->ActiveGuideText = this->TextObjects.StreetSheetDesc;
 		break;
 
 	case SDLK_6:
-		this->ActiveGuideText = this->TextBoxObjects.USADAYQty;
+		this->ActiveGuideText = this->TextObjects.USADAYDesc;
 		break;
 
 	case SDLK_7:
-		this->ActiveGuideText = this->TextBoxObjects.SignQty;
+		this->ActiveGuideText = this->TextObjects.SignDesc;
 		break;
 
 	case SDLK_8:
-		this->ActiveGuideText = this->TextBoxObjects.PosterQty;
+		this->ActiveGuideText = this->TextObjects.PosterDesc;
 		break;
 
 	case SDLK_9:
-		this->ActiveGuideText = this->TextBoxObjects.NewsAdQty;
+		this->ActiveGuideText = this->TextObjects.NewsAdDesc;
 		break;
 
 	case SDLK_RETURN:
