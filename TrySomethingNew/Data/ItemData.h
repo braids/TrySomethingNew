@@ -1,5 +1,10 @@
 #ifndef _ITEMDATA_H_
-#define _ITEMDATA_H
+#define _ITEMDATA_H_
+
+// Forawrd declaration
+enum ItemName;
+enum ItemType;
+class ItemData;
 
 enum ItemName {
 	Item_Bier,

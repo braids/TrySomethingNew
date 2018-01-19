@@ -5,6 +5,9 @@
 #include <vector>
 #include "Data\ItemData.h"
 
+// Forawrd declaration
+class PlayerData;
+
 class PlayerData {
 protected:
 	std::string ShopName;
