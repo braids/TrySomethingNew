@@ -29,6 +29,7 @@ void Intro::LoadEventTimers() {
 	this->EventTimers.IntroDate2 = this->AddEventTimer(new EventTimer(std::bind(&Intro::SEvent_2, this), (Uint32) 2500));
 	this->EventTimers.IntroText1 = this->AddEventTimer(new EventTimer(std::bind(&Intro::SEvent_3, this), (Uint32) 9000));
 	this->EventTimers.IntroText2 = this->AddEventTimer(new EventTimer(std::bind(&Intro::SEvent_4, this), (Uint32) 9000));
+	this->EventTimers.ToMarket = this->AddEventTimer(new EventTimer(std::bind(&Intro::SEvent_ToMarket, this), (Uint32) 9000));
 }
 
 void Intro::LoadImagesText() {
@@ -130,8 +131,11 @@ void Intro::Update(Uint32 timeStep) {
 		this->mManager->StartScene(Scene_TitleScreen);
 	}
 
-	if (this->EventFlags.ShopNamed && !this->TextObjects.ShopIsSetUp->IsVisible())
+	if (this->EventFlags.ShopNamed && !this->TextObjects.ShopIsSetUp->IsVisible() && !this->EventTimers.ToMarket->isStarted()) {
 		this->TextObjects.ShopIsSetUp->SetVisible(true);
+		this->EventTimers.ToMarket->StartEventTimer();
+	}
+
 }
 
 void Intro::Render() {
@@ -139,12 +143,12 @@ void Intro::Render() {
 	// If I find any game logic in here, I'll slap myself silly
 	for (int i = 0; i < (int) this->mImages.size(); i++) {
 		if(this->mImages[i]->IsVisible())
-		this->mManager->GetGraphics()->DrawTextureAtLocation(
-			this->mImages[i]->GetImage()->texture,
-			this->mImages[i]->GetImage()->rect,
-			this->mImages[i]->GetDrawRect(),
-			this->mImages[i]->GetDrawAngle()
-		);
+			this->mManager->GetGraphics()->DrawTextureAtLocation(
+				this->mImages[i]->GetImage()->texture,
+				this->mImages[i]->GetImage()->rect,
+				this->mImages[i]->GetDrawRect(),
+				this->mImages[i]->GetDrawAngle()
+			);
 	}
 }
 
@@ -155,7 +159,6 @@ void Intro::SEvent_1() {
 	// Start screen timer
 	this->EventTimers.IntroDate2->StartEventTimer();
 }
-
 
 void Intro::SEvent_2() {
 	// Hide date/time text
@@ -199,4 +202,11 @@ void Intro::SEvent_4() {
 	SDL_StartTextInput();
 	this->EventFlags.EditName = true;
 	this->TextBoxObjects.ShopNameEntry->SetActive(this->EventFlags.EditName);
+}
+
+void Intro::SEvent_ToMarket() {
+	// Stop current music
+	Mix_HaltMusic();
+	// Go to market.
+	this->mManager->StartScene(Scene_Market);
 }

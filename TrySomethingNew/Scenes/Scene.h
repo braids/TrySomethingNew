@@ -15,12 +15,15 @@ class SceneManager;
 class Scene;
 class TitleScreen;
 class MainMenu;
+class Intro;
+class Market;
 
 //// Scene name enum
 enum SceneName {
 	Scene_TitleScreen,	// Title Screen
 	Scene_MainMenu,		// Main menu
-	Scene_Intro			// Intro
+	Scene_Intro,		// Intro
+	Scene_Market		// Market
 };
 
 //// Scene class
@@ -64,6 +67,7 @@ public:
 class TitleScreen : public Scene {
 protected:
 	bool StartMainMenu;
+
 public:
 	// Scene ctor
 	TitleScreen();
@@ -81,6 +85,8 @@ class MainMenu : public Scene {
 protected:
 	bool ExitToTitleScreen;
 	bool StartNewGame;
+	bool LoadGame;
+
 public:
 	// Scene ctor
 	MainMenu();
@@ -120,6 +126,7 @@ protected:
 		EventTimer* IntroDate2;
 		EventTimer* IntroText1;
 		EventTimer* IntroText2;
+		EventTimer* ToMarket;
 	} EventTimers;
 	
 	struct {
@@ -127,6 +134,7 @@ protected:
 		bool EditName;
 		bool ShopNamed;
 	} EventFlags;
+
 public:
 	// Scene ctor
 	Intro();
@@ -146,6 +154,176 @@ public:
 	void SEvent_2();
 	void SEvent_3();
 	void SEvent_4();
+	void SEvent_ToMarket();
+};
+
+class Market : public Scene {
+protected:
+	// Main market screen text and text boxes
+	std::vector<ImageData*> MarketText;
+	// Forecast text
+	std::vector<ImageData*> ForecastText;
+	// Guide text
+	std::vector<ImageData*> GuideText;
+
+	TextBox*	ActiveBuySelection;
+	int*		ActiveBuyPrice;
+	ImageData*	ActiveBuyTotal;
+
+	ImageData*	ActiveForecastWeatherText;
+	ImageData*	ActiveForecastEventText;
+	ImageData*	ActiveGuideText;
+
+	struct {
+		int Bier = 4;
+		int Bockwurst = 2;
+		int Mettigel = 4;
+		int Currywurst = 6;
+		int StreetSheet = 3;
+		int USADAY = 7;
+		int Sign = 5;
+		int Poster = 10;
+		int NewsAd = 15;
+	} Prices;
+
+	struct {
+		// Title
+		ImageData* MarketTitle;
+		// Headers
+		ImageData* Foods;
+		ImageData* Newspapers;
+		ImageData* Ads;
+		ImageData* Cost;
+		ImageData* Qty;
+		ImageData* Total;
+		// Purchse symbols
+		ImageData* MultSigns;
+		ImageData* EqualSigns;
+		// Items
+		ImageData* BierName;
+		ImageData* BierCost;
+		ImageData* BierTotal;
+		ImageData* BockwurstName;
+		ImageData* BockwurstCost;
+		ImageData* BockwurstTotal;
+		ImageData* MettigelName;
+		ImageData* MettigelCost;
+		ImageData* MettigelTotal;
+		ImageData* CurrywurstName;
+		ImageData* CurrywurstCost;
+		ImageData* CurrywurstTotal;
+		ImageData* StreetSheetName;
+		ImageData* StreetSheetCost;
+		ImageData* StreetSheetTotal;
+		ImageData* USADAYName;
+		ImageData* USADAYCost;
+		ImageData* USADAYTotal;
+		// Ads
+		ImageData* SignName;
+		ImageData* SignCost;
+		ImageData* SignTotal;
+		ImageData* PosterName;
+		ImageData* PosterCost;
+		ImageData* PosterTotal;
+		ImageData* NewsAdName;
+		ImageData* NewsAdCost;
+		ImageData* NewsAdTotal;
+		// Selection
+		ImageData* SelectItem;
+		ImageData* EnterQty;
+		// Options
+		ImageData* BuyOption;
+		ImageData* ForecastOption;
+		ImageData* GuideOption;
+		ImageData* LeaveOption;
+		ImageData* SaveOption;
+		// Press Return for Forecast/Guide
+		ImageData* PressReturn;
+		// Forecast
+		ImageData* WeatherHeader;
+		ImageData* WeatherInfo;
+		ImageData* EventHeader;
+		ImageData* EventInfo;
+		// Guide
+		ImageData* BierDesc;
+		ImageData* BockwurstDesc;
+		ImageData* MettigelDesc;
+		ImageData* CurrywurstDesc;
+		ImageData* StreetSheetDesc;
+		ImageData* USADAYDesc;
+		ImageData* SignDesc;
+		ImageData* PosterDesc;
+		ImageData* NewsAdDesc;
+	} TextObjects;
+
+	struct {
+		//TextBox* Selection;
+		TextBox* BierQty;
+		TextBox* BockwurstQty;
+		TextBox* MettigelQty;
+		TextBox* CurrywurstQty;
+		TextBox* StreetSheetQty;
+		TextBox* USADAYQty;
+		TextBox* SignQty;
+		TextBox* PosterQty;
+		TextBox* NewsAdQty;
+	} TextBoxObjects;
+
+	struct {
+		bool ExitToTitleScreen;
+		bool MainSelection;
+		bool SelectBuyItem;
+		bool EnterItemQty;
+		bool ShowForecast;
+		bool SelectGuideItem;
+		bool ShowGuide;
+	} EventFlags;
+
+public:
+	// Scene ctor
+	Market();
+
+	// Scene funcs
+	void ResetFlags();
+	void LoadGameObjects();
+	void LoadEventTimers();
+	void LoadImagesText();
+	void SceneStart();
+	void HandleEvent(SDL_Event* Event);
+	void Update(Uint32 timeStep);
+	void Render();
+
+	// Market funcs
+	ImageData* AddMarketText(std::string _text, int _x, int _y) { 
+		ImageData* textImage = this->AddText(_text, _x, _y);
+		this->MarketText.push_back(textImage);
+		return textImage; 
+	}
+	TextBox* AddMarketTextBox(Uint32 _size, int _x, int _y) {
+		TextBox* textBox = this->AddTextBox(_size, _x, _y);
+		this->MarketText.push_back(textBox);
+		return textBox;
+	}
+
+	//// Events
+	// Show/Hide Events
+	void SEvent_ShowMarketText();
+	void SEvent_HideMarketText();
+	void SEvent_ShowForecast();
+	void SEvent_HideForecast();
+	void SEvent_ShowGuide();
+	void SEvent_HideGuide();
+	// Buy
+	void SEvent_SelectBuy();
+	void SEvent_SetBuyItem(SDL_Keycode _key);
+	void SEvent_EndItemQtyEntry();
+	// Forecast
+	void SEvent_SelectForecast();
+	void SEvent_ExitForecast();
+	// Guide
+	void SEvent_SelectGuide();
+	void SEvent_SetGuideItem(SDL_Keycode _key);
+	void SEvent_ExitGuide();
 };
 
 #endif
