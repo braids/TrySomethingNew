@@ -25,7 +25,8 @@ enum SceneName {
 	Scene_TitleScreen,	// Title Screen
 	Scene_MainMenu,		// Main menu
 	Scene_Intro,		// Intro
-	Scene_Market		// Market
+	Scene_Market,		// Market
+	Scene_SetPrices		// Set Prices
 };
 
 //// Scene class
@@ -338,6 +339,128 @@ public:
 	void SEvent_Leave();
 	
 	void UpdateTotal();
+};
+
+//// SetPrices scene class
+class SetPrices : public Scene {
+protected:
+	// Main market screen text and text boxes
+	std::vector<ImageData*> SetPricesText;
+	std::vector<TextBox*> ItemTextBoxObjects;
+	std::vector<ItemData*> SellItems;
+
+	TextBox*	ActiveSellSelection;
+	ItemData*	ActiveItemData;
+
+	ImageData*	ActiveForecastWeatherText;
+	ImageData*	ActiveForecastEventText;
+	ImageData*	ActiveGuideText;
+
+	struct {
+
+	} Images;
+
+	struct {
+		// Title
+		ImageData* SetPricesTitle;
+		// Selection
+		ImageData* SelectItem;
+		ImageData* EnterPrice;
+		// Options
+		ImageData* SetPriceOption;
+		ImageData* ForecastOption;
+		ImageData* GuideOption;
+		ImageData* LeaveOption;
+		ImageData* SaveOption;
+		// Press Return for Forecast/Guide
+		ImageData* PressReturn;
+		// Forecast
+		ImageData* WeatherHeader;
+		ImageData* WeatherInfo;
+		ImageData* EventHeader;
+		ImageData* EventInfo;
+		// Guide
+		ImageData* BierDesc;
+		ImageData* BockwurstDesc;
+		ImageData* MettigelDesc;
+		ImageData* CurrywurstDesc;
+		ImageData* StreetSheetDesc;
+		ImageData* USADAYDesc;
+	} TextObjects;
+
+	struct {
+
+	} TextBoxObjects;
+
+	struct {
+
+	} EventTimers;
+
+	struct {
+		bool ExitToTitleScreen;
+		bool MainSelection;
+		bool SelectSellItem;
+		bool EnterItemPrice;
+		bool ShowForecast;
+		bool SelectGuideItem;
+		bool ShowGuide;
+	} EventFlags;
+
+public:
+	// Scene ctor
+	SetPrices();
+
+	// Scene funcs
+	void ResetFlags();
+	void LoadGameObjects();
+	void LoadImagesText();
+	void SceneStart();
+	void HandleEvent(SDL_Event* Event);
+	void Update(Uint32 timeStep);
+	void Render();
+
+	void GetCurrentPlayerInventory();
+
+	// SetPrices funcs
+	ImageData* AddSetPricesText(std::string _text, int _x, int _y) {
+		ImageData* textImage = this->AddText(_text, _x, _y);
+		this->SetPricesText.push_back(textImage);
+		return textImage;
+	}
+	TextBox* AddSetPricesBox(Uint32 _size, int _x, int _y) {
+		TextBox* textBox = this->AddTextBox(_size, _x, _y);
+		this->SetPricesText.push_back(textBox);
+		return textBox;
+	}
+	TextBox* AddItemBox(Uint32 _size, int _x, int _y) {
+		TextBox* textBox = this->AddSetPricesBox(_size, _x, _y);
+		this->ItemTextBoxObjects.push_back(textBox);
+		return textBox;
+	}
+
+	int KeycodeNumValue(SDL_Keycode _key);
+
+	//// Events
+	// Show/Hide Events
+	void SEvent_ShowSetPricesText();
+	void SEvent_HideSetPricesText();
+	void SEvent_ShowForecast();
+	void SEvent_HideForecast();
+	void SEvent_ShowGuide();
+	void SEvent_HideGuide();
+	// Set Price
+	void SEvent_SelectSell();
+	void SEvent_SetSellItem(SDL_Keycode _key);
+	void SEvent_EndSellEntry();
+	// Forecast
+	void SEvent_SelectForecast();
+	void SEvent_ExitForecast();
+	// Guide
+	void SEvent_SelectGuide();
+	void SEvent_SetGuideItem(SDL_Keycode _key);
+	void SEvent_ExitGuide();
+	// Leave
+	void SEvent_OpenShop();
 };
 
 #endif

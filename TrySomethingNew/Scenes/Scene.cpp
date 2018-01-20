@@ -57,5 +57,5 @@ EventTimer* Scene::AddEventTimer(EventTimer* _eventTimer)
 void Scene::UpdateEventTimers() {
 	std::vector<EventTimer*>::iterator iter = this->mEventTimers.begin();
 	for (; iter != this->mEventTimers.end(); iter++)
-		if((*iter)->isStarted()) (*iter)->Update();
+		if ((*iter)->isStarted()) (*iter)->Update();
 }

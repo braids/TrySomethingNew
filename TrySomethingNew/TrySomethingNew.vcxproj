@@ -143,6 +143,7 @@
     <ClCompile Include="Scenes\MainMenu.cpp" />
     <ClCompile Include="Scenes\Market.cpp" />
     <ClCompile Include="Scenes\Scene.cpp" />
+    <ClCompile Include="Scenes\SetPrices.cpp" />
     <ClCompile Include="Scenes\TitleScreen.cpp" />
     <ClCompile Include="TSN.cpp" />
     <ClCompile Include="Timer.cpp" />

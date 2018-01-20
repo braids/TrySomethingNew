@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <string>
 #include <vector>
 #include "Data\ItemData.h"
 
@@ -7,7 +8,7 @@ ItemData::ItemData(ItemName _name) {
 	this->Type = GetItemType(this->GetName());
 	this->Quantity = 0;
 	this->BuyPrice = GetItemBuyPrice(this->GetName());
-	this->SalePrice = 0;
+	this->SellPrice = 0;
 }
 
 ItemType GetItemType(ItemData* _item) {
@@ -58,12 +59,37 @@ int GetItemBuyPrice(ItemName _name) {
 	}
 }
 
+std::string GetItemString(ItemName _name) {
+	switch (_name) {
+	case ItemName::Item_Bier:
+		return "BIER";
+	case ItemName::Item_Bockwurst:
+		return "BOCKWURST";
+	case ItemName::Item_Currywurst:
+		return "CURRYWURST";
+	case ItemName::Item_Mettigel:
+		return "METTIGEL";
+	case ItemName::Item_StreetSheet:
+		return "DIE STRAßENZEITUNG";
+	case ItemName::Item_USADAY:
+		return "USA DAY";
+	case ItemName::Item_Sign:
+		return "WOOD SIGN";
+	case ItemName::Item_Poster:
+		return "WALL POSTER";
+	case ItemName::Item_NewsAd:
+		return "NEWSPAPER AD";
+	default:
+		return "";
+	}
+}
+
 std::vector<ItemData*>* GetInitialItemVector() {
 	std::vector<ItemData*>* itemVector = new std::vector<ItemData*>();
 	itemVector->push_back(new ItemData(ItemName::Item_Bier));
 	itemVector->push_back(new ItemData(ItemName::Item_Bockwurst));
-	itemVector->push_back(new ItemData(ItemName::Item_Currywurst));
 	itemVector->push_back(new ItemData(ItemName::Item_Mettigel));
+	itemVector->push_back(new ItemData(ItemName::Item_Currywurst));
 	itemVector->push_back(new ItemData(ItemName::Item_StreetSheet));
 	itemVector->push_back(new ItemData(ItemName::Item_USADAY));
 	itemVector->push_back(new ItemData(ItemName::Item_Sign));

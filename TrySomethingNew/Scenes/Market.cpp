@@ -480,7 +480,7 @@ void Market::SEvent_Leave() {
 		this->mPlayerData->SetMoney(this->mPlayerData->GetMoney() - this->BuyTotal);
 		
 		// Leave market
-		this->EventFlags.ExitToTitleScreen = true;
+		this->mManager->StartScene(Scene_SetPrices);
 	}
 }
 
