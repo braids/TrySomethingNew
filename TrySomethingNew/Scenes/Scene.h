@@ -5,6 +5,7 @@
 #include <vector>
 #include "Assets.h"
 #include "Camera.h"
+#include "Data\ItemData.h"
 #include "Data\PlayerData.h"
 #include "GameObjects\GameObject.h"
 #include "Timer.h"
@@ -164,14 +165,13 @@ class Market : public Scene {
 protected:
 	// Main market screen text and text boxes
 	std::vector<ImageData*> MarketText;
-	// Forecast text
-	std::vector<ImageData*> ForecastText;
-	// Guide text
-	std::vector<ImageData*> GuideText;
-
+	
 	TextBox*	ActiveBuySelection;
-	int*		ActiveBuyPrice;
-	ImageData*	ActiveBuyTotal;
+	ItemData*	ActiveItemData;
+	ImageData*	ActiveBuySubTotal;
+	
+	std::vector<ItemData*>	BuyData;
+	int						BuyTotal;
 
 	ImageData*	ActiveForecastWeatherText;
 	ImageData*	ActiveForecastEventText;
@@ -231,6 +231,13 @@ protected:
 		ImageData* NewsAdName;
 		ImageData* NewsAdCost;
 		ImageData* NewsAdTotal;
+		// Total
+		ImageData* TotalText;
+		ImageData* TotalAmount;
+		ImageData* PlayerMoneyText;
+		ImageData* PlayerMoneyAmount;
+		ImageData* MoneySubTotalText;
+		ImageData* MoneySubTotalAmount;
 		// Selection
 		ImageData* SelectItem;
 		ImageData* EnterQty;
@@ -327,6 +334,8 @@ public:
 	void SEvent_SelectGuide();
 	void SEvent_SetGuideItem(SDL_Keycode _key);
 	void SEvent_ExitGuide();
+	
+	void UpdateTotal();
 };
 
 #endif

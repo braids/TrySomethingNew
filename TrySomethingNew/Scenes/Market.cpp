@@ -1,5 +1,7 @@
 #include "Assets.h"
 #include "Camera.h"
+#include "Data\ItemData.h"
+#include "Data\PlayerData.h"
 #include "GameObjects\GameObject.h"
 #include "Graphics.h"
 #include "Scenes\Scene.h"
@@ -79,6 +81,13 @@ void Market::LoadImagesText() {
 	this->TextObjects.NewsAdName = this->AddMarketText("9) NEWSPAPER AD", 7, 126);
 	this->TextObjects.NewsAdCost = this->AddMarketText("DM15", 161, 126);
 	this->TextObjects.NewsAdTotal = this->AddMarketText("0", 245, 126);
+	// Total
+	this->TextObjects.PlayerMoneyText = this->AddMarketText("MONEY:", 182, 144);
+	this->TextObjects.PlayerMoneyAmount = this->AddMarketText("0", 231, 144);
+	this->TextObjects.TotalText = this->AddMarketText("- TOTAL:", 168, 153);
+	this->TextObjects.TotalAmount = this->AddMarketText("0", 231, 153);
+	this->TextObjects.MoneySubTotalText = this->AddMarketText("=", 217, 162);
+	this->TextObjects.MoneySubTotalAmount = this->AddMarketText("0", 231, 162);
 	// Selection
 	this->TextObjects.SelectItem = this->AddText("- SELECT ITEM #", 7, 153);
 	this->TextObjects.EnterQty = this->AddText("- ENTER QUANTITY", 7, 153);
@@ -140,6 +149,13 @@ void Market::SceneStart() {
 	// Display main market text
 	this->SEvent_ShowMarketText();
 	this->EventFlags.MainSelection = true;
+
+	// Initialize buy vector
+	this->BuyData = *GetInitialItemVector();
+	this->BuyTotal = 0;
+
+	// Set player money text
+	this->TextObjects.PlayerMoneyAmount->SetText(std::to_string(this->mPlayerData->GetMoney()));
 }
 
 void Market::HandleEvent(SDL_Event * Event) {
@@ -277,58 +293,49 @@ void Market::SEvent_SetBuyItem(SDL_Keycode _key) {
 	switch (_key) {
 	case SDLK_1:
 		this->ActiveBuySelection = this->TextBoxObjects.BierQty;
-		this->ActiveBuyPrice = &this->Prices.Bier;
-		this->ActiveBuyTotal = this->TextObjects.BierTotal;
+		this->ActiveItemData = GetItemFromVector(ItemName::Item_Bier, &this->BuyData);
+		this->ActiveBuySubTotal = this->TextObjects.BierTotal;
 		break;
-
 	case SDLK_2:
 		this->ActiveBuySelection = this->TextBoxObjects.BockwurstQty;
-		this->ActiveBuyPrice = &this->Prices.Bockwurst;
-		this->ActiveBuyTotal = this->TextObjects.BockwurstTotal;
+		this->ActiveItemData = GetItemFromVector(ItemName::Item_Bockwurst, &this->BuyData);
+		this->ActiveBuySubTotal = this->TextObjects.BockwurstTotal;
 		break;
-
 	case SDLK_3:
 		this->ActiveBuySelection = this->TextBoxObjects.MettigelQty;
-		this->ActiveBuyPrice = &this->Prices.Mettigel;
-		this->ActiveBuyTotal = this->TextObjects.MettigelTotal;
+		this->ActiveItemData = GetItemFromVector(ItemName::Item_Mettigel, &this->BuyData);
+		this->ActiveBuySubTotal = this->TextObjects.MettigelTotal;
 		break;
-
 	case SDLK_4:
 		this->ActiveBuySelection = this->TextBoxObjects.CurrywurstQty;
-		this->ActiveBuyPrice = &this->Prices.Currywurst;
-		this->ActiveBuyTotal = this->TextObjects.CurrywurstTotal;
+		this->ActiveItemData = GetItemFromVector(ItemName::Item_Currywurst, &this->BuyData);
+		this->ActiveBuySubTotal = this->TextObjects.CurrywurstTotal;
 		break;
-
 	case SDLK_5:
 		this->ActiveBuySelection = this->TextBoxObjects.StreetSheetQty;
-		this->ActiveBuyPrice = &this->Prices.StreetSheet;
-		this->ActiveBuyTotal = this->TextObjects.StreetSheetTotal;
+		this->ActiveItemData = GetItemFromVector(ItemName::Item_StreetSheet, &this->BuyData);
+		this->ActiveBuySubTotal = this->TextObjects.StreetSheetTotal;
 		break;
-
 	case SDLK_6:
 		this->ActiveBuySelection = this->TextBoxObjects.USADAYQty;
-		this->ActiveBuyPrice = &this->Prices.USADAY;
-		this->ActiveBuyTotal = this->TextObjects.USADAYTotal;
+		this->ActiveItemData = GetItemFromVector(ItemName::Item_USADAY, &this->BuyData);
+		this->ActiveBuySubTotal = this->TextObjects.USADAYTotal;
 		break;
-
 	case SDLK_7:
 		this->ActiveBuySelection = this->TextBoxObjects.SignQty;
-		this->ActiveBuyPrice = &this->Prices.Sign;
-		this->ActiveBuyTotal = this->TextObjects.SignTotal;
+		this->ActiveItemData = GetItemFromVector(ItemName::Item_Sign, &this->BuyData);
+		this->ActiveBuySubTotal = this->TextObjects.SignTotal;
 		break;
-
 	case SDLK_8:
 		this->ActiveBuySelection = this->TextBoxObjects.PosterQty;
-		this->ActiveBuyPrice = &this->Prices.Poster;
-		this->ActiveBuyTotal = this->TextObjects.PosterTotal;
+		this->ActiveItemData = GetItemFromVector(ItemName::Item_Poster, &this->BuyData);
+		this->ActiveBuySubTotal = this->TextObjects.PosterTotal;
 		break;
-
 	case SDLK_9:
 		this->ActiveBuySelection = this->TextBoxObjects.NewsAdQty;
-		this->ActiveBuyPrice = &this->Prices.NewsAd;
-		this->ActiveBuyTotal = this->TextObjects.NewsAdTotal;
+		this->ActiveItemData = GetItemFromVector(ItemName::Item_NewsAd, &this->BuyData);
+		this->ActiveBuySubTotal = this->TextObjects.NewsAdTotal;
 		break;
-
 	case SDLK_RETURN:
 		// If enter is pressed, return to main selection
 		this->EventFlags.SelectBuyItem = false;
@@ -336,7 +343,6 @@ void Market::SEvent_SetBuyItem(SDL_Keycode _key) {
 		this->EventFlags.MainSelection = true;
 		return;
 		break;
-
 	default:
 		// Ignore all other input
 		return;
@@ -361,14 +367,17 @@ void Market::SEvent_SetBuyItem(SDL_Keycode _key) {
 
 void Market::SEvent_EndItemQtyEntry() {
 	// Get quantity entered. Invalid input will convert to 0.
-	int quantity = std::atoi(this->ActiveBuySelection->GetText()->c_str());
-	int price = *(this->ActiveBuyPrice);
-	// Set total price
-	int total = quantity * price;
-	this->ActiveBuyTotal->SetText(std::to_string(total));
+	this->ActiveItemData->SetQuantity(std::atoi(this->ActiveBuySelection->GetText()->c_str()));
 
 	// Set text to sanitized number.
-	this->ActiveBuySelection->SetText(std::to_string(quantity));
+	this->ActiveBuySelection->SetText(std::to_string(this->ActiveItemData->GetQuantity()));
+
+	// Set subtotal price
+	int subtotal = this->ActiveItemData->GetBuyPrice() * this->ActiveItemData->GetQuantity();
+	this->ActiveBuySubTotal->SetText(std::to_string(subtotal));
+	
+	// Update grand total
+	this->UpdateTotal();
 	
 	// Stop text entry and return to main selection
 	SDL_StopTextInput();
@@ -404,39 +413,30 @@ void Market::SEvent_SetGuideItem(SDL_Keycode _key) {
 	case SDLK_1:
 		this->ActiveGuideText = this->TextObjects.BierDesc;
 		break;
-
 	case SDLK_2:
 		this->ActiveGuideText = this->TextObjects.BockwurstDesc;
 		break;
-
 	case SDLK_3:
 		this->ActiveGuideText = this->TextObjects.MettigelDesc;
 		break;
-
 	case SDLK_4:
 		this->ActiveGuideText = this->TextObjects.CurrywurstDesc;
 		break;
-
 	case SDLK_5:
 		this->ActiveGuideText = this->TextObjects.StreetSheetDesc;
 		break;
-
 	case SDLK_6:
 		this->ActiveGuideText = this->TextObjects.USADAYDesc;
 		break;
-
 	case SDLK_7:
 		this->ActiveGuideText = this->TextObjects.SignDesc;
 		break;
-
 	case SDLK_8:
 		this->ActiveGuideText = this->TextObjects.PosterDesc;
 		break;
-
 	case SDLK_9:
 		this->ActiveGuideText = this->TextObjects.NewsAdDesc;
 		break;
-
 	case SDLK_RETURN:
 		// If enter is pressed, return to main selection
 		this->EventFlags.SelectGuideItem = false;
@@ -444,7 +444,6 @@ void Market::SEvent_SetGuideItem(SDL_Keycode _key) {
 		this->EventFlags.MainSelection = true;
 		return;
 		break;
-
 	default:
 		// Ignore all other input
 		return;
@@ -471,3 +470,17 @@ void Market::SEvent_ExitGuide() {
 	this->SEvent_ShowMarketText();
 }
 
+void Market::UpdateTotal() {
+	this->BuyTotal = 0;
+	
+	// Get all buy subtotals
+	std::vector<ItemData*>::iterator it = this->BuyData.begin();
+	for (; it != this->BuyData.end(); it++)
+		this->BuyTotal += (*it)->GetBuyPrice() * (*it)->GetQuantity();
+	
+	// Update subtotal text
+	this->TextObjects.TotalAmount->SetText(std::to_string(this->BuyTotal));
+
+	// Update remaining money text
+	this->TextObjects.MoneySubTotalAmount->SetText(std::to_string(this->mPlayerData->GetMoney() - this->BuyTotal));
+}
