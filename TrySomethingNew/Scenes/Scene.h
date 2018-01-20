@@ -363,6 +363,11 @@ protected:
 	struct {
 		// Title
 		ImageData* SetPricesTitle;
+		// Headers
+		ImageData* Inventory;
+		ImageData* Cost;
+		ImageData* SellPrice;
+		ImageData* Qty;
 		// Selection
 		ImageData* SelectItem;
 		ImageData* EnterPrice;

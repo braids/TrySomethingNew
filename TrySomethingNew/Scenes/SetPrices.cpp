@@ -49,13 +49,18 @@ void SetPrices::LoadImagesText() {
 		std::string buyPrice = "DM" + std::to_string(this->SellItems[i]->GetBuyPrice());
 		this->AddSetPricesText(buyPrice, 161, y);
 		// Add sale price and prefix
-		this->AddSetPricesText("DM", 196, y);
-		this->AddItemBox(3, 210, y);
+		this->AddSetPricesText("DM", 203, y);
+		this->AddItemBox(3, 217, y);
 		// Add quantity amount
-		this->AddSetPricesText(std::to_string(this->SellItems[i]->GetQuantity()), 245, y);
+		this->AddSetPricesText(std::to_string(this->SellItems[i]->GetQuantity()), 252, y);
 	}
 	// Title
 	this->TextObjects.SetPricesTitle = this->AddSetPricesText("SET PRICES", 105, 9);
+	// Headers
+	this->TextObjects.Inventory = this->AddSetPricesText("-INVENTORY-", 21, 27);
+	this->TextObjects.Cost = this->AddSetPricesText("COST", 161, 27);
+	this->TextObjects.SellPrice = this->AddSetPricesText("SELL", 203, 27);
+	this->TextObjects.Qty = this->AddSetPricesText("QTY", 252, 27);
 	// Selection
 	this->TextObjects.SelectItem = this->AddText("- SELECT ITEM #", 7, 153);
 	this->TextObjects.EnterPrice = this->AddText("- ENTER PRICE", 7, 153);
