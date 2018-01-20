@@ -77,12 +77,7 @@ void SetPrices::LoadImagesText() {
 	this->TextObjects.EventHeader = this->AddText("LOCAL EVENTS", 105, 9);
 	this->TextObjects.EventInfo = this->AddText("", 105, 9);
 	// Guide Descriptions
-	this->TextObjects.BierDesc = this->AddText("                 BIER\n\n    GERMANS OF ALL WALKS OF LIFE ENJOY THIS ALCOHOLIC DRINK. YOU CAN BE SURE THAT ANYONE PASSING BY WILL ENJOY THIS FROSTY COLD BEVERAGE.\n\nPREFERRED BY :\n    EAST & WEST BERLINERS", 7, 9);
-	this->TextObjects.BockwurstDesc = this->AddText("               BOCKWURST\n\n    A SIMMERED SAUSAGE MADE WITH VEAL AND PORK, POPULAR IN EAST GERMANY AND OFTEN SERVED WITH A SMALL PIECE OF BREAD AND A DOLLOP OF MUSTARD. A CHEAP AND TASTY SNACK.\n\nPREFERRED BY:\n    EAST BERLINERS", 7, 9);
-	this->TextObjects.MettigelDesc = this->AddText("               METTIGEL\n\n    METT IS A MIXTURE OF RAW MINCED PORK, SALT, PEPPER, AND CHOPPED ONION AND IS USUALLY SERVED ON A BREAD ROLL. METTIGEL IS A FUN TAKE WHERE THE METT IS SHAPED LIKE A HEDGEHOG AND  QUARTERED ONION SLICES ARE USED AS SPIKES.\n\nPREFERRED BY:\n    EAST & WEST BERLINERS", 7, 9);
-	this->TextObjects.CurrywurstDesc = this->AddText("              CURRYWURST\n\n    A STEAMED, FRIED BRATWURST TOPPED WITH CURRYWURST SAUCE (TYPICALLY CURRY POWDER AND KETCHUP) SERVED WITH FRENCH FRIES. THIS IS A POPULAR SNACK BOTH DURING THE DAY AND LATE AT NIGHT.  COMES WITH ONE CURRYWURST FORK.\n\nPREFERRED BY:\n    WEST BERLINERS", 7, 9);
-	this->TextObjects.StreetSheetDesc = this->AddText("          DIE STRAßENZEITUNG\n\n    \"THE STREET SHEET\" WAS WIDELY READ IN EAST GERMANY AND PROVIDED INFO ON UNDERGROUND EVENTS FROWNED ON BY THE GDR. WITH THE FALL OF THE WALL, THIS PAPER NOW REPORTS ON ALL MANNER OF  LIFE IN EAST AND WEST GERMANY.\n\nPREFERRED BY:\n    EAST BERLINERS", 7, 9);
-	this->TextObjects.USADAYDesc = this->AddText("               USA DAY\n\n    THIS GERMAN TABLOID REPORTS ON THE RICH AND FAMOUS IN HOLLYWOOD. ITS WILD STORIES AND SALACIOUS DETAILS HAVE  MADE IT POPULAR WITH PEOPLE WHO WANT TO KNOW WHO'S WHO.\n\nPREFERRED BY:\n    WEST BERLINERS", 7, 9);
+	this->TextObjects.GuideText = this->AddText("", 7, 9);
 
 	for (std::vector<ImageData*>::iterator it = this->mImages.begin(); it != this->mImages.end(); it++)
 		(*it)->SetVisible(false);
@@ -242,12 +237,12 @@ void SetPrices::SEvent_HideForecast() {
 }
 
 void SetPrices::SEvent_ShowGuide() {
-	this->ActiveGuideText->SetVisible(true);
+	this->TextObjects.GuideText->SetVisible(true);
 	this->TextObjects.PressReturn->SetVisible(true);
 }
 
 void SetPrices::SEvent_HideGuide() {
-	this->ActiveGuideText->SetVisible(false);
+	this->TextObjects.GuideText->SetVisible(false);
 	this->TextObjects.PressReturn->SetVisible(false);
 }
 
@@ -329,37 +324,22 @@ void SetPrices::SEvent_SelectGuide() {
 }
 
 void SetPrices::SEvent_SetGuideItem(SDL_Keycode _key) {
-	// Select item to purchase
-	switch (_key) {
-	case SDLK_1:
-		this->ActiveGuideText = this->TextObjects.BierDesc;
-		break;
-	case SDLK_2:
-		this->ActiveGuideText = this->TextObjects.BockwurstDesc;
-		break;
-	case SDLK_3:
-		this->ActiveGuideText = this->TextObjects.MettigelDesc;
-		break;
-	case SDLK_4:
-		this->ActiveGuideText = this->TextObjects.CurrywurstDesc;
-		break;
-	case SDLK_5:
-		this->ActiveGuideText = this->TextObjects.StreetSheetDesc;
-		break;
-	case SDLK_6:
-		this->ActiveGuideText = this->TextObjects.USADAYDesc;
-		break;
-	case SDLK_RETURN:
+	// Select item to view description of
+	int keyValue = this->KeycodeNumValue(_key);
+
+	if (keyValue >= 1 && keyValue <= (int) this->SellItems.capacity()) {
+		this->TextObjects.GuideText->SetText(GetItemGuideDesc(this->SellItems[keyValue - 1]->GetName()));
+	}
+	else if (_key == SDLK_RETURN) {
 		// If enter is pressed, return to main selection
 		this->EventFlags.SelectGuideItem = false;
 		this->TextObjects.SelectItem->SetVisible(false);
 		this->EventFlags.MainSelection = true;
 		return;
-		break;
-	default:
-		// Ignore all other input
+	}
+	else {
+		// Ignore other inputs
 		return;
-		break;
 	}
 
 	// Move into guide display state

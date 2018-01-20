@@ -354,7 +354,6 @@ protected:
 
 	ImageData*	ActiveForecastWeatherText;
 	ImageData*	ActiveForecastEventText;
-	ImageData*	ActiveGuideText;
 
 	struct {
 
@@ -385,12 +384,7 @@ protected:
 		ImageData* EventHeader;
 		ImageData* EventInfo;
 		// Guide
-		ImageData* BierDesc;
-		ImageData* BockwurstDesc;
-		ImageData* MettigelDesc;
-		ImageData* CurrywurstDesc;
-		ImageData* StreetSheetDesc;
-		ImageData* USADAYDesc;
+		ImageData* GuideText;
 	} TextObjects;
 
 	struct {

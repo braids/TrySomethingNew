@@ -54,6 +54,7 @@ ItemType GetItemType(ItemName _name);
 ItemData* GetItemDataByName(ItemData* _item, ItemName _name);
 int GetItemBuyPrice(ItemName _name);
 std::string GetItemString(ItemName _name);
+std::string GetItemGuideDesc(ItemName _name);
 std::vector<ItemData*>* GetInitialItemVector();
 ItemData* GetItemFromVector(ItemName _name, std::vector<ItemData*>* _itemVector);
 
