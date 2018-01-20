@@ -122,6 +122,8 @@
     <None Include="libfreetype-6.dll" />
     <None Include="libogg-0.dll" />
     <None Include="libpng16-16.dll" />
+    <None Include="libvorbis-0.dll" />
+    <None Include="libvorbisfile-3.dll" />
     <None Include="res\snd\intro.ogg" />
     <None Include="res\snd\market.ogg" />
     <None Include="res\snd\title.ogg" />
@@ -134,11 +136,13 @@
   <ItemGroup>
     <ClCompile Include="Assets.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Data\Customer.cpp" />
     <ClCompile Include="Data\PlayerData.cpp" />
     <ClCompile Include="Data\ItemData.cpp" />
     <ClCompile Include="GameObjects\GameObject.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="Scenes\DaySales.cpp" />
     <ClCompile Include="Scenes\Intro.cpp" />
     <ClCompile Include="Scenes\MainMenu.cpp" />
     <ClCompile Include="Scenes\Market.cpp" />
@@ -151,6 +155,7 @@
   <ItemGroup>
     <ClInclude Include="Assets.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Data\Customer.h" />
     <ClInclude Include="Data\ItemData.h" />
     <ClInclude Include="Data\PlayerData.h" />
     <ClInclude Include="GameObjects\GameObject.h" />

@@ -26,6 +26,8 @@
     <None Include="res\snd\intro.ogg" />
     <None Include="res\snd\title.ogg" />
     <None Include="res\snd\market.ogg" />
+    <None Include="libvorbis-0.dll" />
+    <None Include="libvorbisfile-3.dll" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Assets.cpp">
@@ -73,6 +75,12 @@
     <ClCompile Include="Scenes\SetPrices.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Scenes\DaySales.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\Customer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Assets.h">
@@ -103,6 +111,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Data\ItemData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\Customer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

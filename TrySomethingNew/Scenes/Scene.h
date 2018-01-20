@@ -5,6 +5,7 @@
 #include <vector>
 #include "Assets.h"
 #include "Camera.h"
+#include "Data\Customer.h"
 #include "Data\ItemData.h"
 #include "Data\PlayerData.h"
 #include "GameObjects\GameObject.h"
@@ -19,6 +20,8 @@ class TitleScreen;
 class MainMenu;
 class Intro;
 class Market;
+class SetPrices;
+class DaySales;
 
 //// Scene name enum
 enum SceneName {
@@ -26,7 +29,8 @@ enum SceneName {
 	Scene_MainMenu,		// Main menu
 	Scene_Intro,		// Intro
 	Scene_Market,		// Market
-	Scene_SetPrices		// Set Prices
+	Scene_SetPrices,	// Set Prices
+	Scene_DaySales		// Day Sales
 };
 
 //// Scene class
@@ -418,6 +422,63 @@ public:
 	void SEvent_ExitGuide();
 	// Leave
 	void SEvent_OpenShop();
+};
+
+class DaySales : public Scene {
+protected:
+	std::vector<ImageData*> DaySalesText;
+	std::vector<ItemData*> SellItems;
+
+	std::vector<Customer*> Customers;
+
+	const Uint32 DayLength = 15000;
+	int Money;
+
+	struct {
+
+	} Images;
+
+	struct {
+
+	} TextObjects;
+
+	struct {
+
+	} TextBoxObjects;
+
+	struct {
+		EventTimer* DayRuntime;
+	} EventTimers;
+
+	struct {
+		bool ExitToTitleScreen;
+		bool Simulation;
+		bool DayEnd;
+	} EventFlags;
+
+public:
+	// Scene ctor
+	DaySales();
+
+	// Scene funcs
+	void ResetFlags();
+	void LoadGameObjects();
+	void LoadEventTimers();
+	void LoadImagesText();
+	void SceneStart();
+	void HandleEvent(SDL_Event* Event);
+	void Update(Uint32 timeStep);
+	void Render();
+
+	// DaySales funcs
+	void GetCurrentPlayerInventory();
+	void GenerateCustomers();
+	void GetPurchase(Customer* _customer);
+
+	//// Events
+	// Show/Hide Events
+	void SEvent_ShowDaySalesText();
+	void SEvent_HideDaySalesText();
 };
 
 #endif

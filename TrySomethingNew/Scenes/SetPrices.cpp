@@ -377,5 +377,5 @@ void SetPrices::SEvent_OpenShop() {
 		this->mPlayerData->GetInventoryItem((*it)->GetName())->SetSellPrice((*it)->GetSellPrice());
 	
 	// Leave Set Price screen
-	this->EventFlags.ExitToTitleScreen = true;
+	this->mManager->StartScene(Scene_DaySales);
 }
