@@ -8,11 +8,13 @@
 #include "Scenes\Scene.h"
 #include "SceneManager.h"
 
+//// Scene Ctor
 SetPrices::SetPrices() {
 	// Set current scene name
 	this->SetSceneName(Scene_SetPrices);
 }
 
+//// Scene funcs
 void SetPrices::ResetFlags() {
 	// Set flags to false
 	this->EventFlags.ExitToTitleScreen = false;
@@ -22,10 +24,6 @@ void SetPrices::ResetFlags() {
 	this->EventFlags.ShowForecast = false;
 	this->EventFlags.SelectGuideItem = false;
 	this->EventFlags.ShowGuide = false;
-}
-
-void SetPrices::LoadGameObjects() {
-
 }
 
 void SetPrices::LoadImagesText() {
@@ -50,25 +48,25 @@ void SetPrices::LoadImagesText() {
 		this->AddSetPricesText(buyPrice, 161, y);
 		// Add sale price and prefix
 		this->AddSetPricesText("DM", 203, y);
-		this->AddItemBox(3, 217, y);
+		this->AddSetPricesItemBox(3, 217, y);
 		// Add quantity amount
 		this->AddSetPricesText(std::to_string(this->SellItems[i]->GetQuantity()), 252, y);
 	}
 	// Title
-	this->TextObjects.SetPricesTitle = this->AddSetPricesText("SET PRICES", 105, 9);
+	this->AddSetPricesText("SET PRICES", 105, 9);
 	// Headers
-	this->TextObjects.Inventory = this->AddSetPricesText("-INVENTORY-", 21, 27);
-	this->TextObjects.Cost = this->AddSetPricesText("COST", 161, 27);
-	this->TextObjects.SellPrice = this->AddSetPricesText("SELL", 203, 27);
-	this->TextObjects.Qty = this->AddSetPricesText("QTY", 252, 27);
+	this->AddSetPricesText("-INVENTORY-", 21, 27);
+	this->AddSetPricesText("COST", 161, 27);
+	this->AddSetPricesText("SELL", 203, 27);
+	this->AddSetPricesText("QTY", 252, 27);
 	// Selection
 	this->TextObjects.SelectItem = this->AddText("- SELECT ITEM #", 7, 153);
 	this->TextObjects.EnterPrice = this->AddText("- ENTER PRICE", 7, 153);
 	// Options
-	this->TextObjects.SetPriceOption = this->AddSetPricesText("S)ET PRICE", 7, 180);
-	this->TextObjects.ForecastOption = this->AddSetPricesText("F)ORECAST", 84, 180);
-	this->TextObjects.GuideOption = this->AddSetPricesText("G)UIDE", 154, 180);
-	this->TextObjects.LeaveOption = this->AddSetPricesText("O)PEN SHOP", 203, 180);
+	this->AddSetPricesText("S)ET PRICE", 7, 180);
+	this->AddSetPricesText("F)ORECAST", 84, 180);
+	this->AddSetPricesText("G)UIDE", 154, 180);
+	this->AddSetPricesText("O)PEN SHOP", 203, 180);
 	// Press Return
 	this->TextObjects.PressReturn = this->AddText("- PRESS RETURN -", 84, 180);
 	// Forecast
@@ -123,12 +121,12 @@ void SetPrices::HandleEvent(SDL_Event * Event) {
 				this->SEvent_OpenShop();
 		}
 
-		//// Buy
-		// Selecting item to buy
+		//// Set Price
+		// Selecting item to set price for
 		if (this->EventFlags.SelectSellItem) {
 			this->SEvent_SetSellItem(Event->key.keysym.sym);
 		}
-		// Enterting item quantity
+		// Enterting item price
 		if (this->EventFlags.EnterItemPrice) {
 			if (Event->key.keysym.sym == SDLK_BACKSPACE)
 				this->ActiveSellSelection->DeleteText();
@@ -200,7 +198,19 @@ void SetPrices::Render() {
 	}
 }
 
-/// Scene funcs
+//// SetPrices funcs
+ImageData* SetPrices::AddSetPricesText(std::string _text, int _x, int _y) {
+	ImageData* textImage = this->AddText(_text, _x, _y);
+	this->SetPricesText.push_back(textImage);
+	return textImage;
+}
+
+TextBox* SetPrices::AddSetPricesItemBox(Uint32 _size, int _x, int _y) {
+	TextBox* textBox = this->AddTextBox(_size, _x, _y);
+	this->ItemTextBoxObjects.push_back(textBox);
+	this->SetPricesText.push_back(textBox);
+	return textBox;
+}
 
 void SetPrices::GetCurrentPlayerInventory() {
 	// Clear current sell item list
@@ -217,7 +227,6 @@ int SetPrices::KeycodeNumValue(SDL_Keycode _key) {
 }
 
 //// Scene Events
-
 void SetPrices::SEvent_ShowSetPricesText() {
 	for (std::vector<ImageData*>::iterator it = this->SetPricesText.begin(); it != this->SetPricesText.end(); it++)
 		(*it)->SetVisible(true);
@@ -272,18 +281,18 @@ void SetPrices::SEvent_SetSellItem(SDL_Keycode _key) {
 		return;
 	}
 
-	// Move into quantity entry state
+	// Move into price entry state
 	this->EventFlags.SelectSellItem = false;
 	this->EventFlags.EnterItemPrice = true;
 
-	// Show ENTER QUANITITY text
+	// Show ENTER PRICE text
 	this->TextObjects.SelectItem->SetVisible(false);
 	this->TextObjects.EnterPrice->SetVisible(true);
 
 	// Flush buffered text input
 	SDL_PumpEvents();
 
-	// Enable text entry for item quantity
+	// Enable text entry for item price
 	SDL_StartTextInput();
 	this->ActiveSellSelection->SetActive(true);
 }

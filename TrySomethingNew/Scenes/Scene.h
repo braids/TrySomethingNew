@@ -61,7 +61,6 @@ public:
 	void UpdateEventTimers();
 
 	// Scene virtual funcs
-	virtual void LoadGameObjects() = 0;
 	virtual void SceneStart() = 0;
 	virtual void HandleEvent(SDL_Event* Event) = 0;
 	virtual void Update(Uint32 timeStep) = 0;
@@ -356,26 +355,9 @@ protected:
 	ImageData*	ActiveForecastEventText;
 
 	struct {
-
-	} Images;
-
-	struct {
-		// Title
-		ImageData* SetPricesTitle;
-		// Headers
-		ImageData* Inventory;
-		ImageData* Cost;
-		ImageData* SellPrice;
-		ImageData* Qty;
 		// Selection
 		ImageData* SelectItem;
 		ImageData* EnterPrice;
-		// Options
-		ImageData* SetPriceOption;
-		ImageData* ForecastOption;
-		ImageData* GuideOption;
-		ImageData* LeaveOption;
-		ImageData* SaveOption;
 		// Press Return for Forecast/Guide
 		ImageData* PressReturn;
 		// Forecast
@@ -386,14 +368,6 @@ protected:
 		// Guide
 		ImageData* GuideText;
 	} TextObjects;
-
-	struct {
-
-	} TextBoxObjects;
-
-	struct {
-
-	} EventTimers;
 
 	struct {
 		bool ExitToTitleScreen;
@@ -411,32 +385,16 @@ public:
 
 	// Scene funcs
 	void ResetFlags();
-	void LoadGameObjects();
 	void LoadImagesText();
 	void SceneStart();
 	void HandleEvent(SDL_Event* Event);
 	void Update(Uint32 timeStep);
 	void Render();
 
-	void GetCurrentPlayerInventory();
-
 	// SetPrices funcs
-	ImageData* AddSetPricesText(std::string _text, int _x, int _y) {
-		ImageData* textImage = this->AddText(_text, _x, _y);
-		this->SetPricesText.push_back(textImage);
-		return textImage;
-	}
-	TextBox* AddSetPricesBox(Uint32 _size, int _x, int _y) {
-		TextBox* textBox = this->AddTextBox(_size, _x, _y);
-		this->SetPricesText.push_back(textBox);
-		return textBox;
-	}
-	TextBox* AddItemBox(Uint32 _size, int _x, int _y) {
-		TextBox* textBox = this->AddSetPricesBox(_size, _x, _y);
-		this->ItemTextBoxObjects.push_back(textBox);
-		return textBox;
-	}
-
+	ImageData* AddSetPricesText(std::string _text, int _x, int _y);
+	TextBox* AddSetPricesItemBox(Uint32 _size, int _x, int _y);
+	void GetCurrentPlayerInventory();
 	int KeycodeNumValue(SDL_Keycode _key);
 
 	//// Events

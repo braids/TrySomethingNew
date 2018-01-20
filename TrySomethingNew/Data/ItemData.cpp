@@ -19,8 +19,8 @@ ItemType GetItemType(ItemName _name) {
 	switch (_name) {
 	case ItemName::Item_Bier:
 	case ItemName::Item_Bockwurst:
-	case ItemName::Item_Currywurst:
 	case ItemName::Item_Mettigel:
+	case ItemName::Item_Currywurst:
 		return ItemType::ItemType_Food;
 	case ItemName::Item_StreetSheet:
 	case ItemName::Item_USADAY:
@@ -29,6 +29,8 @@ ItemType GetItemType(ItemName _name) {
 	case ItemName::Item_Poster:
 	case ItemName::Item_NewsAd:
 		return ItemType::ItemType_Ad;
+	default:
+		return ItemType::ItemType_Food;
 	}
 }
 
@@ -42,9 +44,9 @@ int GetItemBuyPrice(ItemName _name) {
 		return 4;
 	case ItemName::Item_Bockwurst:
 		return 2;
-	case ItemName::Item_Currywurst:
-		return 4;
 	case ItemName::Item_Mettigel:
+		return 4;
+	case ItemName::Item_Currywurst:
 		return 6;
 	case ItemName::Item_StreetSheet:
 		return 3;
@@ -56,6 +58,8 @@ int GetItemBuyPrice(ItemName _name) {
 		return 10;
 	case ItemName::Item_NewsAd:
 		return 15;
+	default:
+		return 0;
 	}
 }
 
@@ -65,10 +69,10 @@ std::string GetItemString(ItemName _name) {
 		return "BIER";
 	case ItemName::Item_Bockwurst:
 		return "BOCKWURST";
-	case ItemName::Item_Currywurst:
-		return "CURRYWURST";
 	case ItemName::Item_Mettigel:
 		return "METTIGEL";
+	case ItemName::Item_Currywurst:
+		return "CURRYWURST";
 	case ItemName::Item_StreetSheet:
 		return "DIE STRAßENZEITUNG";
 	case ItemName::Item_USADAY:
@@ -90,9 +94,9 @@ std::string GetItemGuideDesc(ItemName _name) {
 		return "                 BIER\n\n    GERMANS OF ALL WALKS OF LIFE ENJOY THIS ALCOHOLIC DRINK. YOU CAN BE SURE THAT ANYONE PASSING BY WILL ENJOY THIS FROSTY COLD BEVERAGE.\n\nPREFERRED BY :\n    EAST & WEST BERLINERS";
 	case ItemName::Item_Bockwurst:
 		return "               BOCKWURST\n\n    A SIMMERED SAUSAGE MADE WITH VEAL AND PORK, POPULAR IN EAST GERMANY AND OFTEN SERVED WITH A SMALL PIECE OF BREAD AND A DOLLOP OF MUSTARD. A CHEAP AND TASTY SNACK.\n\nPREFERRED BY:\n    EAST BERLINERS";
-	case ItemName::Item_Currywurst:
-		return "               METTIGEL\n\n    METT IS A MIXTURE OF RAW MINCED PORK, SALT, PEPPER, AND CHOPPED ONION AND IS USUALLY SERVED ON A BREAD ROLL. METTIGEL IS A FUN TAKE WHERE THE METT IS SHAPED LIKE A HEDGEHOG AND  QUARTERED ONION SLICES ARE USED AS SPIKES.\n\nPREFERRED BY:\n    EAST & WEST BERLINERS";
 	case ItemName::Item_Mettigel:
+		return "               METTIGEL\n\n    METT IS A MIXTURE OF RAW MINCED PORK, SALT, PEPPER, AND CHOPPED ONION AND IS USUALLY SERVED ON A BREAD ROLL. METTIGEL IS A FUN TAKE WHERE THE METT IS SHAPED LIKE A HEDGEHOG AND  QUARTERED ONION SLICES ARE USED AS SPIKES.\n\nPREFERRED BY:\n    EAST & WEST BERLINERS";
+	case ItemName::Item_Currywurst:
 		return "              CURRYWURST\n\n    A STEAMED, FRIED BRATWURST TOPPED WITH CURRYWURST SAUCE (TYPICALLY CURRY POWDER AND KETCHUP) SERVED WITH FRENCH FRIES. THIS IS A POPULAR SNACK BOTH DURING THE DAY AND LATE AT NIGHT.  COMES WITH ONE CURRYWURST FORK.\n\nPREFERRED BY:\n    WEST BERLINERS";
 	case ItemName::Item_StreetSheet:
 		return "          DIE STRAßENZEITUNG\n\n    \"THE STREET SHEET\" WAS WIDELY READ IN EAST GERMANY AND PROVIDED INFO ON UNDERGROUND EVENTS FROWNED ON BY THE GDR. WITH THE FALL OF THE WALL, THIS PAPER NOW REPORTS ON ALL MANNER OF  LIFE IN EAST AND WEST GERMANY.\n\nPREFERRED BY:\n    EAST BERLINERS";
