@@ -170,7 +170,12 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\img\blank.png" />
+    <Image Include="res\img\shack1.png" />
+    <Image Include="res\img\shack2.png" />
+    <Image Include="res\img\shack3.png" />
     <Image Include="res\img\title.png" />
+    <Image Include="res\img\wall1.png" />
+    <Image Include="res\img\wall2.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
