@@ -334,6 +334,8 @@ public:
 	void SEvent_SelectGuide();
 	void SEvent_SetGuideItem(SDL_Keycode _key);
 	void SEvent_ExitGuide();
+	// Leave
+	void SEvent_Leave();
 	
 	void UpdateTotal();
 };

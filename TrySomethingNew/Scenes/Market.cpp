@@ -174,7 +174,7 @@ void Market::HandleEvent(SDL_Event * Event) {
 			if (Event->key.keysym.sym == SDLK_g)
 				this->SEvent_SelectGuide();
 			if (Event->key.keysym.sym == SDLK_l)
-				this->EventFlags.ExitToTitleScreen = true;
+				this->SEvent_Leave();
 		}
 
 		//// Buy
@@ -468,6 +468,20 @@ void Market::SEvent_ExitGuide() {
 	this->SEvent_HideGuide();
 	this->EventFlags.MainSelection = true;
 	this->SEvent_ShowMarketText();
+}
+
+void Market::SEvent_Leave() {
+	if (this->mPlayerData->GetMoney() >= this->BuyTotal) {
+		// Set player inventory equal to items purchased
+		for (std::vector<ItemData*>::iterator it = this->BuyData.begin(); it != this->BuyData.end(); it++)
+			this->mPlayerData->GetInventoryItem((*it)->GetName())->SetQuantity((*it)->GetQuantity());
+
+		// Set player money
+		this->mPlayerData->SetMoney(this->mPlayerData->GetMoney() - this->BuyTotal);
+		
+		// Leave market
+		this->EventFlags.ExitToTitleScreen = true;
+	}
 }
 
 void Market::UpdateTotal() {
