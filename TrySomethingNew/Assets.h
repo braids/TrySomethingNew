@@ -39,6 +39,9 @@ public:
 		Image Blank;
 		Image Wall1;
 		Image Wall2;
+		Image Shack1;
+		Image Shack2;
+		Image Shack3;
 		// Placeholder Spritesheet images
 		Image SpriteSheet1D[1];
 		Image SpriteSheet2D[1][1];
