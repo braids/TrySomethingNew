@@ -25,7 +25,8 @@ enum SceneName {
 	Scene_TitleScreen,	// Title Screen
 	Scene_MainMenu,		// Main menu
 	Scene_Intro,		// Intro
-	Scene_Market		// Market
+	Scene_Market,		// Market
+	Scene_SetPrices		// Set Prices
 };
 
 //// Scene class
@@ -60,7 +61,6 @@ public:
 	void UpdateEventTimers();
 
 	// Scene virtual funcs
-	virtual void LoadGameObjects() = 0;
 	virtual void SceneStart() = 0;
 	virtual void HandleEvent(SDL_Event* Event) = 0;
 	virtual void Update(Uint32 timeStep) = 0;
@@ -338,6 +338,86 @@ public:
 	void SEvent_Leave();
 	
 	void UpdateTotal();
+};
+
+//// SetPrices scene class
+class SetPrices : public Scene {
+protected:
+	// Main market screen text and text boxes
+	std::vector<ImageData*> SetPricesText;
+	std::vector<TextBox*> ItemTextBoxObjects;
+	std::vector<ItemData*> SellItems;
+
+	TextBox*	ActiveSellSelection;
+	ItemData*	ActiveItemData;
+
+	ImageData*	ActiveForecastWeatherText;
+	ImageData*	ActiveForecastEventText;
+
+	struct {
+		// Selection
+		ImageData* SelectItem;
+		ImageData* EnterPrice;
+		// Press Return for Forecast/Guide
+		ImageData* PressReturn;
+		// Forecast
+		ImageData* WeatherHeader;
+		ImageData* WeatherInfo;
+		ImageData* EventHeader;
+		ImageData* EventInfo;
+		// Guide
+		ImageData* GuideText;
+	} TextObjects;
+
+	struct {
+		bool ExitToTitleScreen;
+		bool MainSelection;
+		bool SelectSellItem;
+		bool EnterItemPrice;
+		bool ShowForecast;
+		bool SelectGuideItem;
+		bool ShowGuide;
+	} EventFlags;
+
+public:
+	// Scene ctor
+	SetPrices();
+
+	// Scene funcs
+	void ResetFlags();
+	void LoadImagesText();
+	void SceneStart();
+	void HandleEvent(SDL_Event* Event);
+	void Update(Uint32 timeStep);
+	void Render();
+
+	// SetPrices funcs
+	ImageData* AddSetPricesText(std::string _text, int _x, int _y);
+	TextBox* AddSetPricesItemBox(Uint32 _size, int _x, int _y);
+	void GetCurrentPlayerInventory();
+	int KeycodeNumValue(SDL_Keycode _key);
+
+	//// Events
+	// Show/Hide Events
+	void SEvent_ShowSetPricesText();
+	void SEvent_HideSetPricesText();
+	void SEvent_ShowForecast();
+	void SEvent_HideForecast();
+	void SEvent_ShowGuide();
+	void SEvent_HideGuide();
+	// Set Price
+	void SEvent_SelectSell();
+	void SEvent_SetSellItem(SDL_Keycode _key);
+	void SEvent_EndSellEntry();
+	// Forecast
+	void SEvent_SelectForecast();
+	void SEvent_ExitForecast();
+	// Guide
+	void SEvent_SelectGuide();
+	void SEvent_SetGuideItem(SDL_Keycode _key);
+	void SEvent_ExitGuide();
+	// Leave
+	void SEvent_OpenShop();
 };
 
 #endif
