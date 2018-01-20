@@ -43,8 +43,12 @@ bool SceneManager::Init() {
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 	Mix_AllocateChannels(16);
 
+	// Load assets
 	mAssets->LoadAssets();
 
+	// Initialize player data
+	this->mPlayerData = new PlayerData();
+	
 	// Add scenes here
 	this->AddScene(new TitleScreen());
 	this->AddScene(new MainMenu());

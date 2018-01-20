@@ -5,6 +5,8 @@
 #include <vector>
 #include "Assets.h"
 #include "Camera.h"
+#include "Data\ItemData.h"
+#include "Data\PlayerData.h"
 #include "GameObjects\GameObject.h"
 #include "Timer.h"
 
@@ -33,6 +35,7 @@ protected:
 	bool			mActive;	// Scene is active or inactive
 	SceneManager*	mManager;	// Parent scene manager pointer
 	Camera			mCamera;
+	PlayerData*		mPlayerData;
 	std::vector<ImageData*>		mImages;
 	std::vector<GameObject*>	mGameObjects;
 	std::vector<EventTimer*>	mEventTimers;
@@ -50,6 +53,7 @@ public:
 	bool IsActive() const { return this->mActive; }
 	void SetManager(SceneManager* manager) { this->mManager = manager; }
 	void SetSceneName(SceneName name) { this->mSceneName = name; }
+	void SetPlayerData(PlayerData* _player) { this->mPlayerData = _player; }
 	ImageData* AddText(std::string _text, int _x, int _y);
 	TextBox* AddTextBox(size_t _size, int _x, int _y);
 	EventTimer* AddEventTimer(EventTimer* _eventTimer);
@@ -161,14 +165,13 @@ class Market : public Scene {
 protected:
 	// Main market screen text and text boxes
 	std::vector<ImageData*> MarketText;
-	// Forecast text
-	std::vector<ImageData*> ForecastText;
-	// Guide text
-	std::vector<ImageData*> GuideText;
-
+	
 	TextBox*	ActiveBuySelection;
-	int*		ActiveBuyPrice;
-	ImageData*	ActiveBuyTotal;
+	ItemData*	ActiveItemData;
+	ImageData*	ActiveBuySubTotal;
+	
+	std::vector<ItemData*>	BuyData;
+	int						BuyTotal;
 
 	ImageData*	ActiveForecastWeatherText;
 	ImageData*	ActiveForecastEventText;
@@ -228,6 +231,13 @@ protected:
 		ImageData* NewsAdName;
 		ImageData* NewsAdCost;
 		ImageData* NewsAdTotal;
+		// Total
+		ImageData* TotalText;
+		ImageData* TotalAmount;
+		ImageData* PlayerMoneyText;
+		ImageData* PlayerMoneyAmount;
+		ImageData* MoneySubTotalText;
+		ImageData* MoneySubTotalAmount;
 		// Selection
 		ImageData* SelectItem;
 		ImageData* EnterQty;
@@ -324,6 +334,10 @@ public:
 	void SEvent_SelectGuide();
 	void SEvent_SetGuideItem(SDL_Keycode _key);
 	void SEvent_ExitGuide();
+	// Leave
+	void SEvent_Leave();
+	
+	void UpdateTotal();
 };
 
 #endif
