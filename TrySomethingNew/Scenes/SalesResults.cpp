@@ -153,8 +153,12 @@ void SalesResults::SEvent_HideSalesResultsText() {
 }
 
 void SalesResults::SEvent_NextDay() {
+	// Set Forecast
+	this->mPlayerData->GenerateForecast();
+	
 	// Set player day
 	this->mPlayerData->SetDay(this->mPlayerData->GetDay() + 1);
+	
 	// Start market scene
 	this->mManager->StartScene(Scene_Market);
 }

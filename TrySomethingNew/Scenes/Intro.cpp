@@ -263,6 +263,10 @@ void Intro::SEvent_ShopNamed() {
 void Intro::SEvent_ToMarket() {
 	// Stop current music
 	Mix_HaltMusic();
+
+	// Set Forecast
+	this->mPlayerData->GenerateForecast();
+
 	// Go to market.
 	this->mManager->StartScene(Scene_Market);
 }

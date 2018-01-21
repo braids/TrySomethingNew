@@ -1,6 +1,7 @@
+#include <fstream>
+#include <string>
+#include <vector>
 #include "Assets.h"
-#include "Camera.h"
-#include "GameObjects\GameObject.h"
 #include "Graphics.h"
 #include "Scenes\Scene.h"
 #include "SceneManager.h"
@@ -10,37 +11,33 @@ MainMenu::MainMenu() {
 	this->SetSceneName(Scene_MainMenu);
 }
 
-void MainMenu::LoadGameObjects() {
-	this->mGameObjects.clear();
-}
-
 void MainMenu::SceneStart() {
-	this->ExitToTitleScreen = false;
-	this->StartNewGame = false;
-	this->LoadGame = false;
-
-	this->LoadGameObjects();
-
+	// Load text images. It's just this stuff, nothing fancy needed.
 	this->mImages.clear();
-	this->AddText("N)EW GAME", 108, 64);
-	this->AddText("L)OAD GAME", 108, 80);
-	this->AddText("Q)UIT", 108, 96);
-	this->AddText("W)INDOW MODE", 100, 176);
+	this->AddText("N)EW GAME", 105, 63);
+	this->AddText("L)OAD GAME", 105, 81);
+	this->AddText("Q)UIT", 105, 99);
+	this->AddText("W)INDOW MODE", 98, 171);
 }
 
-void MainMenu::HandleEvent(SDL_Event * Event) {
+void MainMenu::HandleEvent(SDL_Event* Event) {
 	switch (Event->type) {
 	case SDL_KEYDOWN:
-		if (Event->key.keysym.sym == SDLK_ESCAPE) this->ExitToTitleScreen = true;
-		if (Event->key.keysym.sym == SDLK_n) this->StartNewGame = true;
-		if (Event->key.keysym.sym == SDLK_l) this->LoadGame = true;
-		if (Event->key.keysym.sym == SDLK_q) this->mManager->quitGame = true;
-		if (Event->key.keysym.sym == SDLK_r && Event->key.repeat == 0) this->SceneStart();
-		if (Event->key.keysym.sym == SDLK_w) {
-			bool fullscreen = this->mManager->IsFullscreen();
-			this->mManager->GetGraphics()->Fullscreen(!fullscreen);
-			this->mManager->SetFullscreen(!fullscreen);
-		}
+		// Return to title screen
+		if (Event->key.keysym.sym == SDLK_ESCAPE)
+			this->SEvent_ExitToTitle();
+		// Start new game
+		if (Event->key.keysym.sym == SDLK_n) 
+			this->SEvent_NewGame();
+		// Load saved game
+		if (Event->key.keysym.sym == SDLK_l) 
+			this->SEvent_LoadGame();
+		// Quit game
+		if (Event->key.keysym.sym == SDLK_q) 
+			this->SEvent_Quit();
+		// Toggle window mode
+		if (Event->key.keysym.sym == SDLK_w)
+			this->SEvent_Windowed();
 		break;
 
 	case SDL_KEYUP:
@@ -52,19 +49,12 @@ void MainMenu::HandleEvent(SDL_Event * Event) {
 }
 
 void MainMenu::Update(Uint32 timeStep) {
-	// Return to title screen if quitting
-	if (this->ExitToTitleScreen)
-		this->mManager->StartScene(Scene_TitleScreen);
-	if (this->StartNewGame)
-		this->mManager->StartScene(Scene_Intro);
-	if (this->LoadGame)
-		this->mManager->StartScene(Scene_Market);
+
 }
 
 void MainMenu::Render() {
 	// Render graphics to buffer
 	// If I find any game logic in here, I'll slap myself silly
-
 	for (int i = 0; i < (int) this->mImages.size(); i++) {
 		this->mManager->GetGraphics()->DrawTextureAtLocation(
 			this->mImages[i]->GetImage()->texture,
@@ -73,13 +63,58 @@ void MainMenu::Render() {
 			this->mImages[i]->GetDrawAngle()
 		);
 	}
+}
 
-	for (int i = 0; i < (int) this->mGameObjects.size(); i++) {
-		this->mManager->GetGraphics()->DrawTextureAtLocation(
-			this->mGameObjects[i]->GetImageData()->GetImage()->texture, 
-			this->mGameObjects[i]->GetImageData()->GetImage()->rect,
-			this->mGameObjects[i]->GetImageData()->GetDrawRect(),
-			this->mGameObjects[i]->GetImageData()->GetDrawAngle()
-			);			
-	}
+//// Scene Events
+void MainMenu::SEvent_ExitToTitle() {
+	// Return to title screen
+	this->mManager->StartScene(Scene_TitleScreen);
+}
+
+void MainMenu::SEvent_NewGame() {
+	// Start Intro scene
+	this->mManager->StartScene(Scene_Intro);
+}
+
+void MainMenu::SEvent_LoadGame() {
+	// Open filestream to save file
+	std::ifstream savefile(".\\TSN.sav", std::ios::binary);
+
+	// If file can't be read (permissions, doens't exist) then bail
+	if (!savefile.good())
+		return;
+
+	SaveFile savedata;
+
+	// Read saved player data
+	savefile.read((char*)&savedata, sizeof(savedata));
+
+	// Close filestream
+	savefile.close();
+
+	// Load saved data into PlayerData
+	this->mPlayerData->SetName(savedata.GetName());
+	this->mPlayerData->SetMoney(savedata.GetMoney());
+	this->mPlayerData->SetDay(savedata.GetDay());
+	this->mPlayerData->SetWeatherForecast(savedata.GetWeatherForecast());
+	this->mPlayerData->SetEventForecast(savedata.GetEventForecast());
+
+	// Load saved game and open market
+	this->mManager->StartScene(Scene_Market);
+}
+
+void MainMenu::SEvent_Quit() {
+	// Set flag to quit game
+	this->mManager->quitGame = true;
+}
+
+void MainMenu::SEvent_Windowed() {
+	// Get current fullscreen state
+	bool fullscreen = this->mManager->IsFullscreen();
+	
+	// Change window mode
+	this->mManager->GetGraphics()->Fullscreen(!fullscreen);
+	
+	// Set new fullscreen state
+	this->mManager->SetFullscreen(!fullscreen);
 }

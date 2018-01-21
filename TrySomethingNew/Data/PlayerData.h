@@ -28,8 +28,8 @@ protected:
 	std::vector<ItemData*> Inventory;
 	int Money;
 	int Day;
-	ForecastWeather fweather;
-	ForecastEvent fevent;
+	ForecastWeather FWeather;
+	ForecastEvent FEvent;
 
 public:
 	PlayerData();
@@ -43,8 +43,10 @@ public:
 	void SetInventoryQty(ItemName _name, int _qty);
 
 	void GenerateForecast();
-	ForecastWeather GetWeatherForecast() { return this->fweather; }
-	ForecastEvent GetEventForecast() { return this->fevent; }
+	ForecastWeather GetWeatherForecast() { return this->FWeather; }
+	ForecastEvent GetEventForecast() { return this->FEvent; }
+	void SetWeatherForecast(ForecastWeather _weather) { this->FWeather = _weather; }
+	void SetEventForecast(ForecastEvent _event) { this->FEvent = _event; }
 
 	std::string GetName() { return this->ShopName; }
 	void SetName(std::string _name) { this->ShopName = _name; }
@@ -52,6 +54,25 @@ public:
 	void SetMoney(int _money) { this->Money = _money; }
 	int GetDay() { return this->Day; }
 	void SetDay(int _day) { this->Day = _day; }
+};
+
+class SaveFile {
+protected:
+	int Money;
+	int Day;
+	ForecastWeather FWeather;
+	ForecastEvent FEvent;
+	std::string ShopName;
+
+public:
+	SaveFile();
+	SaveFile(PlayerData _data);
+
+	std::string GetName() { return this->ShopName; }
+	int GetDay() { return this->Day; }
+	int GetMoney() { return this->Money; }
+	ForecastWeather GetWeatherForecast() { return this->FWeather; }
+	ForecastEvent GetEventForecast() { return this->FEvent; }
 };
 
 std::string GetWeatherDesc(ForecastWeather _weather);

@@ -93,20 +93,23 @@ public:
 //// MainMenu scene class
 class MainMenu : public Scene {
 protected:
-	bool ExitToTitleScreen;
-	bool StartNewGame;
-	bool LoadGame;
 
 public:
 	// Scene ctor
 	MainMenu();
 
 	// Scene funcs
-	void LoadGameObjects();
 	void SceneStart();
 	void HandleEvent(SDL_Event* Event);
 	void Update(Uint32 timeStep);
 	void Render();
+
+	// Scene Events
+	void SEvent_ExitToTitle();
+	void SEvent_NewGame();
+	void SEvent_LoadGame();
+	void SEvent_Quit();
+	void SEvent_Windowed();
 };
 
 //// Intro scene class
@@ -257,6 +260,8 @@ protected:
 		ImageData* GuideOption;
 		ImageData* LeaveOption;
 		ImageData* SaveOption;
+		// Game Saved
+		ImageData* GameSaved;
 		// Press Return for Forecast/Guide
 		ImageData* PressReturn;
 		// Forecast
@@ -288,6 +293,10 @@ protected:
 		TextBox* PosterQty;
 		TextBox* NewsAdQty;
 	} TextBoxObjects;
+
+	struct {
+		EventTimer* GameSaved;
+	} EventTimers;
 
 	struct {
 		bool ExitToTitleScreen;
@@ -346,6 +355,9 @@ public:
 	void SEvent_ExitGuide();
 	// Leave
 	void SEvent_Leave();
+	// Save
+	void SEvent_Save();
+	void SEvent_HideSaveText();
 	
 	void UpdateTotal();
 };
