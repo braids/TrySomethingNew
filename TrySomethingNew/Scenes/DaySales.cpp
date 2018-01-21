@@ -178,8 +178,23 @@ void DaySales::GenerateCustomers() {
 	int posters = this->mPlayerData->GetInventoryItem(ItemName::Item_Poster)->GetQuantity();
 	int newsAds = this->mPlayerData->GetInventoryItem(ItemName::Item_NewsAd)->GetQuantity();
 
+	// Get weather modifier
+	double weatherMod = 1.0;
+	switch(this->mPlayerData->GetWeatherForecast()) {
+	case ForecastWeather::Weather_Cloudy: 
+		weatherMod = 0.8;
+		break;
+	case ForecastWeather::Weather_Rainy:
+		weatherMod = 0.4;
+		break;
+	default:
+		break;
+	}
+
 	// Determine number of customers adjusted for advertising
 	int numCustomers = rand() % (10 + signs + (posters * 4) + (newsAds * 8)) + (1 + signs + (posters * 3) + (newsAds * 6));
+	// Mod numCustomers with weatherMod value
+	numCustomers = (int)((double)numCustomers * weatherMod);
 
 	// Get customer spawn rate
 	this->CustomerSpawnInterval = ((this->DaySegmentLength * 3) - 1000) / numCustomers;
@@ -187,7 +202,7 @@ void DaySales::GenerateCustomers() {
 	// Create n customers 
 	for (int i = 0; i < numCustomers; i++) {
 		// Store customer data
-		this->Customers.push_back(new Customer());
+		this->Customers.push_back(new Customer(this->mPlayerData->GetEventForecast()));
 		// Store customer object
 		this->CustomerObjects.push_back(new CustomerObject(this->Customers[i]->GetSide()));
 		// Store customer image
