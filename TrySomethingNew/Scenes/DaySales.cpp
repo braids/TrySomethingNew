@@ -51,10 +51,10 @@ void DaySales::LoadImagesText() {
 	// Text
 	int shopX = 140 - ((this->mPlayerData->GetName().length() * 7) / 2);
 	this->TextObjects.ShopName = this->AddDaySalesText(this->mPlayerData->GetName(), shopX, 28);
-	this->TextObjects.DayText = this->AddDaySalesText("DAY:", 7, 171);
-	this->TextObjects.DayNum = this->AddDaySalesText(std::to_string(this->mPlayerData->GetDay()), 42, 171);
-	this->TextObjects.MoneyText = this->AddDaySalesText("MONEY:", 140, 171);
-	this->TextObjects.MoneyAmt = this->AddDaySalesText(std::to_string(this->Money + this->mPlayerData->GetMoney()), 189, 171);
+	this->TextObjects.DayText = this->AddDaySalesText("DAY:", 7, 164);
+	this->TextObjects.DayNum = this->AddDaySalesText(std::to_string(this->mPlayerData->GetDay()), 42, 164);
+	this->TextObjects.MoneyText = this->AddDaySalesText("MONEY:", 140, 164);
+	this->TextObjects.MoneyAmt = this->AddDaySalesText(std::to_string(this->Money + this->mPlayerData->GetMoney()), 189, 164);
 
 	// Disable all image/text visibility
 	for (std::vector<ImageData*>::iterator it = this->mImages.begin(); it != this->mImages.end(); it++)
@@ -227,6 +227,9 @@ void DaySales::GetPurchase(Customer* _customer) {
 		purchasedItem->SubQuantity(1);
 		// Add sell price to money amount
 		this->Money += purchasedItem->GetSellPrice();
+		// Add sale to item's sales total
+		purchasedItem->AddSalesTotal(1);
+		// Set money total text
 		this->TextObjects.MoneyAmt->SetText(std::to_string(this->Money + this->mPlayerData->GetMoney()));
 	}
 }
@@ -261,8 +264,15 @@ void DaySales::SEvent_DayRuntime3() {
 }
 
 void DaySales::SEvent_DayRuntimeEnd() {
+	// Set player inventory
+	for (std::vector<ItemData*>::iterator it = this->SellItems.begin(); it != this->SellItems.end(); it++) {
+		ItemData* item = this->mPlayerData->GetInventoryItem((*it)->GetName());
+		*item = **it;
+	}
+
+	// Set player money
 	this->mPlayerData->SetMoney(this->mPlayerData->GetMoney() + this->Money);
-	this->mPlayerData->SetDay(this->mPlayerData->GetDay() + 1);
+		
 	// Leave Day Sales screen
-	this->mManager->StartScene(Scene_Market);
+	this->mManager->StartScene(Scene_SalesResults);
 }

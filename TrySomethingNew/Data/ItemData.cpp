@@ -7,8 +7,10 @@ ItemData::ItemData(ItemName _name) {
 	this->Name = _name;
 	this->Type = GetItemType(this->GetName());
 	this->Quantity = 0;
+	this->BoughtQuantity = 0;
 	this->BuyPrice = GetItemBuyPrice(this->GetName());
 	this->SellPrice = 0;
+	this->SalesTotal = 0;
 }
 
 ItemType GetItemType(ItemData* _item) {

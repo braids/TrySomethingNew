@@ -19,6 +19,10 @@ ItemData* PlayerData::GetInventoryItem(ItemName _name) {
 	return GetItemFromVector(_name, &this->Inventory);
 }
 
+void PlayerData::ClearInventory() {
+	this->Inventory = *GetInitialItemVector();
+}
+
 bool PlayerData::HasInventoryItem(ItemName _name) {
 	return (this->GetInventoryItem(_name)->GetQuantity() > 0) ? true : false;
 }
@@ -28,7 +32,7 @@ void PlayerData::SetInventoryQty(ItemName _name, int _qty) {
 }
 
 void PlayerData::GenerateForecast() {
-	switch (rand() % 4) {
+	switch (rand() % 6) {
 	case 1:
 		this->fweather = ForecastWeather::Weather_Cloudy;
 		break;
@@ -40,7 +44,7 @@ void PlayerData::GenerateForecast() {
 		break;
 	}
 
-	switch (rand() % 8) {
+	switch (rand() % 10) {
 	case 1:
 		this->fevent = ForecastEvent::Event_EConcert;
 		break;

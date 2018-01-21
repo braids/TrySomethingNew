@@ -22,6 +22,7 @@ class Intro;
 class Market;
 class SetPrices;
 class DaySales;
+class SalesResults;
 
 //// Scene name enum
 enum SceneName {
@@ -30,7 +31,8 @@ enum SceneName {
 	Scene_Intro,		// Intro
 	Scene_Market,		// Market
 	Scene_SetPrices,	// Set Prices
-	Scene_DaySales		// Day Sales
+	Scene_DaySales,		// Day Sales
+	Scene_SalesResults	// Sales Results
 };
 
 //// Scene class
@@ -498,6 +500,46 @@ public:
 	void SEvent_DayRuntime2();
 	void SEvent_DayRuntime3();
 	void SEvent_DayRuntimeEnd();
+};
+
+class SalesResults : public Scene {
+protected:
+	// Sales Results screen text and text boxes
+	std::vector<ImageData*> SalesResultsText;
+	std::vector<ItemData*> SellItems;
+
+	struct {
+		ImageData* PlayerMoneyAmount;
+	} TextObjects;
+
+	struct {
+		bool ExitToTitleScreen;
+		bool ExitResults;
+	} EventFlags;
+
+public:
+	// Scene ctor
+	SalesResults();
+
+	// Scene funcs
+	void ResetFlags();
+	void LoadGameObjects();
+	void LoadEventTimers();
+	void LoadImagesText();
+	void SceneStart();
+	void HandleEvent(SDL_Event* Event);
+	void Update(Uint32 timeStep);
+	void Render();
+
+	// SalesResults funcs
+	ImageData* AddSalesResultsText(std::string _text, int _x, int _y);
+	void GetCurrentPlayerInventory();
+
+	//// Events
+	// Show/Hide Events
+	void SEvent_ShowSalesResultsText();
+	void SEvent_HideSalesResultsText();
+	void SEvent_NextDay();
 };
 
 #endif
