@@ -20,8 +20,12 @@ SceneManager::SceneManager() {
 
 SceneManager::~SceneManager() {
 	// Quit SDL_Mixer
+	Mix_FreeChunk(mAssets->sounds.Blip);
+	Mix_FreeChunk(mAssets->sounds.Buzz);
 	Mix_FreeMusic(mAssets->music.TitleMusic);
 	Mix_FreeMusic(mAssets->music.IntroMusic);
+	mAssets->sounds.Blip = NULL;
+	mAssets->sounds.Buzz = NULL;
 	mAssets->music.TitleMusic = NULL;
 	mAssets->music.IntroMusic = NULL;
 	Mix_Quit();

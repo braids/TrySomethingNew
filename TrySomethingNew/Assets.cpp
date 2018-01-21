@@ -31,6 +31,7 @@ void Assets::LoadAssets() {
 	for (int i = 0; i < 4; i++) this->images.ECustomer[i] = { Assets::Instance()->GetTexture("ecustomer_walk.png"), Graphics::CreateRect(14, 27, i * 14, 0) };
 	for (int i = 0; i < 4; i++) this->images.WCustomer[i] = { Assets::Instance()->GetTexture("wcustomer_walk.png"), Graphics::CreateRect(14, 27, i * 14, 0) };
 	this->sounds.Buzz = Assets::Instance()->GetSound("buzz.wav");
+	this->sounds.Blip = Assets::Instance()->GetSound("blip.wav");
 	this->music.TitleMusic = Assets::Instance()->GetMusic("title.ogg");
 	this->music.IntroMusic = Assets::Instance()->GetMusic("intro.ogg");
 	this->fonts.PrintChar21_8 = Assets::Instance()->GetFont("PrintChar21.ttf", 8);

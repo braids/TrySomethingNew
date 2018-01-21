@@ -55,6 +55,7 @@ public:
 
 	struct Sounds {
 		Mix_Chunk* Buzz;
+		Mix_Chunk* Blip;
 	} sounds;
 
 	struct Music {

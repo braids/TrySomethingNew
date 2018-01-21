@@ -171,21 +171,32 @@ void Market::HandleEvent(SDL_Event * Event) {
 	switch (Event->type) {
 	case SDL_KEYDOWN:
 		//// Exit event
-		if (Event->key.keysym.sym == SDLK_ESCAPE) 
+		if (Event->key.keysym.sym == SDLK_ESCAPE) {
+			Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 			this->EventFlags.ExitToTitleScreen = true;
+		}
 		
 		//// Main selection
 		if (this->EventFlags.MainSelection) {
-			if (Event->key.keysym.sym == SDLK_b)
+			if (Event->key.keysym.sym == SDLK_b) {
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 				this->SEvent_SelectBuy();
-			if (Event->key.keysym.sym == SDLK_f)
+			}
+			if (Event->key.keysym.sym == SDLK_f) {
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 				this->SEvent_SelectForecast();
-			if (Event->key.keysym.sym == SDLK_g)
+			}
+			if (Event->key.keysym.sym == SDLK_g) {
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 				this->SEvent_SelectGuide();
-			if (Event->key.keysym.sym == SDLK_l)
+			}
+			if (Event->key.keysym.sym == SDLK_l) {
 				this->SEvent_Leave();
-			if (Event->key.keysym.sym == SDLK_s)
+			}
+			if (Event->key.keysym.sym == SDLK_s) {
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 				this->SEvent_Save();
+			}
 		}
 
 		//// Buy
@@ -197,15 +208,19 @@ void Market::HandleEvent(SDL_Event * Event) {
 		if (this->EventFlags.EnterItemQty) {
 			if(Event->key.keysym.sym == SDLK_BACKSPACE)
 				this->ActiveBuySelection->DeleteText();
-			if (Event->key.keysym.sym == SDLK_RETURN)
+			if (Event->key.keysym.sym == SDLK_RETURN) {
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 				this->SEvent_EndItemQtyEntry();
+			}
 		}
 
 		//// Forecast
 		// Exiting Forecast screen
 		if (this->EventFlags.ShowForecast) {
-			if (Event->key.keysym.sym == SDLK_RETURN)
+			if (Event->key.keysym.sym == SDLK_RETURN) {
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 				this->SEvent_ExitForecast();
+			}
 		}
 
 		//// Guide
@@ -215,8 +230,10 @@ void Market::HandleEvent(SDL_Event * Event) {
 		}
 		// Exiting Guide screen
 		if (this->EventFlags.ShowGuide) {
-			if (Event->key.keysym.sym == SDLK_RETURN)
+			if (Event->key.keysym.sym == SDLK_RETURN) {
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 				this->SEvent_ExitGuide();
+			}
 		}
 
 		break;
@@ -362,6 +379,7 @@ void Market::SEvent_SetBuyItem(SDL_Keycode _key) {
 		this->EventFlags.SelectBuyItem = false;
 		this->TextObjects.SelectItem->SetVisible(false);
 		this->EventFlags.MainSelection = true;
+		Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 		return;
 		break;
 	default:
@@ -369,7 +387,7 @@ void Market::SEvent_SetBuyItem(SDL_Keycode _key) {
 		return;
 		break;
 	}
-	
+	Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 	// Move into quantity entry state
 	this->EventFlags.SelectBuyItem = false;
 	this->EventFlags.EnterItemQty = true;
@@ -468,6 +486,7 @@ void Market::SEvent_SetGuideItem(SDL_Keycode _key) {
 		this->EventFlags.SelectGuideItem = false;
 		this->TextObjects.SelectItem->SetVisible(false);
 		this->EventFlags.MainSelection = true;
+		Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 		return;
 		break;
 	default:
@@ -475,6 +494,7 @@ void Market::SEvent_SetGuideItem(SDL_Keycode _key) {
 		return;
 		break;
 	}
+	Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 
 	// Move into guide display state
 	this->EventFlags.SelectGuideItem = false;
@@ -518,7 +538,7 @@ void Market::SEvent_Leave() {
 			this->mPlayerData->GetInventoryItem((*it)->GetName())->SetQuantity((*it)->GetQuantity());
 			this->mPlayerData->GetInventoryItem((*it)->GetName())->SetBoughtQuantity((*it)->GetQuantity());
 		}
-
+		Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 		// Set player money
 		this->mPlayerData->SetMoney(this->mPlayerData->GetMoney() - this->BuyTotal);
 		

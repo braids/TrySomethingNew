@@ -84,10 +84,14 @@ void SalesResults::HandleEvent(SDL_Event * Event) {
 	switch (Event->type) {
 	case SDL_KEYDOWN:
 		//// Exit event
-		if (Event->key.keysym.sym == SDLK_ESCAPE)
+		if (Event->key.keysym.sym == SDLK_ESCAPE) {
+			Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 			this->EventFlags.ExitToTitleScreen = true;
-		if (Event->key.keysym.sym == SDLK_RETURN)
+		}
+		if (Event->key.keysym.sym == SDLK_RETURN) {
+			Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 			(this->EventFlags.GameOver) ? this->SEvent_GameOver_TitleScreen() : this->SEvent_LoseCheck();
+		}
 		break;
 
 	case SDL_KEYUP:

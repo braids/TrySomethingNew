@@ -188,6 +188,7 @@
     <Image Include="res\img\wcustomer_walk.png" />
   </ItemGroup>
   <ItemGroup>
+    <Media Include="res\snd\blip.wav" />
     <Media Include="res\snd\buzz.wav" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

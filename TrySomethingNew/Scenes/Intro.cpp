@@ -91,22 +91,28 @@ void Intro::SceneStart() {
 void Intro::HandleEvent(SDL_Event * Event) {
 	switch (Event->type) {
 	case SDL_KEYDOWN:
-		if (Event->key.keysym.sym == SDLK_ESCAPE) 
+		if (Event->key.keysym.sym == SDLK_ESCAPE) {
+			Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 			this->EventFlags.ExitToTitleScreen = true;
+		}
 		if (Event->key.keysym.sym == SDLK_RETURN) {
 			if (this->EventFlags.IntroScreen2) {
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 				// Skip Intro Screen 2
 				this->SEvent_IntroScreen2_Skip();
 			}
 			else if (this->EventFlags.IntroScreen3) {
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 				// Skip Intro Screen 3
 				this->SEvent_IntroScreen3_Skip();
 			}
 			else if (this->EventFlags.EditName) {
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 				// Name shop (if text entered) and show blurb
 				this->SEvent_ShopNamed();
 			}
 			else if (this->EventFlags.ShopNamed) {
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 				// Switch to Market screen
 				this->SEvent_ToMarket();
 			}
