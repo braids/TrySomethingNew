@@ -55,6 +55,7 @@ bool SceneManager::Init() {
 	this->AddScene(new Intro());
 	this->AddScene(new Market());
 	this->AddScene(new SetPrices());
+	this->AddScene(new DaySales());
 
 	// Initialize scenes
 	for (int i = 0; i < (int) this->sceneList.size(); i++)

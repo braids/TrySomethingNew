@@ -26,6 +26,8 @@
     <None Include="res\snd\intro.ogg" />
     <None Include="res\snd\title.ogg" />
     <None Include="res\snd\market.ogg" />
+    <None Include="libvorbis-0.dll" />
+    <None Include="libvorbisfile-3.dll" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Assets.cpp">
@@ -73,6 +75,15 @@
     <ClCompile Include="Scenes\SetPrices.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Scenes\DaySales.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\Customer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObjects\CustomerObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Assets.h">
@@ -105,6 +116,9 @@
     <ClInclude Include="Data\ItemData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Data\Customer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Font Include="res\font\PrintChar21.ttf" />
@@ -114,6 +128,30 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="res\img\title.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\img\wall1.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\img\wall2.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\img\shack1.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\img\shack2.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\img\shack3.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\img\customer_stand.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\img\ecustomer_walk.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\img\wcustomer_walk.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

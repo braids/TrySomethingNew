@@ -37,7 +37,7 @@ void SetPrices::LoadImagesText() {
 	//// Text objects
 	
 	// Item listings
-	for (int i = 0; i < (int) this->SellItems.capacity(); i++) {
+	for (int i = 0; i < (int) this->SellItems.size(); i++) {
 		int menuNum = i + 1;
 		int y = 36 + (i * 9);
 		// Add menu number and name
@@ -264,7 +264,7 @@ void SetPrices::SEvent_SelectSell() {
 void SetPrices::SEvent_SetSellItem(SDL_Keycode _key) {
 	int keyValue = this->KeycodeNumValue(_key);
 	
-	if (keyValue >= 1 && keyValue <= (int) this->SellItems.capacity()) {
+	if (keyValue >= 1 && keyValue <= (int) this->SellItems.size()) {
 		// Set active item if valid selection
 		this->ActiveSellSelection = this->ItemTextBoxObjects[keyValue - 1];
 		this->ActiveItemData = this->SellItems[keyValue - 1];
@@ -336,7 +336,7 @@ void SetPrices::SEvent_SetGuideItem(SDL_Keycode _key) {
 	// Select item to view description of
 	int keyValue = this->KeycodeNumValue(_key);
 
-	if (keyValue >= 1 && keyValue <= (int) this->SellItems.capacity()) {
+	if (keyValue >= 1 && keyValue <= (int) this->SellItems.size()) {
 		this->TextObjects.GuideText->SetText(GetItemGuideDesc(this->SellItems[keyValue - 1]->GetName()));
 	}
 	else if (_key == SDLK_RETURN) {
@@ -377,5 +377,5 @@ void SetPrices::SEvent_OpenShop() {
 		this->mPlayerData->GetInventoryItem((*it)->GetName())->SetSellPrice((*it)->GetSellPrice());
 	
 	// Leave Set Price screen
-	this->EventFlags.ExitToTitleScreen = true;
+	this->mManager->StartScene(Scene_DaySales);
 }
