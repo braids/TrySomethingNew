@@ -531,6 +531,7 @@ protected:
 	struct {
 		bool ExitToTitleScreen;
 		bool ExitResults;
+		bool GameOver;
 	} EventFlags;
 
 public:
@@ -539,8 +540,6 @@ public:
 
 	// Scene funcs
 	void ResetFlags();
-	void LoadGameObjects();
-	void LoadEventTimers();
 	void LoadImagesText();
 	void SceneStart();
 	void HandleEvent(SDL_Event* Event);
@@ -555,6 +554,8 @@ public:
 	// Show/Hide Events
 	void SEvent_ShowSalesResultsText();
 	void SEvent_HideSalesResultsText();
+	void SEvent_LoseCheck();
+	void SEvent_GameOver_TitleScreen();
 	void SEvent_NextDay();
 };
 
