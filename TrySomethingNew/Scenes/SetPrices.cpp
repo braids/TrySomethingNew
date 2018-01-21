@@ -70,10 +70,10 @@ void SetPrices::LoadImagesText() {
 	// Press Return
 	this->TextObjects.PressReturn = this->AddText("- PRESS RETURN -", 84, 180);
 	// Forecast
-	this->TextObjects.WeatherHeader = this->AddText("WEATHER FORECAST:", 105, 9);
-	this->TextObjects.WeatherInfo = this->AddText("", 105, 9);
-	this->TextObjects.EventHeader = this->AddText("LOCAL EVENTS", 105, 9);
-	this->TextObjects.EventInfo = this->AddText("", 105, 9);
+	this->TextObjects.WeatherHeader = this->AddText("WEATHER FORECAST:", 84, 27);
+	this->TextObjects.WeatherInfo = this->AddText("", 7, 45);
+	this->TextObjects.EventHeader = this->AddText("LOCAL EVENTS:", 97, 90);
+	this->TextObjects.EventInfo = this->AddText("", 7, 108);
 	// Guide Descriptions
 	this->TextObjects.GuideText = this->AddText("", 7, 9);
 
@@ -238,10 +238,20 @@ void SetPrices::SEvent_HideSetPricesText() {
 }
 
 void SetPrices::SEvent_ShowForecast() {
+	this->TextObjects.WeatherHeader->SetVisible(true);
+	this->TextObjects.WeatherInfo->SetText(GetWeatherDesc(this->mPlayerData->GetWeatherForecast()));
+	this->TextObjects.WeatherInfo->SetVisible(true);
+	this->TextObjects.EventHeader->SetVisible(true);
+	this->TextObjects.EventInfo->SetText(GetEventDesc(this->mPlayerData->GetEventForecast()));
+	this->TextObjects.EventInfo->SetVisible(true);
 	this->TextObjects.PressReturn->SetVisible(true);
 }
 
 void SetPrices::SEvent_HideForecast() {
+	this->TextObjects.WeatherHeader->SetVisible(false);
+	this->TextObjects.WeatherInfo->SetVisible(false);
+	this->TextObjects.EventHeader->SetVisible(false);
+	this->TextObjects.EventInfo->SetVisible(false);
 	this->TextObjects.PressReturn->SetVisible(false);
 }
 

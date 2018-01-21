@@ -100,10 +100,10 @@ void Market::LoadImagesText() {
 	// Press Return
 	this->TextObjects.PressReturn = this->AddText("- PRESS RETURN -", 84, 180);
 	// Forecast
-	this->TextObjects.WeatherHeader = this->AddText("WEATHER FORECAST:", 105, 9);
-	this->TextObjects.WeatherInfo = this->AddText("", 105, 9);
-	this->TextObjects.EventHeader = this->AddText("LOCAL EVENTS", 105, 9);
-	this->TextObjects.EventInfo = this->AddText("", 105, 9);
+	this->TextObjects.WeatherHeader = this->AddText("WEATHER FORECAST:", 84, 27);
+	this->TextObjects.WeatherInfo = this->AddText("", 7, 45);
+	this->TextObjects.EventHeader = this->AddText("LOCAL EVENTS:", 97, 90);
+	this->TextObjects.EventInfo = this->AddText("", 7, 108);
 	// Guide Descriptions
 	this->TextObjects.BierDesc = this->AddText("                 BIER\n\n    GERMANS OF ALL WALKS OF LIFE ENJOY THIS ALCOHOLIC DRINK. YOU CAN BE SURE THAT ANYONE PASSING BY WILL ENJOY THIS FROSTY COLD BEVERAGE.\n\nPREFERRED BY :\n    EAST & WEST BERLINERS", 7, 9);
 	this->TextObjects.BockwurstDesc = this->AddText("               BOCKWURST\n\n    A SIMMERED SAUSAGE MADE WITH VEAL AND PORK, POPULAR IN EAST GERMANY AND OFTEN SERVED WITH A SMALL PIECE OF BREAD AND A DOLLOP OF MUSTARD. A CHEAP AND TASTY SNACK.\n\nPREFERRED BY:\n    EAST BERLINERS", 7, 9);
@@ -156,6 +156,9 @@ void Market::SceneStart() {
 
 	// Set player money text
 	this->TextObjects.PlayerMoneyAmount->SetText(std::to_string(this->mPlayerData->GetMoney()));
+
+	// Set Forecast
+	this->mPlayerData->GenerateForecast();
 }
 
 void Market::HandleEvent(SDL_Event * Event) {
@@ -265,10 +268,20 @@ void Market::SEvent_HideMarketText() {
 }
 
 void Market::SEvent_ShowForecast() {
+	this->TextObjects.WeatherHeader->SetVisible(true);
+	this->TextObjects.WeatherInfo->SetText(GetWeatherDesc(this->mPlayerData->GetWeatherForecast()));
+	this->TextObjects.WeatherInfo->SetVisible(true);
+	this->TextObjects.EventHeader->SetVisible(true);
+	this->TextObjects.EventInfo->SetText(GetEventDesc(this->mPlayerData->GetEventForecast()));
+	this->TextObjects.EventInfo->SetVisible(true);
 	this->TextObjects.PressReturn->SetVisible(true);
 }
 
 void Market::SEvent_HideForecast() {
+	this->TextObjects.WeatherHeader->SetVisible(false);
+	this->TextObjects.WeatherInfo->SetVisible(false);
+	this->TextObjects.EventHeader->SetVisible(false);
+	this->TextObjects.EventInfo->SetVisible(false);
 	this->TextObjects.PressReturn->SetVisible(false);
 }
 
