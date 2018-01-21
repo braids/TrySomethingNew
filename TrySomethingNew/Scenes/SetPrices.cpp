@@ -308,8 +308,13 @@ void SetPrices::SEvent_SetSellItem(SDL_Keycode _key) {
 }
 
 void SetPrices::SEvent_EndSellEntry() {
+	// Get price entered. Invalid input will convert to 0.
+	int price = std::atoi(this->ActiveSellSelection->GetText()->c_str());
+	if (price < 0)
+		price = 0;
+
 	// Set sell price entered. Invalid input will convert to 0.
-	this->ActiveItemData->SetSellPrice(std::atoi(this->ActiveSellSelection->GetText()->c_str()));
+	this->ActiveItemData->SetSellPrice(price);
 
 	// Set text to sanitized number.
 	this->ActiveSellSelection->SetText(std::to_string(this->ActiveItemData->GetSellPrice()));

@@ -384,7 +384,11 @@ void Market::SEvent_SetBuyItem(SDL_Keycode _key) {
 
 void Market::SEvent_EndItemQtyEntry() {
 	// Get quantity entered. Invalid input will convert to 0.
-	this->ActiveItemData->SetQuantity(std::atoi(this->ActiveBuySelection->GetText()->c_str()));
+	int qty = std::atoi(this->ActiveBuySelection->GetText()->c_str());
+	if (qty < 0) 
+		qty = 0;
+
+	this->ActiveItemData->SetQuantity(qty);
 	this->ActiveItemData->SetBoughtQuantity(this->ActiveItemData->GetQuantity());
 
 	// Set text to sanitized number.
@@ -489,6 +493,17 @@ void Market::SEvent_ExitGuide() {
 }
 
 void Market::SEvent_Leave() {
+	////Check if product bought
+	int productBought = 0;
+	// Check all non-ad items for at least one bought item
+	for (std::vector<ItemData*>::iterator it = this->BuyData.begin(); it != this->BuyData.end(); it++) {
+		if ((*it)->GetQuantity() > 0 && (*it)->GetType() != ItemType::ItemType_Ad)
+			productBought++;
+	}
+	// If nothing bought, prevent leaving.
+	if (productBought == 0)
+		return;
+
 	if (this->mPlayerData->GetMoney() >= this->BuyTotal) {
 		// Set player inventory equal to items purchased
 		for (std::vector<ItemData*>::iterator it = this->BuyData.begin(); it != this->BuyData.end(); it++) {
