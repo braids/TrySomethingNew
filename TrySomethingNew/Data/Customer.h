@@ -4,6 +4,7 @@
 
 #include <vector>
 #include "Data\ItemData.h"
+#include "Data\PlayerData.h"
 
 enum WallSide;
 class Customer;
@@ -20,7 +21,7 @@ private:
 	WallSide Side;
 
 public:
-	Customer();
+	Customer(ForecastEvent _event);
 
 	WallSide GetSide() { return this->Side; }
 	std::vector<ItemName>* PurchaseList(std::vector<ItemData*> _stock);

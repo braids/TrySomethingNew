@@ -4,8 +4,30 @@
 #include "Data\Customer.h"
 #include "Data\ItemData.h"
 
-Customer::Customer() {
-	this->Side = static_cast<WallSide>(rand() % 2); // 0 - 1 (east/west)
+Customer::Customer(ForecastEvent _event) {
+	int sideChance = rand() % 6;
+	WallSide sideChosen;
+	switch (_event) {
+	case ForecastEvent::Event_EConcert:
+		sideChosen = sideChance > 4 ? WallSide::EastBerlin : WallSide::WestBerlin;
+		break;
+	case ForecastEvent::Event_WConcert:
+		sideChosen = sideChance > 0 ? WallSide::EastBerlin : WallSide::WestBerlin;
+		break;
+	case ForecastEvent::Event_EGallery:
+		sideChosen = sideChance > 3 ? WallSide::EastBerlin : WallSide::WestBerlin;
+		break;
+	case ForecastEvent::Event_WGallery:
+		sideChosen = sideChance > 1 ? WallSide::EastBerlin : WallSide::WestBerlin;
+		break;
+	case ForecastEvent::Event_None:
+		sideChosen = sideChance > 2 ? WallSide::EastBerlin : WallSide::WestBerlin;
+		break;
+	default:
+		sideChosen = sideChance > 2 ? WallSide::EastBerlin : WallSide::WestBerlin;
+		break;
+	}
+	this->Side = sideChosen;
 }
 
 std::vector<ItemName>* Customer::PurchaseList(std::vector<ItemData*> _stock) {
