@@ -42,9 +42,9 @@ public:
 		Image Shack1;
 		Image Shack2;
 		Image Shack3;
-		// Placeholder Spritesheet images
-		Image SpriteSheet1D[1];
-		Image SpriteSheet2D[1][1];
+		Image Customer;
+		Image ECustomer[4];
+		Image WCustomer[4];
 	} images;
 
 	struct Fonts {

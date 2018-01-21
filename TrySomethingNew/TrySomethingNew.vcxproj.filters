@@ -142,5 +142,14 @@
     <Image Include="res\img\shack3.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="res\img\customer_stand.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\img\ecustomer_walk.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\img\wcustomer_walk.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

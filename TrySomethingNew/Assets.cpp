@@ -25,6 +25,9 @@ void Assets::LoadAssets() {
 	this->images.Shack1 = { Assets::Instance()->GetTexture("shack1.png"), Graphics::CreateRect(280, 96, 0, 0) };
 	this->images.Shack2 = { Assets::Instance()->GetTexture("shack2.png"), Graphics::CreateRect(280, 96, 0, 0) };
 	this->images.Shack3 = { Assets::Instance()->GetTexture("shack3.png"), Graphics::CreateRect(280, 96, 0, 0) };
+	this->images.Customer = { Assets::Instance()->GetTexture("customer_stand.png"), Graphics::CreateRect(14, 27, 0, 0) };
+	for (int i = 0; i < 4; i++) this->images.ECustomer[i] = { Assets::Instance()->GetTexture("ecustomer_walk.png"), Graphics::CreateRect(14, 27, i * 14, 0) };
+	for (int i = 0; i < 4; i++) this->images.WCustomer[i] = { Assets::Instance()->GetTexture("wcustomer_walk.png"), Graphics::CreateRect(14, 27, i * 14, 0) };
 	this->music.TitleMusic = Assets::Instance()->GetMusic("title.ogg");
 	this->music.IntroMusic = Assets::Instance()->GetMusic("intro.ogg");
 	this->fonts.PrintChar21_8 = Assets::Instance()->GetFont("PrintChar21.ttf", 8);
