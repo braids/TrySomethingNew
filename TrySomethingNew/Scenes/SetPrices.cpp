@@ -382,6 +382,11 @@ void SetPrices::SEvent_ExitGuide() {
 }
 
 void SetPrices::SEvent_OpenShop() {
+	// If all prices are not set, stay in shop.
+	for (std::vector<ItemData*>::iterator it = this->SellItems.begin(); it != this->SellItems.end(); it++) {
+		if ((*it)->GetSellPrice() <= 0)
+			return;
+	}
 	// Set player sell prices
 	for (std::vector<ItemData*>::iterator it = this->SellItems.begin(); it != this->SellItems.end(); it++)
 		this->mPlayerData->GetInventoryItem((*it)->GetName())->SetSellPrice((*it)->GetSellPrice());

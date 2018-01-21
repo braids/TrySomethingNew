@@ -150,7 +150,8 @@ void Market::SceneStart() {
 	this->SEvent_ShowMarketText();
 	this->EventFlags.MainSelection = true;
 
-	// Initialize buy vector
+	// Initialize buy vectors
+	this->mPlayerData->ClearInventory();
 	this->BuyData = *GetInitialItemVector();
 	this->BuyTotal = 0;
 
@@ -381,6 +382,7 @@ void Market::SEvent_SetBuyItem(SDL_Keycode _key) {
 void Market::SEvent_EndItemQtyEntry() {
 	// Get quantity entered. Invalid input will convert to 0.
 	this->ActiveItemData->SetQuantity(std::atoi(this->ActiveBuySelection->GetText()->c_str()));
+	this->ActiveItemData->SetBoughtQuantity(this->ActiveItemData->GetQuantity());
 
 	// Set text to sanitized number.
 	this->ActiveBuySelection->SetText(std::to_string(this->ActiveItemData->GetQuantity()));
@@ -486,8 +488,10 @@ void Market::SEvent_ExitGuide() {
 void Market::SEvent_Leave() {
 	if (this->mPlayerData->GetMoney() >= this->BuyTotal) {
 		// Set player inventory equal to items purchased
-		for (std::vector<ItemData*>::iterator it = this->BuyData.begin(); it != this->BuyData.end(); it++)
+		for (std::vector<ItemData*>::iterator it = this->BuyData.begin(); it != this->BuyData.end(); it++) {
 			this->mPlayerData->GetInventoryItem((*it)->GetName())->SetQuantity((*it)->GetQuantity());
+			this->mPlayerData->GetInventoryItem((*it)->GetName())->SetBoughtQuantity((*it)->GetQuantity());
+		}
 
 		// Set player money
 		this->mPlayerData->SetMoney(this->mPlayerData->GetMoney() - this->BuyTotal);

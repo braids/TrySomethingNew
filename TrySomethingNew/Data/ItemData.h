@@ -32,8 +32,10 @@ protected:
 	ItemName	Name;
 	ItemType	Type;
 	int			Quantity;
+	int			BoughtQuantity;
 	int			BuyPrice;
 	int			SellPrice;
+	int			SalesTotal;
 
 public:
 	ItemData(ItemName _name);
@@ -41,12 +43,16 @@ public:
 	ItemName GetName() { return this->Name; }
 	ItemType GetType() { return this->Type; }
 	int GetQuantity() { return this->Quantity; }
+	int GetBoughtQuantity() { return this->BoughtQuantity; }
 	int GetBuyPrice() { return this->BuyPrice; }
 	int GetSellPrice() { return this->SellPrice; }
+	int GetSalesTotal() { return this->SalesTotal; }
 	void SetQuantity(int _qty) { this->Quantity = _qty; }
 	void AddQuantity(int _qty) { this->Quantity += _qty; }
 	void SubQuantity(int _qty) { this->Quantity -= _qty; }
+	void SetBoughtQuantity(int _qty) { this->BoughtQuantity = _qty; }
 	void SetSellPrice(int _price) { this->SellPrice = _price; }
+	void AddSalesTotal(int _purchase) { this->SalesTotal += _purchase; }
 };
 
 ItemType GetItemType(ItemData* _item);

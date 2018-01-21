@@ -37,6 +37,7 @@ public:
 	void ResetPlayerData();
 
 	std::vector<ItemData*>* GetInventory() { return &this->Inventory; }
+	void ClearInventory();
 	ItemData* GetInventoryItem(ItemName _name);
 	bool HasInventoryItem(ItemName _name);
 	void SetInventoryQty(ItemName _name, int _qty);

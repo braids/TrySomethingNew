@@ -84,6 +84,9 @@
     <ClCompile Include="GameObjects\CustomerObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Scenes\SalesResults.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Assets.h">
