@@ -93,16 +93,32 @@ public:
 //// MainMenu scene class
 class MainMenu : public Scene {
 protected:
+	std::vector<ImageData*> MainMenuText;
+	std::vector<ImageData*> CreditsImagesText;
+	
+	struct {
+		ImageData* JamLogo;
+		ImageData* ThemeLogo;
+	} Images;
+	
+	struct {
+		bool Credits;
+	} EventFlags;
 
 public:
 	// Scene ctor
 	MainMenu();
 
 	// Scene funcs
+	void ResetFlags();
+	void LoadImagesText();
 	void SceneStart();
 	void HandleEvent(SDL_Event* Event);
 	void Update(Uint32 timeStep);
 	void Render();
+
+	void SEvent_ShowCredits();
+	void SEvent_ShowMainMenu();
 
 	// Scene Events
 	void SEvent_ExitToTitle();

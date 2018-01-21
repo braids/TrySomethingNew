@@ -11,13 +11,56 @@ MainMenu::MainMenu() {
 	this->SetSceneName(Scene_MainMenu);
 }
 
-void MainMenu::SceneStart() {
-	// Load text images. It's just this stuff, nothing fancy needed.
+void MainMenu::ResetFlags() {
+	this->EventFlags.Credits = false;
+}
+
+void MainMenu::LoadImagesText() {
+	// Clear any existing drawn text.
 	this->mImages.clear();
-	this->AddText("N)EW GAME", 105, 63);
-	this->AddText("L)OAD GAME", 105, 81);
-	this->AddText("Q)UIT", 105, 99);
-	this->AddText("W)INDOW MODE", 98, 171);
+	this->MainMenuText.clear();
+	this->CreditsImagesText.clear();
+
+	// Main Menu
+	this->MainMenuText.push_back(this->AddText("N)EW GAME", 105, 63));
+	this->MainMenuText.push_back(this->AddText("L)OAD GAME", 105, 81));
+	this->MainMenuText.push_back(this->AddText("Q)UIT", 105, 99));
+	this->MainMenuText.push_back(this->AddText("W)INDOW MODE", 98, 171));
+	this->MainMenuText.push_back(this->AddText("C)REDITS", 7, 171));
+
+	// Credits
+	this->CreditsImagesText.push_back(this->AddText("* * * KREDITE * * *", 77, 9));
+	this->CreditsImagesText.push_back(this->AddText("CODE/ART/MUSIC:", 91, 27));
+	this->CreditsImagesText.push_back(this->AddText("DIETING HIPPO", 98, 36));
+	this->CreditsImagesText.push_back(this->AddText("DIETINGHIPPO.ITCH.IO", 70, 45));
+	this->CreditsImagesText.push_back(this->AddText("ON TWITTER:", 105, 63));
+	this->CreditsImagesText.push_back(this->AddText("@DIETINGHIPPO", 98, 72));
+	this->CreditsImagesText.push_back(this->AddText("MADE FOR AWFUL WINTER JAM 2018", 35, 90));
+	this->CreditsImagesText.push_back(this->AddText("- PRESS RETURN -", 84, 180));
+
+	// JamLogo
+	this->Images.JamLogo = new ImageData();
+	this->Images.JamLogo->SetImage(&Assets::Instance()->images.JamLogo);
+	this->Images.JamLogo->SetDrawRectXY(14, 105);
+	this->mImages.push_back(this->Images.JamLogo);
+	this->CreditsImagesText.push_back(this->Images.JamLogo);
+	// ThemeLogo
+	this->Images.ThemeLogo = new ImageData();
+	this->Images.ThemeLogo->SetImage(&Assets::Instance()->images.ThemeLogo);
+	this->Images.ThemeLogo->SetDrawRectXY(147, 105);
+	this->mImages.push_back(this->Images.ThemeLogo);
+	this->CreditsImagesText.push_back(this->Images.ThemeLogo);
+
+	for (std::vector<ImageData*>::iterator it = this->mImages.begin(); it != this->mImages.end(); it++)
+		(*it)->SetVisible(false);
+}
+
+void MainMenu::SceneStart() {
+	this->ResetFlags();
+
+	this->LoadImagesText();
+
+	this->SEvent_ShowMainMenu();
 }
 
 void MainMenu::HandleEvent(SDL_Event* Event) {
@@ -26,18 +69,28 @@ void MainMenu::HandleEvent(SDL_Event* Event) {
 		// Return to title screen
 		if (Event->key.keysym.sym == SDLK_ESCAPE)
 			this->SEvent_ExitToTitle();
-		// Start new game
-		if (Event->key.keysym.sym == SDLK_n) 
-			this->SEvent_NewGame();
-		// Load saved game
-		if (Event->key.keysym.sym == SDLK_l) 
-			this->SEvent_LoadGame();
-		// Quit game
-		if (Event->key.keysym.sym == SDLK_q) 
-			this->SEvent_Quit();
-		// Toggle window mode
-		if (Event->key.keysym.sym == SDLK_w)
-			this->SEvent_Windowed();
+
+		if (this->EventFlags.Credits) {
+			if (Event->key.keysym.sym == SDLK_RETURN)
+				this->SEvent_ShowMainMenu();
+		}
+		else {
+			// Start new game
+			if (Event->key.keysym.sym == SDLK_n)
+				this->SEvent_NewGame();
+			// Load saved game
+			if (Event->key.keysym.sym == SDLK_l)
+				this->SEvent_LoadGame();
+			// Quit game
+			if (Event->key.keysym.sym == SDLK_q)
+				this->SEvent_Quit();
+			// Toggle window mode
+			if (Event->key.keysym.sym == SDLK_w)
+				this->SEvent_Windowed();
+			// Credits
+			if (Event->key.keysym.sym == SDLK_c)
+				this->SEvent_ShowCredits();
+		}
 		break;
 
 	case SDL_KEYUP:
@@ -56,13 +109,30 @@ void MainMenu::Render() {
 	// Render graphics to buffer
 	// If I find any game logic in here, I'll slap myself silly
 	for (int i = 0; i < (int) this->mImages.size(); i++) {
-		this->mManager->GetGraphics()->DrawTextureAtLocation(
-			this->mImages[i]->GetImage()->texture,
-			this->mImages[i]->GetImage()->rect,
-			this->mImages[i]->GetDrawRect(),
-			this->mImages[i]->GetDrawAngle()
-		);
+		if (this->mImages[i]->IsVisible())
+			this->mManager->GetGraphics()->DrawTextureAtLocation(
+				this->mImages[i]->GetImage()->texture,
+				this->mImages[i]->GetImage()->rect,
+				this->mImages[i]->GetDrawRect(),
+				this->mImages[i]->GetDrawAngle()
+			);
 	}
+}
+
+void MainMenu::SEvent_ShowCredits() {
+	this->EventFlags.Credits = true;
+	for (std::vector<ImageData*>::iterator it = this->CreditsImagesText.begin(); it != this->CreditsImagesText.end(); it++)
+		(*it)->SetVisible(true);
+	for (std::vector<ImageData*>::iterator it = this->MainMenuText.begin(); it != this->MainMenuText.end(); it++)
+		(*it)->SetVisible(false);
+}
+
+void MainMenu::SEvent_ShowMainMenu() {
+	this->EventFlags.Credits = false;
+	for (std::vector<ImageData*>::iterator it = this->CreditsImagesText.begin(); it != this->CreditsImagesText.end(); it++)
+		(*it)->SetVisible(false);
+	for (std::vector<ImageData*>::iterator it = this->MainMenuText.begin(); it != this->MainMenuText.end(); it++)
+		(*it)->SetVisible(true);
 }
 
 //// Scene Events

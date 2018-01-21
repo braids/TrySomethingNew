@@ -20,6 +20,8 @@ void Assets::Release() {
 void Assets::LoadAssets() {
 	this->images.Title = { Assets::Instance()->GetTexture("title.png"), Graphics::FullscreenRect() };
 	this->images.Blank = { Assets::Instance()->GetTexture("blank.png"), Graphics::FullscreenRect() };
+	this->images.JamLogo = { Assets::Instance()->GetTexture("JamLogo.png"), Graphics::CreateRect(124, 70, 0, 0) };
+	this->images.ThemeLogo = { Assets::Instance()->GetTexture("ThemeLogo.png"), Graphics::CreateRect(119, 70, 0, 0) };
 	this->images.Wall1 = { Assets::Instance()->GetTexture("wall1.png"), Graphics::CreateRect(280, 162, 0, 0) };
 	this->images.Wall2 = { Assets::Instance()->GetTexture("wall2.png"), Graphics::CreateRect(280, 162, 0, 0) };
 	this->images.Shack1 = { Assets::Instance()->GetTexture("shack1.png"), Graphics::CreateRect(280, 96, 0, 0) };
