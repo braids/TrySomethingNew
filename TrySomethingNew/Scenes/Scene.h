@@ -120,11 +120,12 @@ protected:
 	struct {
 		ImageData* OpeningDate;
 		ImageData* OpeningLocation;
-		ImageData* IntroText1;
-		ImageData* IntroText2;
+		ImageData* IntroScreen2;
+		ImageData* IntroScreen3;
 		ImageData* SettingBlurb;
 		ImageData* EnterShopName;
 		ImageData* ShopIsSetUp;
+		ImageData* PressReturn;
 	} TextObjects;
 	
 	struct {
@@ -132,15 +133,16 @@ protected:
 	} TextBoxObjects;
 	
 	struct {
-		EventTimer* IntroDate1;
-		EventTimer* IntroDate2;
-		EventTimer* IntroText1;
-		EventTimer* IntroText2;
-		EventTimer* ToMarket;
+		EventTimer* IntroScreen1_Date;
+		EventTimer* IntroScreen1_Location;
+		EventTimer* IntroScreen2;
+		EventTimer* IntroScreen3;
 	} EventTimers;
 	
 	struct {
 		bool ExitToTitleScreen;
+		bool IntroScreen2;
+		bool IntroScreen3;
 		bool EditName;
 		bool ShopNamed;
 	} EventFlags;
@@ -151,7 +153,6 @@ public:
 
 	// Scene funcs
 	void ResetFlags();
-	void LoadGameObjects();
 	void LoadEventTimers();
 	void LoadImagesText();
 	void SceneStart();
@@ -160,10 +161,13 @@ public:
 	void Render();
 
 	// Scene Events
-	void SEvent_1();
-	void SEvent_2();
-	void SEvent_3();
-	void SEvent_4();
+	void SEvent_IntroScreen1_ShowLocation();
+	void SEvent_IntroScreen2_Show();
+	void SEvent_IntroScreen2_Skip();
+	void SEvent_IntroScreen3_Show();
+	void SEvent_IntroScreen3_Skip();
+	void SEvent_NameEntryScreen_Show();
+	void SEvent_ShopNamed();
 	void SEvent_ToMarket();
 };
 
