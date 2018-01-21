@@ -37,6 +37,8 @@ public:
 	struct Images {
 		Image Title;
 		Image Blank;
+		Image JamLogo;
+		Image ThemeLogo;
 		Image Wall1;
 		Image Wall2;
 		Image Shack1;
