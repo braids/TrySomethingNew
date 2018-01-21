@@ -23,9 +23,10 @@ void TitleScreen::HandleEvent(SDL_Event * Event) {
 	case SDL_KEYDOWN:
 		if (Event->key.keysym.sym == SDLK_ESCAPE) this->mManager->quitGame = true;
 
-		if (Event->key.keysym.sym == SDLK_RETURN) this->StartMainMenu = true;
-
-		if (Event->key.keysym.sym == SDLK_r && Event->key.repeat == 0) this->SceneStart();
+		if (Event->key.keysym.sym == SDLK_RETURN) {
+			Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
+			this->StartMainMenu = true;
+		}
 
 		break;
 

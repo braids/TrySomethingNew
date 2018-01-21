@@ -67,29 +67,42 @@ void MainMenu::HandleEvent(SDL_Event* Event) {
 	switch (Event->type) {
 	case SDL_KEYDOWN:
 		// Return to title screen
-		if (Event->key.keysym.sym == SDLK_ESCAPE)
+		if (Event->key.keysym.sym == SDLK_ESCAPE) {
+			Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 			this->SEvent_ExitToTitle();
+		}
 
 		if (this->EventFlags.Credits) {
-			if (Event->key.keysym.sym == SDLK_RETURN)
+			if (Event->key.keysym.sym == SDLK_RETURN) {
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 				this->SEvent_ShowMainMenu();
+			}
 		}
 		else {
 			// Start new game
-			if (Event->key.keysym.sym == SDLK_n)
+			if (Event->key.keysym.sym == SDLK_n) {
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 				this->SEvent_NewGame();
+			}
 			// Load saved game
-			if (Event->key.keysym.sym == SDLK_l)
+			if (Event->key.keysym.sym == SDLK_l) {
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 				this->SEvent_LoadGame();
+			}
 			// Quit game
-			if (Event->key.keysym.sym == SDLK_q)
+			if (Event->key.keysym.sym == SDLK_q) {
 				this->SEvent_Quit();
+			}
 			// Toggle window mode
-			if (Event->key.keysym.sym == SDLK_w)
+			if (Event->key.keysym.sym == SDLK_w) {
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 				this->SEvent_Windowed();
+			}
 			// Credits
-			if (Event->key.keysym.sym == SDLK_c)
+			if (Event->key.keysym.sym == SDLK_c) {
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 				this->SEvent_ShowCredits();
+			}
 		}
 		break;
 
