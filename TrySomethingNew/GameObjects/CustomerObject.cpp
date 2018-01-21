@@ -26,7 +26,10 @@ CustomerObject::CustomerObject(WallSide _side) {
 	this->Shopping = false;
 	this->WalkOut = false;
 
+	this->WalkFrame = 0;
 	this->ShopDuration = 0;
+
+	this->WalkTimer.start();
 }
 
 void CustomerObject::SetActive(bool _active) {
@@ -57,8 +60,10 @@ void CustomerObject::Update(Uint32 ticks) {
 	if (this->Active) {
 		if (this->WalkIn) {
 			this->mPosition.SetX(this->mPosition.GetX() + (((this->Side == WallSide::EastBerlin) ? -0.2 : 0.2)) * ticks);
+			if (this->WalkTimer.getTicks() >= 100) this->UpdateAnim();
 			if ((this->Side == WallSide::EastBerlin && this->mPosition.GetX() <= this->ShopPos) ||
 				(this->Side == WallSide::WestBerlin && this->mPosition.GetX() >= this->ShopPos)) {
+				this->WalkTimer.stop();
 				this->WalkIn = false;
 				this->Shopping = true;
 				this->mImageData.SetImage(&Assets::Instance()->images.Customer);
@@ -67,6 +72,7 @@ void CustomerObject::Update(Uint32 ticks) {
 		else if (this->Shopping) {
 			this->ShopDuration += 1 * ticks;
 			if (this->ShopDuration >= this->ShopTime) {
+				this->WalkTimer.start();
 				this->Shopping = false;
 				this->WalkOut = true;
 				this->mImageData.SetImage((this->Side == WallSide::EastBerlin) ? Assets::Instance()->images.ECustomer : Assets::Instance()->images.WCustomer);
@@ -74,8 +80,10 @@ void CustomerObject::Update(Uint32 ticks) {
 		}
 		else if (this->WalkOut) {
 			this->mPosition.SetX(this->mPosition.GetX() + (((this->Side == WallSide::EastBerlin) ? -0.2 : 0.2)) * ticks);
+			if (this->WalkTimer.getTicks() >= 100) this->UpdateAnim();
 			if ((this->Side == WallSide::EastBerlin && this->mPosition.GetX() <= this->EndPos) ||
 				(this->Side == WallSide::WestBerlin && this->mPosition.GetX() >= this->EndPos)) {
+				this->WalkTimer.stop();
 				this->WalkOut = false;
 				this->Active = false;
 			}
@@ -83,4 +91,12 @@ void CustomerObject::Update(Uint32 ticks) {
 
 		SetDrawPos(this->mPosition.GetX(), this->mPosition.GetY());
 	}
+}
+
+void CustomerObject::UpdateAnim() {
+	this->WalkFrame++;
+	if (this->WalkFrame >= 4) this->WalkFrame = 0;
+	(this->Side == WallSide::EastBerlin) ? this->mImageData.SetImage(&Assets::Instance()->images.ECustomer[this->WalkFrame]) : this->mImageData.SetImage(&Assets::Instance()->images.WCustomer[this->WalkFrame]);
+	this->WalkTimer.stop();
+	this->WalkTimer.start();
 }

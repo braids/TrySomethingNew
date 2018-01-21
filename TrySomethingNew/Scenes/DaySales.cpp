@@ -75,6 +75,7 @@ void DaySales::SceneStart() {
 
 	// Start simulation
 	this->EventFlags.Simulation = true;
+	this->Money = 0;
 	this->CustomerSpawnTotal = 0;
 	this->SEvent_SpawnCustomer();
 	this->EventTimers.CustomerSpawn->StartEventTimer();

@@ -5,6 +5,7 @@
 #include "Assets.h"
 #include "Data\Customer.h"
 #include "Graphics.h"
+#include "Timer.h"
 
 // Forward dec classes
 class Position;
@@ -63,6 +64,9 @@ protected:
 	int EndPos;
 	int ShopTime = 500;
 	int ShopDuration;
+	
+	int WalkFrame;
+	Timer WalkTimer;
 
 	bool Active;
 	bool Purchased;
@@ -78,6 +82,7 @@ public:
 	bool IsShopping();
 	// Funcs
 	void Update(Uint32 ticks);
+	void UpdateAnim();
 };
 
 #endif
