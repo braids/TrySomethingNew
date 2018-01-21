@@ -26,6 +26,10 @@ void SetPrices::ResetFlags() {
 	this->EventFlags.ShowGuide = false;
 }
 
+void SetPrices::LoadEventTimers() {
+	this->EventTimers.ErrorText = this->AddEventTimer(new EventTimer(std::bind(&SetPrices::SEvent_HideErrorText, this), (Uint32)1000));
+}
+
 void SetPrices::LoadImagesText() {
 	// Clear any existing drawn text.
 	this->mImages.clear();
@@ -67,6 +71,8 @@ void SetPrices::LoadImagesText() {
 	this->AddSetPricesText("F)ORECAST", 84, 180);
 	this->AddSetPricesText("G)UIDE", 154, 180);
 	this->AddSetPricesText("O)PEN SHOP", 203, 180);
+	// Error
+	this->TextObjects.ErrSetPrice = this->AddText("- SET PRICE(S) -", 84, 171);
 	// Press Return
 	this->TextObjects.PressReturn = this->AddText("- PRESS RETURN -", 84, 180);
 	// Forecast
@@ -87,6 +93,9 @@ void SetPrices::SceneStart() {
 
 	// Reset Flags
 	this->ResetFlags();
+
+	// Load event timers
+	this->LoadEventTimers();
 
 	// Start with text entry off
 	SDL_StopTextInput();
@@ -389,8 +398,12 @@ void SetPrices::SEvent_ExitGuide() {
 void SetPrices::SEvent_OpenShop() {
 	// If all prices are not set, stay in shop.
 	for (std::vector<ItemData*>::iterator it = this->SellItems.begin(); it != this->SellItems.end(); it++) {
-		if ((*it)->GetSellPrice() <= 0)
+		if ((*it)->GetSellPrice() <= 0) {
+			this->TextObjects.ErrSetPrice->SetVisible(true);
+			this->EventTimers.ErrorText->StartEventTimer();
+			Mix_PlayChannel(1, Assets::Instance()->sounds.Buzz, 0);
 			return;
+		}
 	}
 	// Set player sell prices
 	for (std::vector<ItemData*>::iterator it = this->SellItems.begin(); it != this->SellItems.end(); it++)
@@ -398,4 +411,8 @@ void SetPrices::SEvent_OpenShop() {
 	
 	// Leave Set Price screen
 	this->mManager->StartScene(Scene_DaySales);
+}
+
+void SetPrices::SEvent_HideErrorText() {
+	this->TextObjects.ErrSetPrice->SetVisible(false);
 }

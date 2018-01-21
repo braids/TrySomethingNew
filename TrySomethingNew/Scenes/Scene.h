@@ -278,6 +278,9 @@ protected:
 		ImageData* SaveOption;
 		// Game Saved
 		ImageData* GameSaved;
+		// Errors
+		ImageData* ErrBuyItem;
+		ImageData* ErrNoMoney;
 		// Press Return for Forecast/Guide
 		ImageData* PressReturn;
 		// Forecast
@@ -312,6 +315,7 @@ protected:
 
 	struct {
 		EventTimer* GameSaved;
+		EventTimer* ErrorText;
 	} EventTimers;
 
 	struct {
@@ -374,6 +378,8 @@ public:
 	// Save
 	void SEvent_Save();
 	void SEvent_HideSaveText();
+	// Error
+	void SEvent_HideErrorText();
 	
 	void UpdateTotal();
 };
@@ -396,6 +402,8 @@ protected:
 		// Selection
 		ImageData* SelectItem;
 		ImageData* EnterPrice;
+		// Error
+		ImageData* ErrSetPrice;
 		// Press Return for Forecast/Guide
 		ImageData* PressReturn;
 		// Forecast
@@ -406,6 +414,10 @@ protected:
 		// Guide
 		ImageData* GuideText;
 	} TextObjects;
+
+	struct {
+		EventTimer* ErrorText;
+	} EventTimers;
 
 	struct {
 		bool ExitToTitleScreen;
@@ -423,6 +435,7 @@ public:
 
 	// Scene funcs
 	void ResetFlags();
+	void LoadEventTimers();
 	void LoadImagesText();
 	void SceneStart();
 	void HandleEvent(SDL_Event* Event);
@@ -456,6 +469,8 @@ public:
 	void SEvent_ExitGuide();
 	// Leave
 	void SEvent_OpenShop();
+	// Error
+	void SEvent_HideErrorText();
 };
 
 class DaySales : public Scene {

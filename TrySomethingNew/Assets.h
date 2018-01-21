@@ -54,7 +54,7 @@ public:
 	} fonts;
 
 	struct Sounds {
-		Mix_Chunk* ExampleSound;
+		Mix_Chunk* Buzz;
 	} sounds;
 
 	struct Music {

@@ -33,6 +33,7 @@ void Market::LoadEventTimers() {
 
 	// Init event timers
 	this->EventTimers.GameSaved = this->AddEventTimer(new EventTimer(std::bind(&Market::SEvent_HideSaveText, this), (Uint32)1000));
+	this->EventTimers.ErrorText = this->AddEventTimer(new EventTimer(std::bind(&Market::SEvent_HideErrorText, this), (Uint32)1000));
 }
 
 void Market::LoadImagesText() {
@@ -99,6 +100,9 @@ void Market::LoadImagesText() {
 	this->TextObjects.GuideOption = this->AddMarketText("G)UIDE", 126, 180);
 	this->TextObjects.LeaveOption = this->AddMarketText("L)EAVE", 182, 180);
 	this->TextObjects.SaveOption = this->AddMarketText("S)AVE", 238, 180);
+	// Error text
+	this->TextObjects.ErrBuyItem = this->AddText("- BUY FOOD/NEWS -", 84, 171);
+	this->TextObjects.ErrNoMoney = this->AddText("- NOT ENOUGH MONEY -", 70, 171);
 	// Game Saved
 	this->TextObjects.GameSaved = this->AddText("- GAME SAVED -", 91, 171);
 	// Press Return
@@ -501,8 +505,12 @@ void Market::SEvent_Leave() {
 			productBought++;
 	}
 	// If nothing bought, prevent leaving.
-	if (productBought == 0)
+	if (productBought == 0) {
+		this->TextObjects.ErrBuyItem->SetVisible(true);
+		this->EventTimers.ErrorText->StartEventTimer();
+		Mix_PlayChannel(1, Assets::Instance()->sounds.Buzz, 0);
 		return;
+	}
 
 	if (this->mPlayerData->GetMoney() >= this->BuyTotal) {
 		// Set player inventory equal to items purchased
@@ -516,6 +524,11 @@ void Market::SEvent_Leave() {
 		
 		// Leave market
 		this->mManager->StartScene(Scene_SetPrices);
+	}
+	else {
+		this->TextObjects.ErrNoMoney->SetVisible(true);
+		this->EventTimers.ErrorText->StartEventTimer();
+		Mix_PlayChannel(1, Assets::Instance()->sounds.Buzz, 0);
 	}
 }
 
@@ -543,6 +556,11 @@ void Market::SEvent_Save() {
 void Market::SEvent_HideSaveText() {
 	// Set Game Saved text to false
 	this->TextObjects.GameSaved->SetVisible(false);
+}
+
+void Market::SEvent_HideErrorText() {
+	this->TextObjects.ErrBuyItem->SetVisible(false);
+	this->TextObjects.ErrNoMoney->SetVisible(false);
 }
 
 void Market::UpdateTotal() {
