@@ -50,7 +50,7 @@ void DaySales::LoadImagesText() {
 
 	// Text
 	int shopX = 140 - ((this->mPlayerData->GetName().length() * 7) / 2);
-	this->TextObjects.ShopName = this->AddDaySalesText(this->mPlayerData->GetName(), shopX, 28);
+	this->TextObjects.ShopName = this->AddDaySalesText(this->mPlayerData->GetName(), shopX, 21);
 	this->TextObjects.DayText = this->AddDaySalesText("DAY:", 7, 164);
 	this->TextObjects.DayNum = this->AddDaySalesText(std::to_string(this->mPlayerData->GetDay()), 42, 164);
 	this->TextObjects.MoneyText = this->AddDaySalesText("MONEY:", 140, 164);
