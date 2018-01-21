@@ -349,7 +349,7 @@ public:
 //// SetPrices scene class
 class SetPrices : public Scene {
 protected:
-	// Main market screen text and text boxes
+	// Set Prices screen text and text boxes
 	std::vector<ImageData*> SetPricesText;
 	std::vector<TextBox*> ItemTextBoxObjects;
 	std::vector<ItemData*> SellItems;

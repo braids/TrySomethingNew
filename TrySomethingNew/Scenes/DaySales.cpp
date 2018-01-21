@@ -124,7 +124,7 @@ void DaySales::Update(Uint32 timeStep) {
 	}
 
 	// Update customers
-	for (int i = 0; i < this->CustomerSpawnTotal; i++) {
+	for (Uint32 i = 0; i < this->CustomerSpawnTotal; i++) {
 		// Check if customers are shopping and havne't purchased yet
 		if (!this->CustomerObjects[i]->HasPurchased() && this->CustomerObjects[i]->IsShopping()) {
 			this->CustomerObjects[i]->SetPurchased(true);

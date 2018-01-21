@@ -89,7 +89,7 @@ void CustomerObject::Update(Uint32 ticks) {
 			}
 		}
 
-		SetDrawPos(this->mPosition.GetX(), this->mPosition.GetY());
+		SetDrawPos((Uint32) this->mPosition.GetX(), (Uint32) this->mPosition.GetY());
 	}
 }
 
