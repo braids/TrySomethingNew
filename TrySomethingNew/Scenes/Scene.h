@@ -446,7 +446,11 @@ protected:
 	} Images;
 
 	struct {
-
+		ImageData* ShopName;
+		ImageData* MoneyText;
+		ImageData* MoneyAmt;
+		ImageData* DayText;
+		ImageData* DayNum;
 	} TextObjects;
 
 	struct {
@@ -481,13 +485,14 @@ public:
 	void Render();
 
 	// DaySales funcs
+	ImageData* AddDaySalesText(std::string _text, int _x, int _y);
 	void GetCurrentPlayerInventory();
 	void GenerateCustomers();
 	void GetPurchase(Customer* _customer);
 
 	//// Events
 	// Show/Hide Events
-	void SEvent_HideDaySalesText();
+	void SEvent_ShowDaySalesText();
 
 	void SEvent_SpawnCustomer();
 	void SEvent_DayRuntime2();

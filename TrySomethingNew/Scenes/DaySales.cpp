@@ -41,9 +41,20 @@ void DaySales::LoadImagesText() {
 	this->Images.Shack1->SetImage(&Assets::Instance()->images.Shack1);
 	this->Images.Shack2->SetImage(&Assets::Instance()->images.Shack2);
 	this->Images.Shack3->SetImage(&Assets::Instance()->images.Shack3);
+	this->Images.Shack1->SetDrawRectY(46);
+	this->Images.Shack2->SetDrawRectY(46);
+	this->Images.Shack3->SetDrawRectY(46);
 	this->mImages.push_back(this->Images.Shack1);
 	this->mImages.push_back(this->Images.Shack2);
 	this->mImages.push_back(this->Images.Shack3);
+
+	// Text
+	int shopX = 140 - ((this->mPlayerData->GetName().length() * 7) / 2);
+	this->TextObjects.ShopName = this->AddDaySalesText(this->mPlayerData->GetName(), shopX, 28);
+	this->TextObjects.DayText = this->AddDaySalesText("DAY:", 7, 171);
+	this->TextObjects.DayNum = this->AddDaySalesText(std::to_string(this->mPlayerData->GetDay()), 42, 171);
+	this->TextObjects.MoneyText = this->AddDaySalesText("MONEY:", 140, 171);
+	this->TextObjects.MoneyAmt = this->AddDaySalesText(std::to_string(this->Money + this->mPlayerData->GetMoney()), 189, 171);
 
 	// Disable all image/text visibility
 	for (std::vector<ImageData*>::iterator it = this->mImages.begin(); it != this->mImages.end(); it++)
@@ -56,6 +67,11 @@ void DaySales::SceneStart() {
 
 	// Reset Flags
 	this->ResetFlags();
+
+	/// Set initial vars
+	this->EventFlags.Simulation = true;
+	this->Money = 0;
+	this->CustomerSpawnTotal = 0;
 
 	// Get player inventory
 	this->GetCurrentPlayerInventory();
@@ -74,12 +90,9 @@ void DaySales::SceneStart() {
 	this->Images.Shack = this->Images.Shack1;
 
 	// Start simulation
-	this->EventFlags.Simulation = true;
-	this->Money = 0;
-	this->CustomerSpawnTotal = 0;
-	this->SEvent_SpawnCustomer();
 	this->EventTimers.CustomerSpawn->StartEventTimer();
 	this->EventTimers.DayRuntime1->StartEventTimer();
+	this->SEvent_ShowDaySalesText();
 }
 
 void DaySales::HandleEvent(SDL_Event * Event) {
@@ -134,6 +147,12 @@ void DaySales::Render() {
 				this->mImages[i]->GetDrawAngle()
 			);
 	}
+}
+
+ImageData* DaySales::AddDaySalesText(std::string _text, int _x, int _y) {
+	ImageData* textImage = this->AddText(_text, _x, _y);
+	this->DaySalesText.push_back(textImage);
+	return textImage;
 }
 
 //// DaySales funcs
@@ -193,7 +212,13 @@ void DaySales::GetPurchase(Customer* _customer) {
 		purchasedItem->SubQuantity(1);
 		// Add sell price to money amount
 		this->Money += purchasedItem->GetSellPrice();
+		this->TextObjects.MoneyAmt->SetText(std::to_string(this->Money + this->mPlayerData->GetMoney()));
 	}
+}
+
+void DaySales::SEvent_ShowDaySalesText() {
+	for (std::vector<ImageData*>::iterator it = this->DaySalesText.begin(); it != this->DaySalesText.end(); it++)
+		(*it)->SetVisible(true);
 }
 
 void DaySales::SEvent_SpawnCustomer() {
@@ -222,6 +247,7 @@ void DaySales::SEvent_DayRuntime3() {
 
 void DaySales::SEvent_DayRuntimeEnd() {
 	this->mPlayerData->SetMoney(this->mPlayerData->GetMoney() + this->Money);
+	this->mPlayerData->SetDay(this->mPlayerData->GetDay() + 1);
 	// Leave Day Sales screen
 	this->mManager->StartScene(Scene_Market);
 }

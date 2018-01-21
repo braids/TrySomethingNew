@@ -17,7 +17,7 @@ CustomerObject::CustomerObject(WallSide _side) {
 		this->mImageData.SetImage(Assets::Instance()->images.WCustomer);
 	}
 
-	this->mPosition.SetPosition(this->StartPos, 54);
+	this->mPosition.SetPosition(this->StartPos, 100);
 
 	this->Active = false;
 	this->Purchased = false;

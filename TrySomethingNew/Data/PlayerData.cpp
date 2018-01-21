@@ -9,7 +9,7 @@ PlayerData::PlayerData() {
 }
 
 void PlayerData::ResetPlayerData() {
-	this->ShopName = "";
+	this->ShopName = "Test Name";
 	this->Inventory = *GetInitialItemVector();
 	this->Money = 50;
 	this->Day = 1;
