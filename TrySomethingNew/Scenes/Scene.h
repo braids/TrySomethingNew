@@ -260,6 +260,8 @@ protected:
 		ImageData* GuideOption;
 		ImageData* LeaveOption;
 		ImageData* SaveOption;
+		// Game Saved
+		ImageData* GameSaved;
 		// Press Return for Forecast/Guide
 		ImageData* PressReturn;
 		// Forecast
@@ -291,6 +293,10 @@ protected:
 		TextBox* PosterQty;
 		TextBox* NewsAdQty;
 	} TextBoxObjects;
+
+	struct {
+		EventTimer* GameSaved;
+	} EventTimers;
 
 	struct {
 		bool ExitToTitleScreen;
@@ -349,6 +355,9 @@ public:
 	void SEvent_ExitGuide();
 	// Leave
 	void SEvent_Leave();
+	// Save
+	void SEvent_Save();
+	void SEvent_HideSaveText();
 	
 	void UpdateTotal();
 };

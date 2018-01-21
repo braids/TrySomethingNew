@@ -1,8 +1,9 @@
+#include <fstream>
+#include <string>
+#include <vector>
 #include "Assets.h"
-#include "Camera.h"
 #include "Data\ItemData.h"
 #include "Data\PlayerData.h"
-#include "GameObjects\GameObject.h"
 #include "Graphics.h"
 #include "Scenes\Scene.h"
 #include "SceneManager.h"
@@ -31,6 +32,7 @@ void Market::LoadEventTimers() {
 	this->mEventTimers.clear();
 
 	// Init event timers
+	this->EventTimers.GameSaved = this->AddEventTimer(new EventTimer(std::bind(&Market::SEvent_HideSaveText, this), (Uint32)1000));
 }
 
 void Market::LoadImagesText() {
@@ -97,6 +99,8 @@ void Market::LoadImagesText() {
 	this->TextObjects.GuideOption = this->AddMarketText("G)UIDE", 126, 180);
 	this->TextObjects.LeaveOption = this->AddMarketText("L)EAVE", 182, 180);
 	this->TextObjects.SaveOption = this->AddMarketText("S)AVE", 238, 180);
+	// Game Saved
+	this->TextObjects.GameSaved = this->AddText("- GAME SAVED -", 91, 171);
 	// Press Return
 	this->TextObjects.PressReturn = this->AddText("- PRESS RETURN -", 84, 180);
 	// Forecast
@@ -157,9 +161,6 @@ void Market::SceneStart() {
 
 	// Set player money text
 	this->TextObjects.PlayerMoneyAmount->SetText(std::to_string(this->mPlayerData->GetMoney()));
-
-	// Set Forecast
-	this->mPlayerData->GenerateForecast();
 }
 
 void Market::HandleEvent(SDL_Event * Event) {
@@ -179,6 +180,8 @@ void Market::HandleEvent(SDL_Event * Event) {
 				this->SEvent_SelectGuide();
 			if (Event->key.keysym.sym == SDLK_l)
 				this->SEvent_Leave();
+			if (Event->key.keysym.sym == SDLK_s)
+				this->SEvent_Save();
 		}
 
 		//// Buy
@@ -499,6 +502,32 @@ void Market::SEvent_Leave() {
 		// Leave market
 		this->mManager->StartScene(Scene_SetPrices);
 	}
+}
+
+void Market::SEvent_Save() {
+	// Open filestream to save file
+	std::ofstream savefile(".\\TSN.sav", std::ios::binary);
+
+	// If file can't be read (permissions, doens't exist) then bail
+	if (!savefile.good())
+		return;
+
+	SaveFile* savedata = new SaveFile(*(this->mPlayerData));
+
+	// Read saved player data into current PlayerData
+	savefile.write((char*)savedata, sizeof(*savedata));
+
+	// Close filestream
+	savefile.close();
+
+	// Start GameSaved text timer and display text
+	this->EventTimers.GameSaved->StartEventTimer();
+	this->TextObjects.GameSaved->SetVisible(true);
+}
+
+void Market::SEvent_HideSaveText() {
+	// Set Game Saved text to false
+	this->TextObjects.GameSaved->SetVisible(false);
 }
 
 void Market::UpdateTotal() {

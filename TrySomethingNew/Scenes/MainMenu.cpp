@@ -1,3 +1,6 @@
+#include <fstream>
+#include <string>
+#include <vector>
 #include "Assets.h"
 #include "Graphics.h"
 #include "Scenes\Scene.h"
@@ -74,6 +77,28 @@ void MainMenu::SEvent_NewGame() {
 }
 
 void MainMenu::SEvent_LoadGame() {
+	// Open filestream to save file
+	std::ifstream savefile(".\\TSN.sav", std::ios::binary);
+
+	// If file can't be read (permissions, doens't exist) then bail
+	if (!savefile.good())
+		return;
+
+	SaveFile savedata;
+
+	// Read saved player data
+	savefile.read((char*)&savedata, sizeof(savedata));
+
+	// Close filestream
+	savefile.close();
+
+	// Load saved data into PlayerData
+	this->mPlayerData->SetName(savedata.GetName());
+	this->mPlayerData->SetMoney(savedata.GetMoney());
+	this->mPlayerData->SetDay(savedata.GetDay());
+	this->mPlayerData->SetWeatherForecast(savedata.GetWeatherForecast());
+	this->mPlayerData->SetEventForecast(savedata.GetEventForecast());
+
 	// Load saved game and open market
 	this->mManager->StartScene(Scene_Market);
 }

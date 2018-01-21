@@ -34,31 +34,31 @@ void PlayerData::SetInventoryQty(ItemName _name, int _qty) {
 void PlayerData::GenerateForecast() {
 	switch (rand() % 6) {
 	case 1:
-		this->fweather = ForecastWeather::Weather_Cloudy;
+		this->FWeather = ForecastWeather::Weather_Cloudy;
 		break;
 	case 2:
-		this->fweather = ForecastWeather::Weather_Rainy;
+		this->FWeather = ForecastWeather::Weather_Rainy;
 		break;
 	default:
-		this->fweather = ForecastWeather::Weather_Sunny;
+		this->FWeather = ForecastWeather::Weather_Sunny;
 		break;
 	}
 
 	switch (rand() % 10) {
 	case 1:
-		this->fevent = ForecastEvent::Event_EConcert;
+		this->FEvent = ForecastEvent::Event_EConcert;
 		break;
 	case 2:
-		this->fevent = ForecastEvent::Event_WConcert;
+		this->FEvent = ForecastEvent::Event_WConcert;
 		break;
 	case 3:
-		this->fevent = ForecastEvent::Event_EGallery;
+		this->FEvent = ForecastEvent::Event_EGallery;
 		break;
 	case 4:
-		this->fevent = ForecastEvent::Event_WGallery;
+		this->FEvent = ForecastEvent::Event_WGallery;
 		break;
 	default:
-		this->fevent = ForecastEvent::Event_None;
+		this->FEvent = ForecastEvent::Event_None;
 		break;
 	}
 }
@@ -91,4 +91,20 @@ std::string GetEventDesc(ForecastEvent _event) {
 	default:
 		return "    HE HAS COME HAS HAS RISEN PRAISE ZALGO.";
 	}
+}
+
+SaveFile::SaveFile() {
+	this->ShopName = "";
+	this->Money = 0;
+	this->Day = 0;
+	this->FWeather = ForecastWeather::Weather_Sunny;
+	this->FEvent = ForecastEvent::Event_None;
+}
+
+SaveFile::SaveFile(PlayerData _data) {
+	this->ShopName = _data.GetName();
+	this->Money = _data.GetMoney();
+	this->Day = _data.GetDay();
+	this->FWeather = _data.GetWeatherForecast();
+	this->FEvent = _data.GetEventForecast();
 }
