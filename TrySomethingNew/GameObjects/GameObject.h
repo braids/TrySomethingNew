@@ -2,8 +2,9 @@
 #ifndef _GAMEOBJECT_H_
 #define _GAMEOBJECT_H_
 
-#include "Graphics.h"
 #include "Assets.h"
+#include "Data\Customer.h"
+#include "Graphics.h"
 
 // Forward dec classes
 class Position;
@@ -11,7 +12,7 @@ class ImageData;
 class GameObject;
 
 enum ObjectID {
-	Object_SomeObject
+	Object_Customer
 };
 
 class Position {
@@ -37,7 +38,7 @@ public:
 
 class GameObject {
 protected:
-	Position mPosition;
+	Position	mPosition;
 	ObjectID	mObjectId;
 	ImageData	mImageData;
 	
@@ -50,15 +51,33 @@ public:
 	ObjectID GetObjectID() { return this->mObjectId; }
 	void SetDrawPos(Uint32 _x, Uint32 _y);
 	
-	virtual void Update() = 0;	
+	virtual void Update(Uint32 ticks) = 0;	
 };
 
-class SomeObject : public GameObject {
-public:
-	SomeObject();
+class CustomerObject : public GameObject {
+protected:
+	WallSide Side;
 
+	int StartPos;
+	int ShopPos;
+	int EndPos;
+	int ShopTime = 500;
+	int ShopDuration;
+
+	bool Active;
+	bool Purchased;
+	bool WalkIn;
+	bool Shopping;
+	bool WalkOut;
+
+public:
+	CustomerObject(WallSide _side);
+	void SetActive(bool _active);
+	void SetPurchased(bool _purchase);
+	bool HasPurchased();
+	bool IsShopping();
 	// Funcs
-	void Update();
+	void Update(Uint32 ticks);
 };
 
 #endif

@@ -22,13 +22,28 @@ void DaySales::ResetFlags() {
 }
 
 void DaySales::LoadEventTimers() {
-
+	this->EventTimers.CustomerSpawn = this->AddEventTimer(new EventTimer(std::bind(&DaySales::SEvent_SpawnCustomer, this), this->CustomerSpawnInterval));
+	this->EventTimers.CustomerSpawn->SetLoop(true);
+	this->EventTimers.DayRuntime1 = this->AddEventTimer(new EventTimer(std::bind(&DaySales::SEvent_DayRuntime2, this), DaySegmentLength));
+	this->EventTimers.DayRuntime2 = this->AddEventTimer(new EventTimer(std::bind(&DaySales::SEvent_DayRuntime3, this), DaySegmentLength));
+	this->EventTimers.DayRuntime3 = this->AddEventTimer(new EventTimer(std::bind(&DaySales::SEvent_DayRuntimeEnd, this), DaySegmentLength));
 }
 
 void DaySales::LoadImagesText() {
 	// Clear any existing drawn text.
 	this->mImages.clear();
 	this->DaySalesText.clear();
+
+	// Shack images
+	this->Images.Shack1 = new ImageData();
+	this->Images.Shack2 = new ImageData();
+	this->Images.Shack3 = new ImageData();
+	this->Images.Shack1->SetImage(&Assets::Instance()->images.Shack1);
+	this->Images.Shack2->SetImage(&Assets::Instance()->images.Shack2);
+	this->Images.Shack3->SetImage(&Assets::Instance()->images.Shack3);
+	this->mImages.push_back(this->Images.Shack1);
+	this->mImages.push_back(this->Images.Shack2);
+	this->mImages.push_back(this->Images.Shack3);
 
 	// Disable all image/text visibility
 	for (std::vector<ImageData*>::iterator it = this->mImages.begin(); it != this->mImages.end(); it++)
@@ -45,14 +60,25 @@ void DaySales::SceneStart() {
 	// Get player inventory
 	this->GetCurrentPlayerInventory();
 
-	// Generate customers
-	this->GenerateCustomers();
-
 	// Load Images and Text Images
 	this->LoadImagesText();
 
+	// Generate customers
+	this->GenerateCustomers();
+
+	// Load event timers
+	this->LoadEventTimers();
+
+	// Set active shack image
+	this->Images.Shack1->SetVisible(true);
+	this->Images.Shack = this->Images.Shack1;
+
 	// Start simulation
 	this->EventFlags.Simulation = true;
+	this->CustomerSpawnTotal = 0;
+	this->SEvent_SpawnCustomer();
+	this->EventTimers.CustomerSpawn->StartEventTimer();
+	this->EventTimers.DayRuntime1->StartEventTimer();
 }
 
 void DaySales::HandleEvent(SDL_Event * Event) {
@@ -82,6 +108,17 @@ void DaySales::Update(Uint32 timeStep) {
 		// Go to title.
 		this->mManager->StartScene(Scene_TitleScreen);
 	}
+
+	// Update customers
+	for (int i = 0; i < this->CustomerSpawnTotal; i++) {
+		// Check if customers are shopping and havne't purchased yet
+		if (!this->CustomerObjects[i]->HasPurchased() && this->CustomerObjects[i]->IsShopping()) {
+			this->CustomerObjects[i]->SetPurchased(true);
+			this->GetPurchase(this->Customers[i]);
+		}
+		this->CustomerObjects[i]->Update(timeStep);
+	}
+
 }
 
 void DaySales::Render() {
@@ -113,6 +150,8 @@ void DaySales::GetCurrentPlayerInventory() {
 void DaySales::GenerateCustomers() {
 	// Clear current customer vector
 	this->Customers.clear();
+	this->CustomerImages.clear();
+	this->CustomerObjects.clear();
 
 	// Get amount of advertising
 	int signs = this->mPlayerData->GetInventoryItem(ItemName::Item_Sign)->GetQuantity();
@@ -122,9 +161,20 @@ void DaySales::GenerateCustomers() {
 	// Determine number of customers adjusted for advertising
 	int numCustomers = rand() % (10 + signs + (posters * 4) + (newsAds * 8)) + (1 + signs + (posters * 3) + (newsAds * 6));
 
+	// Get customer spawn rate
+	this->CustomerSpawnInterval = ((this->DaySegmentLength * 3) - 1000) / numCustomers;
+
 	// Create n customers 
-	for (int i = 0; i < numCustomers; i++)
+	for (int i = 0; i < numCustomers; i++) {
+		// Store customer data
 		this->Customers.push_back(new Customer());
+		// Store customer object
+		this->CustomerObjects.push_back(new CustomerObject(this->Customers[i]->GetSide()));
+		// Store customer image
+		this->mImages.push_back(this->CustomerObjects[i]->GetImageData());
+		this->CustomerImages.push_back(this->CustomerObjects[i]->GetImageData());
+		this->CustomerImages[i]->SetVisible(false);
+	}
 }
 
 void DaySales::GetPurchase(Customer* _customer) {
@@ -143,4 +193,34 @@ void DaySales::GetPurchase(Customer* _customer) {
 		// Add sell price to money amount
 		this->Money += purchasedItem->GetSellPrice();
 	}
+}
+
+void DaySales::SEvent_SpawnCustomer() {
+	// If all customers spawned, stop spawning
+	if (this->CustomerSpawnTotal >= this->Customers.size()) {
+		this->EventTimers.CustomerSpawn->stop();
+	} else {
+		this->CustomerObjects[this->CustomerSpawnTotal]->SetActive(true);
+		this->CustomerSpawnTotal++;
+	}
+}
+
+void DaySales::SEvent_DayRuntime2() {
+	this->Images.Shack1->SetVisible(false);
+	this->Images.Shack2->SetVisible(true);
+	this->Images.Shack = this->Images.Shack2;
+	this->EventTimers.DayRuntime2->StartEventTimer();
+}
+
+void DaySales::SEvent_DayRuntime3() {
+	this->Images.Shack2->SetVisible(false);
+	this->Images.Shack3->SetVisible(true);
+	this->Images.Shack = this->Images.Shack3;
+	this->EventTimers.DayRuntime3->StartEventTimer();
+}
+
+void DaySales::SEvent_DayRuntimeEnd() {
+	this->mPlayerData->SetMoney(this->mPlayerData->GetMoney() + this->Money);
+	// Leave Day Sales screen
+	this->mManager->StartScene(Scene_Market);
 }

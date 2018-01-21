@@ -428,14 +428,21 @@ class DaySales : public Scene {
 protected:
 	std::vector<ImageData*> DaySalesText;
 	std::vector<ItemData*> SellItems;
-
+	
+	std::vector<ImageData*> CustomerImages;
 	std::vector<Customer*> Customers;
-
-	const Uint32 DayLength = 15000;
+	std::vector<CustomerObject*> CustomerObjects;
+	Uint32 CustomerSpawnInterval;
+	Uint32 CustomerSpawnTotal;
+	
+	const Uint32 DaySegmentLength = 5000;
 	int Money;
 
 	struct {
-
+		ImageData* Shack;
+		ImageData* Shack1;
+		ImageData* Shack2;
+		ImageData* Shack3;
 	} Images;
 
 	struct {
@@ -447,7 +454,10 @@ protected:
 	} TextBoxObjects;
 
 	struct {
-		EventTimer* DayRuntime;
+		EventTimer* CustomerSpawn;
+		EventTimer* DayRuntime1;
+		EventTimer* DayRuntime2;
+		EventTimer* DayRuntime3;
 	} EventTimers;
 
 	struct {
@@ -477,8 +487,12 @@ public:
 
 	//// Events
 	// Show/Hide Events
-	void SEvent_ShowDaySalesText();
 	void SEvent_HideDaySalesText();
+
+	void SEvent_SpawnCustomer();
+	void SEvent_DayRuntime2();
+	void SEvent_DayRuntime3();
+	void SEvent_DayRuntimeEnd();
 };
 
 #endif
