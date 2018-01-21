@@ -18,6 +18,7 @@ void SalesResults::ResetFlags() {
 	// Set flags to false
 	this->EventFlags.ExitToTitleScreen = false;
 	this->EventFlags.ExitResults = false;
+	this->EventFlags.GameOver = false;
 }
 
 void SalesResults::LoadImagesText() {
@@ -86,7 +87,7 @@ void SalesResults::HandleEvent(SDL_Event * Event) {
 		if (Event->key.keysym.sym == SDLK_ESCAPE)
 			this->EventFlags.ExitToTitleScreen = true;
 		if (Event->key.keysym.sym == SDLK_RETURN)
-			this->SEvent_NextDay();
+			(this->EventFlags.GameOver) ? this->SEvent_GameOver_TitleScreen() : this->SEvent_LoseCheck();
 		break;
 
 	case SDL_KEYUP:
@@ -150,6 +151,27 @@ void SalesResults::SEvent_ShowSalesResultsText() {
 void SalesResults::SEvent_HideSalesResultsText() {
 	for (std::vector<ImageData*>::iterator it = this->SalesResultsText.begin(); it != this->SalesResultsText.end(); it++)
 		(*it)->SetVisible(false);
+}
+
+void SalesResults::SEvent_LoseCheck() {
+	if (this->mPlayerData->GetMoney() <= 1) {
+		// Hide on-screen text
+		this->SEvent_HideSalesResultsText();
+
+		this->AddText("** DER BRUNNEN IST TROCKEN GELAUFEN **", 7, 9);
+		this->AddText("    WITH LITTLE TO NO DEUTSCHE MARKS LEFT TO YOUR NAME, YOU MUST CLOSE UP SHOP. AFTER SELLING YOUR SHACK THERE  IS ENOUGH MONEY LEFT TO RETURN HOME TO THE STATES. MAYBE IT'S FINALLY TIME TO TAKE THOSE BUSINESS CLASSES YOU ALWAYS WANTED.\n\n\n\n           AH, CAPITALISM!", 7, 27);
+		this->AddText("- PRESS RETURN -", 84, 180);
+
+		this->EventFlags.GameOver = true;
+	}
+	else {
+		this->SEvent_NextDay();
+	}
+}
+
+void SalesResults::SEvent_GameOver_TitleScreen() {
+	// Start title screen scene
+	this->mManager->StartScene(Scene_TitleScreen);
 }
 
 void SalesResults::SEvent_NextDay() {
