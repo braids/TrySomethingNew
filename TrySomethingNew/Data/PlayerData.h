@@ -62,13 +62,13 @@ protected:
 	int Day;
 	ForecastWeather FWeather;
 	ForecastEvent FEvent;
-	std::string ShopName;
+	char ShopName[26];
 
 public:
 	SaveFile();
 	SaveFile(PlayerData _data);
 
-	std::string GetName() { return this->ShopName; }
+	char* GetName() { return this->ShopName; }
 	int GetDay() { return this->Day; }
 	int GetMoney() { return this->Money; }
 	ForecastWeather GetWeatherForecast() { return this->FWeather; }

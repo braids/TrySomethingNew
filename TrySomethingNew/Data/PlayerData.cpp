@@ -94,7 +94,7 @@ std::string GetEventDesc(ForecastEvent _event) {
 }
 
 SaveFile::SaveFile() {
-	this->ShopName = "";
+	this->ShopName;
 	this->Money = 0;
 	this->Day = 0;
 	this->FWeather = ForecastWeather::Weather_Sunny;
@@ -102,7 +102,7 @@ SaveFile::SaveFile() {
 }
 
 SaveFile::SaveFile(PlayerData _data) {
-	this->ShopName = _data.GetName();
+	strcpy_s(this->ShopName, _data.GetName().c_str());
 	this->Money = _data.GetMoney();
 	this->Day = _data.GetDay();
 	this->FWeather = _data.GetWeatherForecast();
