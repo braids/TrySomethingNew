@@ -22,12 +22,18 @@ SceneManager::~SceneManager() {
 	// Quit SDL_Mixer
 	Mix_FreeChunk(mAssets->sounds.Blip);
 	Mix_FreeChunk(mAssets->sounds.Buzz);
+	Mix_FreeChunk(mAssets->sounds.Buy);
 	Mix_FreeMusic(mAssets->music.TitleMusic);
 	Mix_FreeMusic(mAssets->music.IntroMusic);
+	Mix_FreeMusic(mAssets->music.DaySalesMusic);
+	Mix_FreeMusic(mAssets->music.JazzyMusic);
 	mAssets->sounds.Blip = NULL;
 	mAssets->sounds.Buzz = NULL;
+	mAssets->sounds.Buy = NULL;
 	mAssets->music.TitleMusic = NULL;
 	mAssets->music.IntroMusic = NULL;
+	mAssets->music.DaySalesMusic = NULL;
+	mAssets->music.JazzyMusic = NULL;
 	Mix_Quit();
 	// Release/free SDL Graphics
 	Graphics::Release();

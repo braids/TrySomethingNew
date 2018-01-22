@@ -139,8 +139,8 @@ void Market::LoadImagesText() {
 
 void Market::SceneStart() {
 	// Play Market music
-	Mix_HaltMusic();
-	
+	if(!Mix_PlayingMusic())
+		Mix_PlayMusic(Assets::Instance()->music.JazzyMusic, -1);
 	// Reset Flags
 	this->ResetFlags();
 

@@ -28,6 +28,8 @@
     <None Include="res\snd\market.ogg" />
     <None Include="libvorbis-0.dll" />
     <None Include="libvorbisfile-3.dll" />
+    <None Include="res\snd\balloons.ogg" />
+    <None Include="res\snd\jazzy.ogg" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Assets.cpp">
@@ -169,6 +171,9 @@
       <Filter>Resource Files</Filter>
     </Media>
     <Media Include="res\snd\blip.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="res\snd\buy.wav">
       <Filter>Resource Files</Filter>
     </Media>
   </ItemGroup>

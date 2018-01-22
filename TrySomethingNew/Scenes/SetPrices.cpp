@@ -89,7 +89,8 @@ void SetPrices::LoadImagesText() {
 
 void SetPrices::SceneStart() {
 	// Play Market music
-	Mix_HaltMusic();
+	if(!Mix_PlayingMusic())
+		Mix_PlayMusic(Assets::Instance()->music.JazzyMusic, -1);
 
 	// Reset Flags
 	this->ResetFlags();
@@ -430,6 +431,9 @@ void SetPrices::SEvent_OpenShop() {
 	for (std::vector<ItemData*>::iterator it = this->SellItems.begin(); it != this->SellItems.end(); it++)
 		this->mPlayerData->GetInventoryItem((*it)->GetName())->SetSellPrice((*it)->GetSellPrice());
 	
+	// Stop Music
+	Mix_HaltMusic();
+
 	// Leave Set Price screen
 	this->mManager->StartScene(Scene_DaySales);
 }

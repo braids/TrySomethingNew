@@ -66,7 +66,7 @@ void SalesResults::LoadImagesText() {
 void SalesResults::SceneStart() {
 	// Play Market music
 	Mix_HaltMusic();
-
+		Mix_PlayMusic(Assets::Instance()->music.JazzyMusic, -1);
 	// Reset Flags
 	this->ResetFlags();
 

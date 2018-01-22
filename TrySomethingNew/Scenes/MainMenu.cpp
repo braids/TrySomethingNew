@@ -182,6 +182,9 @@ void MainMenu::SEvent_LoadGame() {
 	this->mPlayerData->SetWeatherForecast(savedata.GetWeatherForecast());
 	this->mPlayerData->SetEventForecast(savedata.GetEventForecast());
 
+	// Stop Music
+	Mix_HaltMusic();
+
 	// Load saved game and open market
 	this->mManager->StartScene(Scene_Market);
 }

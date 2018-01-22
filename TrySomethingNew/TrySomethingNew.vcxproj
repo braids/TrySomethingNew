@@ -127,7 +127,9 @@
     <None Include="libpng16-16.dll" />
     <None Include="libvorbis-0.dll" />
     <None Include="libvorbisfile-3.dll" />
+    <None Include="res\snd\balloons.ogg" />
     <None Include="res\snd\intro.ogg" />
+    <None Include="res\snd\jazzy.ogg" />
     <None Include="res\snd\market.ogg" />
     <None Include="res\snd\title.ogg" />
     <None Include="SDL2.dll" />
@@ -189,6 +191,7 @@
   </ItemGroup>
   <ItemGroup>
     <Media Include="res\snd\blip.wav" />
+    <Media Include="res\snd\buy.wav" />
     <Media Include="res\snd\buzz.wav" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

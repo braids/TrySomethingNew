@@ -56,11 +56,14 @@ public:
 	struct Sounds {
 		Mix_Chunk* Buzz;
 		Mix_Chunk* Blip;
+		Mix_Chunk* Buy;
 	} sounds;
 
 	struct Music {
 		Mix_Music* TitleMusic;
 		Mix_Music* IntroMusic;
+		Mix_Music* DaySalesMusic;
+		Mix_Music* JazzyMusic;
 	} music;
 };
 

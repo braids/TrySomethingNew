@@ -62,8 +62,9 @@ void DaySales::LoadImagesText() {
 }
 
 void DaySales::SceneStart() {
-	// Play Market music
+	// Play DaySales music
 	Mix_HaltMusic();
+	Mix_PlayMusic(Assets::Instance()->music.DaySalesMusic, 0);
 
 	// Reset Flags
 	this->ResetFlags();
@@ -233,6 +234,8 @@ void DaySales::GetPurchase(Customer* _customer) {
 		purchasedItem->AddSalesTotal(1);
 		// Set money total text
 		this->TextObjects.MoneyAmt->SetText(std::to_string(this->Money + this->mPlayerData->GetMoney()));
+		// Play a noise, you earned it
+		Mix_PlayChannel(3, Assets::Instance()->sounds.Buy, 0);
 	}
 }
 
@@ -271,6 +274,9 @@ void DaySales::SEvent_DayRuntimeEnd() {
 		ItemData* item = this->mPlayerData->GetInventoryItem((*it)->GetName());
 		*item = **it;
 	}
+
+	// Stop music
+	Mix_HaltMusic();
 
 	// Set player money
 	this->mPlayerData->SetMoney(this->mPlayerData->GetMoney() + this->Money);
