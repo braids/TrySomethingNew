@@ -52,7 +52,10 @@ bool SceneManager::Init() {
 	// Initialize sound
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 	Mix_AllocateChannels(16);
-
+	Mix_Volume(1, 32);
+	Mix_Volume(2, 32);
+	Mix_Volume(3, 32);
+	Mix_VolumeMusic(32);
 	// Load assets
 	mAssets->LoadAssets();
 
