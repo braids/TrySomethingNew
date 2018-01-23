@@ -120,6 +120,11 @@ void DaySales::Update(Uint32 timeStep) {
 
 	// Return to title screen if quitting
 	if (this->EventFlags.ExitToTitleScreen) {
+		// Make sure all timers are STOPPED.
+		this->EventTimers.CustomerSpawn->stop();
+		this->EventTimers.DayRuntime1->stop();
+		this->EventTimers.DayRuntime2->stop();
+		this->EventTimers.DayRuntime3->stop();
 		// Stop current music
 		Mix_HaltMusic();
 		// Go to title.
@@ -269,6 +274,9 @@ void DaySales::SEvent_DayRuntime3() {
 }
 
 void DaySales::SEvent_DayRuntimeEnd() {
+	// Stop customer timer just in case
+	this->EventTimers.CustomerSpawn->stop();
+
 	// Set player inventory
 	for (std::vector<ItemData*>::iterator it = this->SellItems.begin(); it != this->SellItems.end(); it++) {
 		ItemData* item = this->mPlayerData->GetInventoryItem((*it)->GetName());
