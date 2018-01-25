@@ -65,6 +65,7 @@ public:
 	TextBox* AddTextBox(size_t _size, int _x, int _y);
 	EventTimer* AddEventTimer(EventTimer* _eventTimer);
 	void UpdateEventTimers();
+	int KeycodeNumValue(SDL_Keycode _key);
 
 	// Scene virtual funcs
 	virtual void SceneStart() = 0;
@@ -194,88 +195,23 @@ class Market : public Scene {
 protected:
 	// Main market screen text and text boxes
 	std::vector<ImageData*> MarketText;
-	
-	TextBox*	ActiveBuySelection;
-	ItemData*	ActiveItemData;
+	std::vector<ImageData*> SubTotalText;
 	ImageData*	ActiveBuySubTotal;
-	
+	std::vector<TextBox*> ItemTextBoxObjects;
+	TextBox*	ActiveBuySelection;
 	std::vector<ItemData*>	BuyData;
-	int						BuyTotal;
-
-	ImageData*	ActiveForecastWeatherText;
-	ImageData*	ActiveForecastEventText;
-	ImageData*	ActiveGuideText;
+	ItemData*	ActiveItemData;
+	
+	int			BuyTotal;
 
 	struct {
-		int Bier = 4;
-		int Bockwurst = 2;
-		int Mettigel = 4;
-		int Currywurst = 6;
-		int StreetSheet = 3;
-		int USADAY = 7;
-		int Sign = 5;
-		int Poster = 10;
-		int NewsAd = 15;
-	} Prices;
-
-	struct {
-		// Title
-		ImageData* MarketTitle;
-		// Headers
-		ImageData* Foods;
-		ImageData* Newspapers;
-		ImageData* Ads;
-		ImageData* Cost;
-		ImageData* Qty;
-		ImageData* Total;
-		// Purchse symbols
-		ImageData* MultSigns;
-		ImageData* EqualSigns;
-		// Items
-		ImageData* BierName;
-		ImageData* BierCost;
-		ImageData* BierTotal;
-		ImageData* BockwurstName;
-		ImageData* BockwurstCost;
-		ImageData* BockwurstTotal;
-		ImageData* MettigelName;
-		ImageData* MettigelCost;
-		ImageData* MettigelTotal;
-		ImageData* CurrywurstName;
-		ImageData* CurrywurstCost;
-		ImageData* CurrywurstTotal;
-		ImageData* StreetSheetName;
-		ImageData* StreetSheetCost;
-		ImageData* StreetSheetTotal;
-		ImageData* USADAYName;
-		ImageData* USADAYCost;
-		ImageData* USADAYTotal;
-		// Ads
-		ImageData* SignName;
-		ImageData* SignCost;
-		ImageData* SignTotal;
-		ImageData* PosterName;
-		ImageData* PosterCost;
-		ImageData* PosterTotal;
-		ImageData* NewsAdName;
-		ImageData* NewsAdCost;
-		ImageData* NewsAdTotal;
 		// Total
-		ImageData* TotalText;
 		ImageData* TotalAmount;
-		ImageData* PlayerMoneyText;
 		ImageData* PlayerMoneyAmount;
-		ImageData* MoneySubTotalText;
 		ImageData* MoneySubTotalAmount;
 		// Selection
 		ImageData* SelectItem;
 		ImageData* EnterQty;
-		// Options
-		ImageData* BuyOption;
-		ImageData* ForecastOption;
-		ImageData* GuideOption;
-		ImageData* LeaveOption;
-		ImageData* SaveOption;
 		// Game Saved
 		ImageData* GameSaved;
 		// Errors
@@ -289,29 +225,8 @@ protected:
 		ImageData* EventHeader;
 		ImageData* EventInfo;
 		// Guide
-		ImageData* BierDesc;
-		ImageData* BockwurstDesc;
-		ImageData* MettigelDesc;
-		ImageData* CurrywurstDesc;
-		ImageData* StreetSheetDesc;
-		ImageData* USADAYDesc;
-		ImageData* SignDesc;
-		ImageData* PosterDesc;
-		ImageData* NewsAdDesc;
+		ImageData* GuideText;
 	} TextObjects;
-
-	struct {
-		//TextBox* Selection;
-		TextBox* BierQty;
-		TextBox* BockwurstQty;
-		TextBox* MettigelQty;
-		TextBox* CurrywurstQty;
-		TextBox* StreetSheetQty;
-		TextBox* USADAYQty;
-		TextBox* SignQty;
-		TextBox* PosterQty;
-		TextBox* NewsAdQty;
-	} TextBoxObjects;
 
 	struct {
 		EventTimer* GameSaved;
@@ -343,16 +258,9 @@ public:
 	void Render();
 
 	// Market funcs
-	ImageData* AddMarketText(std::string _text, int _x, int _y) { 
-		ImageData* textImage = this->AddText(_text, _x, _y);
-		this->MarketText.push_back(textImage);
-		return textImage; 
-	}
-	TextBox* AddMarketTextBox(Uint32 _size, int _x, int _y) {
-		TextBox* textBox = this->AddTextBox(_size, _x, _y);
-		this->MarketText.push_back(textBox);
-		return textBox;
-	}
+	ImageData* AddMarketText(std::string _text, int _x, int _y);
+	ImageData* AddSubTotalText(std::string _text, int _x, int _y);
+	TextBox* AddMarketTextBox(Uint32 _size, int _x, int _y);
 
 	//// Events
 	// Show/Hide Events
@@ -394,9 +302,6 @@ protected:
 
 	TextBox*	ActiveSellSelection;
 	ItemData*	ActiveItemData;
-
-	ImageData*	ActiveForecastWeatherText;
-	ImageData*	ActiveForecastEventText;
 
 	struct {
 		// Selection
@@ -446,8 +351,7 @@ public:
 	ImageData* AddSetPricesText(std::string _text, int _x, int _y);
 	TextBox* AddSetPricesItemBox(Uint32 _size, int _x, int _y);
 	void GetCurrentPlayerInventory();
-	int KeycodeNumValue(SDL_Keycode _key);
-
+	
 	//// Events
 	// Show/Hide Events
 	void SEvent_ShowSetPricesText();
