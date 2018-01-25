@@ -249,7 +249,6 @@ public:
 
 	// Scene funcs
 	void ResetFlags();
-	void LoadGameObjects();
 	void LoadEventTimers();
 	void LoadImagesText();
 	void SceneStart();

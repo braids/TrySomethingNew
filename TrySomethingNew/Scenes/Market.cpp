@@ -24,10 +24,6 @@ void Market::ResetFlags() {
 	this->EventFlags.ShowGuide = false;
 }
 
-void Market::LoadGameObjects() {
-	this->mGameObjects.clear();
-}
-
 void Market::LoadEventTimers() {
 	this->mEventTimers.clear();
 
@@ -37,53 +33,50 @@ void Market::LoadEventTimers() {
 }
 
 void Market::LoadImagesText() {
-	// Clear any existing drawn text.
+	// Clear any existing drawn images or text
 	this->mImages.clear();
 	this->MarketText.clear();
+	this->SubTotalText.clear();
+	this->ItemTextBoxObjects.clear();
 
-	// Image objects
-
-	// Text objects
+	//// Text objects
 	// Market Title
 	this->AddMarketText("DER MORGENMARKT", 91, 9);
 	// Purchase signs
 	this->AddMarketText("x\nx\nx\nx\n\nx\nx\n\nx\nx\nx", 196, 36);
 	this->AddMarketText("=\n=\n=\n=\n\n=\n=\n\n=\n=\n=", 231, 36);
-	// Items
+	// Headers
 	this->AddMarketText("-FOODS-", 21, 27);
 	this->AddMarketText("COST", 161, 27);
 	this->AddMarketText("QTY", 203, 27);
 	this->AddMarketText("TOTAL", 238, 27);
-	this->AddMarketText("1) BIER", 7, 36);
-	this->AddMarketText("DM 4", 161, 36);
-	this->AddSubTotalText("0", 245, 36);
-	this->AddMarketText("2) BOCKWURST", 7, 45);
-	this->AddMarketText("DM 2", 161, 45);
-	this->AddSubTotalText("0", 245, 45);
-	this->AddMarketText("3) METTIGEL", 7, 54);
-	this->AddMarketText("DM 4", 161, 54);
-	this->AddSubTotalText("0", 245, 54);
-	this->AddMarketText("4) CURRYWURST", 7, 63);
-	this->AddMarketText("DM 6", 161, 63);
-	this->AddSubTotalText("0", 245, 63);
 	this->AddMarketText("-NEWSPAPERS-", 21, 72);
-	this->AddMarketText("5) DIE STRAßENZEITUNG", 7, 81);
-	this->AddMarketText("DM 3", 161, 81);
-	this->AddSubTotalText("0", 245, 81);
-	this->AddMarketText("6) USA DAY", 7, 90);
-	this->AddMarketText("DM 7", 161, 90);
-	this->AddSubTotalText("0", 245, 90);
-	// Ads
 	this->AddMarketText("-ADS-", 21, 99);
-	this->AddMarketText("7) WOOD SIGN", 7, 108);
-	this->AddMarketText("DM 5", 161, 108);
-	this->AddSubTotalText("0", 245, 108);
-	this->AddMarketText("8) WALL POSTER", 7, 117);
-	this->AddMarketText("DM10", 161, 117);
-	this->AddSubTotalText("0", 245, 117);
-	this->AddMarketText("9) NEWSPAPER AD", 7, 126);
-	this->AddMarketText("DM15", 161, 126);
-	this->AddSubTotalText("0", 245, 126);
+	// Items
+	for (int i = 0; i < (int) this->BuyData.size(); i++) {
+		int menuNum = i + 1;
+		int y = 36 + (i * 9);
+		
+		// Offset for item sections
+		if (this->BuyData[i]->GetType() == ItemType::ItemType_Newspaper)
+			y += 9;
+		if (this->BuyData[i]->GetType() == ItemType::ItemType_Ad)
+			y += 18;
+		
+		// Add menu number and name
+		std::string menuName = std::to_string(menuNum) + ") " + GetItemString(this->BuyData[i]->GetName());
+		this->AddMarketText(menuName, 7, y);
+		
+		// Add buy price
+		std::string buyPrice = "DM" + std::to_string(this->BuyData[i]->GetBuyPrice());		
+		this->AddMarketText(buyPrice, 161, y);
+		
+		// Add purchase quantity text box
+		this->AddMarketTextBox(3, 210, y);
+		
+		// Add purchase subtotal text
+		this->AddSubTotalText("0", 245, y);
+	}
 	// Total
 	this->AddMarketText("MONEY:", 182, 144);
 	this->TextObjects.PlayerMoneyAmount = this->AddMarketText("0", 231, 144);
@@ -114,17 +107,8 @@ void Market::LoadImagesText() {
 	this->TextObjects.EventInfo = this->AddText("", 7, 108);
 	// Guide Descriptions
 	this->TextObjects.GuideText = this->AddText("", 7, 9);
-	// Buy quantity text boxes
-	this->AddMarketTextBox(2, 210, 36);
-	this->AddMarketTextBox(2, 210, 45);
-	this->AddMarketTextBox(2, 210, 54);
-	this->AddMarketTextBox(2, 210, 63);
-	this->AddMarketTextBox(2, 210, 81);
-	this->AddMarketTextBox(2, 210, 90);
-	this->AddMarketTextBox(2, 210, 108);
-	this->AddMarketTextBox(2, 210, 117);
-	this->AddMarketTextBox(2, 210, 126);
 
+	// Hide all images
 	for (std::vector<ImageData*>::iterator it = this->mImages.begin(); it != this->mImages.end(); it++)
 		(*it)->SetVisible(false);
 }
@@ -139,8 +123,11 @@ void Market::SceneStart() {
 	// Start with text entry off
 	SDL_StopTextInput();
 
-	// Load Game Objects
-	this->LoadGameObjects();
+	// Initialize buy vectors
+	this->mPlayerData->ClearInventory();
+	this->BuyData = *GetInitialItemVector();
+	this->BuyTotal = 0;
+
 	// Load Event Timers
 	this->LoadEventTimers();
 	// Load Images and Text Images
@@ -149,11 +136,6 @@ void Market::SceneStart() {
 	// Display main market text
 	this->SEvent_ShowMarketText();
 	this->EventFlags.MainSelection = true;
-
-	// Initialize buy vectors
-	this->mPlayerData->ClearInventory();
-	this->BuyData = *GetInitialItemVector();
-	this->BuyTotal = 0;
 
 	// Set player money text
 	this->TextObjects.PlayerMoneyAmount->SetText(std::to_string(this->mPlayerData->GetMoney()));
