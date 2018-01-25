@@ -59,3 +59,7 @@ void Scene::UpdateEventTimers() {
 	for (; iter != this->mEventTimers.end(); iter++)
 		if ((*iter)->isStarted()) (*iter)->Update();
 }
+
+int Scene::KeycodeNumValue(SDL_Keycode _key) {
+	return (_key >= SDLK_0 && _key <= SDLK_9) ? (int)_key - (int)SDLK_0 : -1;
+}

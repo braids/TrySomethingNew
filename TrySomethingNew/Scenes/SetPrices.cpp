@@ -247,10 +247,6 @@ void SetPrices::GetCurrentPlayerInventory() {
 		[this](ItemData* &_item) { if (_item->GetQuantity() > 0 && _item->GetType() != ItemType::ItemType_Ad) this->SellItems.push_back(_item); });
 }
 
-int SetPrices::KeycodeNumValue(SDL_Keycode _key) {
-	return (_key >= SDLK_0 && _key <= SDLK_9) ? (int) _key - (int) SDLK_0 : -1;
-}
-
 //// Scene Events
 void SetPrices::SEvent_ShowSetPricesText() {
 	for (std::vector<ImageData*>::iterator it = this->SetPricesText.begin(); it != this->SetPricesText.end(); it++)
