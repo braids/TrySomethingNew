@@ -1,9 +1,10 @@
-#include <SDL2/SDL.h>
+#include <SDL2\SDL.h>
+#include <SDL2\SDL_mixer.h>
 #include "Assets.h"
 #include "Graphics.h"
 #include "SceneManager.h"
-#include "Scenes/Scene.h"
-#include "Scenes/TitleScreen.h"
+#include "Scenes\Scene.h"
+#include "Scenes\TitleScreen.h"
 
 TitleScreen::TitleScreen() {
 	// Set current scene name

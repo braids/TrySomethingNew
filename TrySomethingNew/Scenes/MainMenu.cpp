@@ -1,9 +1,11 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <SDL2\SDL.h>
 #include "Assets.h"
 #include "Graphics.h"
 #include "Scenes\Scene.h"
+#include "Scenes\MainMenu.h"
 #include "SceneManager.h"
 
 MainMenu::MainMenu() {
