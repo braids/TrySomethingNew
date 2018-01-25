@@ -5,6 +5,7 @@
 #include "Scenes\Intro.h"
 #include "Scenes\MainMenu.h"
 #include "Scenes\Market.h"
+#include "Scenes\SalesResults.h"
 #include "Scenes\Scene.h"
 #include "Scenes\SetPrices.h"
 #include "Scenes\TitleScreen.h"
