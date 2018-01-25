@@ -172,6 +172,7 @@
     <ClInclude Include="Scenes\MainMenu.h" />
     <ClInclude Include="Scenes\Market.h" />
     <ClInclude Include="Scenes\Scene.h" />
+    <ClInclude Include="Scenes\SetPrices.h" />
     <ClInclude Include="Scenes\TitleScreen.h" />
     <ClInclude Include="TSN.h" />
     <ClInclude Include="Timer.h" />

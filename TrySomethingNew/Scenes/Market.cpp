@@ -10,6 +10,7 @@
 #include "Scenes\Market.h"
 #include "Scenes\Scene.h"
 #include "SceneManager.h"
+#include "Timer.h"
 
 Market::Market() {
 	// Set current scene name

@@ -2,9 +2,10 @@
 #include "Graphics.h"
 #include "SceneManager.h"
 #include "Scenes\Intro.h"
-#include "Scenes\Scene.h"
 #include "Scenes\MainMenu.h"
 #include "Scenes\Market.h"
+#include "Scenes\Scene.h"
+#include "Scenes\SetPrices.h"
 #include "Scenes\TitleScreen.h"
 
 SceneManager::SceneManager() {

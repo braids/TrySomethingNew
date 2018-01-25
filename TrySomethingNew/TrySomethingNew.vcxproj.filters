@@ -136,6 +136,9 @@
     <ClInclude Include="Scenes\Market.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Scenes\SetPrices.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Font Include="res\font\PrintChar21.ttf" />
