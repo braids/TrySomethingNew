@@ -1,12 +1,17 @@
 #include <algorithm>
 #include <string>
 #include <vector>
+#include <SDL2\SDL.h>
+#include <SDL2\SDL_mixer.h>
 #include "Assets.h"
 #include "Data\ItemData.h"
 #include "Data\PlayerData.h"
+#include "GameObjects\GameObject.h"
 #include "Graphics.h"
+#include "Scenes\DaySales.h"
 #include "Scenes\Scene.h"
 #include "SceneManager.h"
+#include "Timer.h"
 
 //// Scene Ctor
 DaySales::DaySales() {

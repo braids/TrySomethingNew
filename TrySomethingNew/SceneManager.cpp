@@ -1,6 +1,7 @@
 #include "Assets.h"
 #include "Graphics.h"
 #include "SceneManager.h"
+#include "Scenes\DaySales.h"
 #include "Scenes\Intro.h"
 #include "Scenes\MainMenu.h"
 #include "Scenes\Market.h"
