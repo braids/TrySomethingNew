@@ -1,15 +1,13 @@
+#include <SDL2/SDL.h>
 #include "Assets.h"
 #include "Graphics.h"
-#include "Scenes\Scene.h"
 #include "SceneManager.h"
+#include "Scenes/Scene.h"
+#include "Scenes/TitleScreen.h"
 
 TitleScreen::TitleScreen() {
 	// Set current scene name
 	this->SetSceneName(Scene_TitleScreen);
-}
-
-void TitleScreen::LoadGameObjects() {
-
 }
 
 void TitleScreen::SceneStart() {

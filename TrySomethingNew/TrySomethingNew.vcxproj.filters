@@ -124,6 +124,9 @@
     <ClInclude Include="Data\Customer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Scenes\TitleScreen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Font Include="res\font\PrintChar21.ttf" />

@@ -2,6 +2,7 @@
 #include "Graphics.h"
 #include "SceneManager.h"
 #include "Scenes\Scene.h"
+#include "Scenes\TitleScreen.h"
 
 SceneManager::SceneManager() {
 	// Set SDL Graphics NULL on creation

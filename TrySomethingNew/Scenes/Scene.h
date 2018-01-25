@@ -74,23 +74,6 @@ public:
 	virtual void Render() = 0;
 };
 
-//// Title screen scene class
-class TitleScreen : public Scene {
-protected:
-	bool StartMainMenu;
-
-public:
-	// Scene ctor
-	TitleScreen();
-
-	// Scene funcs
-	void LoadGameObjects();
-	void SceneStart();
-	void HandleEvent(SDL_Event* Event);
-	void Update(Uint32 timeStep);
-	void Render();
-};
-
 //// MainMenu scene class
 class MainMenu : public Scene {
 protected:
