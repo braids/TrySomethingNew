@@ -168,6 +168,7 @@
     <ClInclude Include="GameObjects\GameObject.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="Scenes\Intro.h" />
     <ClInclude Include="Scenes\MainMenu.h" />
     <ClInclude Include="Scenes\Scene.h" />
     <ClInclude Include="Scenes\TitleScreen.h" />

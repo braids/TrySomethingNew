@@ -1,6 +1,7 @@
 #include "Assets.h"
 #include "Graphics.h"
 #include "SceneManager.h"
+#include "Scenes\Intro.h"
 #include "Scenes\Scene.h"
 #include "Scenes\MainMenu.h"
 #include "Scenes\TitleScreen.h"
