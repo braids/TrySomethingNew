@@ -108,8 +108,9 @@ void SceneManager::Render() {
 }
 
 void SceneManager::StartScene(SceneName scene) {
-	// Cleanup current scene
-	this->mCurrent->Cleanup();
+	// Cleanup current scene if one exists
+	if(this->mCurrent != nullptr)
+		this->mCurrent->Cleanup();
 
 	// Get next scene
 	this->mNext = this->sceneList[scene];
