@@ -172,6 +172,10 @@ void Intro::Render() {
 	}
 }
 
+void Intro::Cleanup() {
+
+}
+
 void Intro::SEvent_IntroScreen1_ShowLocation() {
 	// Show location text
 	this->TextObjects.OpeningLocation->SetVisible(true);

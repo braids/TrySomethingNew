@@ -260,6 +260,10 @@ void Market::Render() {
 	}
 }
 
+void Market::Cleanup() {
+
+}
+
 //// Market funcs
 ImageData* Market::AddMarketText(std::string _text, int _x, int _y) {
 	ImageData* textImage = this->AddText(_text, _x, _y);

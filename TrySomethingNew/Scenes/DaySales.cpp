@@ -163,6 +163,10 @@ void DaySales::Render() {
 	}
 }
 
+void DaySales::Cleanup() {
+
+}
+
 ImageData* DaySales::AddDaySalesText(std::string _text, int _x, int _y) {
 	ImageData* textImage = this->AddText(_text, _x, _y);
 	this->DaySalesText.push_back(textImage);

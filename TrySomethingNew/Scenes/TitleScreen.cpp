@@ -48,3 +48,7 @@ void TitleScreen::Render() {
 	// If I find any game logic in here, I'll slap myself silly
 	this->mManager->GetGraphics()->DrawTexture(this->mManager->GetAssets()->images.Title.texture);
 }
+
+void TitleScreen::Cleanup() {
+	
+}
