@@ -6,6 +6,7 @@
 #include "Graphics.h"
 #include "Scenes\Scene.h"
 #include "Scenes\MainMenu.h"
+#include "Scenes\SubScreens\EscapeScreen.h"
 #include "SceneManager.h"
 
 MainMenu::MainMenu() {
@@ -22,6 +23,9 @@ void MainMenu::LoadImagesText() {
 	this->mImages.clear();
 	this->MainMenuText.clear();
 	this->CreditsImagesText.clear();
+
+	// Load escape screen text
+	this->AddEscapeText(this);
 
 	// Main Menu
 	this->MainMenuText.push_back(this->AddText("N)EW GAME", 105, 63));
@@ -68,10 +72,17 @@ void MainMenu::SceneStart() {
 void MainMenu::HandleEvent(SDL_Event* Event) {
 	switch (Event->type) {
 	case SDL_KEYDOWN:
-		// Return to title screen
-		if (Event->key.keysym.sym == SDLK_ESCAPE) {
-			Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
-			this->SEvent_ExitToTitle();
+		if (this->EscapeScreenVisible) {
+			if (Event->key.keysym.sym == SDLK_y) {
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
+				this->SEvent_Quit();
+			}
+			if (Event->key.keysym.sym == SDLK_n) {
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
+				this->SEvent_HideEscapeScreen();
+			}
+
+			break;
 		}
 
 		if (this->EventFlags.Credits) {
@@ -79,10 +90,22 @@ void MainMenu::HandleEvent(SDL_Event* Event) {
 				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 				this->SEvent_ShowMainMenu();
 			}
+			if (Event->key.keysym.sym == SDLK_ESCAPE) {
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
+				this->SEvent_ShowEscapeScreen();
+			}
+			break;
 		}
+
+		// Return to title screen
+		if (Event->key.keysym.sym == SDLK_ESCAPE) {
+			Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
+			this->SEvent_ExitToTitle();
+		}
+		
 		else {
 			// Start new game
-			if (Event->key.keysym.sym == SDLK_n) {
+			if (Event->key.keysym.sym == SDLK_n && Event->key.repeat != 0) {
 				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 				this->SEvent_NewGame();
 			}
@@ -93,7 +116,8 @@ void MainMenu::HandleEvent(SDL_Event* Event) {
 			}
 			// Quit game
 			if (Event->key.keysym.sym == SDLK_q) {
-				this->SEvent_Quit();
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
+				this->SEvent_ShowEscapeScreen();
 			}
 			// Toggle window mode
 			if (Event->key.keysym.sym == SDLK_w) {
@@ -141,20 +165,36 @@ void MainMenu::Cleanup() {
 	this->CreditsImagesText.clear();
 }
 
-void MainMenu::SEvent_ShowCredits() {
-	this->EventFlags.Credits = true;
-	for (std::vector<ImageData*>::iterator it = this->CreditsImagesText.begin(); it != this->CreditsImagesText.end(); it++)
+void MainMenu::ShowMainMenuText() {
+	for (std::vector<ImageData*>::iterator it = this->MainMenuText.begin(); it != this->MainMenuText.end(); it++)
 		(*it)->SetVisible(true);
+}
+
+void MainMenu::HideMainMenuText() {
 	for (std::vector<ImageData*>::iterator it = this->MainMenuText.begin(); it != this->MainMenuText.end(); it++)
 		(*it)->SetVisible(false);
 }
 
-void MainMenu::SEvent_ShowMainMenu() {
-	this->EventFlags.Credits = false;
+void MainMenu::ShowCreditsImagesText() {
+	for (std::vector<ImageData*>::iterator it = this->CreditsImagesText.begin(); it != this->CreditsImagesText.end(); it++)
+		(*it)->SetVisible(true);
+}
+
+void MainMenu::HideCreditsImagesText() {
 	for (std::vector<ImageData*>::iterator it = this->CreditsImagesText.begin(); it != this->CreditsImagesText.end(); it++)
 		(*it)->SetVisible(false);
-	for (std::vector<ImageData*>::iterator it = this->MainMenuText.begin(); it != this->MainMenuText.end(); it++)
-		(*it)->SetVisible(true);
+}
+
+void MainMenu::SEvent_ShowCredits() {
+	this->EventFlags.Credits = true;
+	this->ShowCreditsImagesText();
+	this->HideMainMenuText();
+}
+
+void MainMenu::SEvent_ShowMainMenu() {
+	this->EventFlags.Credits = false;
+	this->HideCreditsImagesText();
+	this->ShowMainMenuText();
 }
 
 //// Scene Events
@@ -212,4 +252,26 @@ void MainMenu::SEvent_Windowed() {
 	
 	// Set new fullscreen state
 	this->mManager->SetFullscreen(!fullscreen);
+}
+
+void MainMenu::SEvent_ShowEscapeScreen() {
+	if (this->EventFlags.Credits) {
+		this->HideCreditsImagesText();
+	}
+	else {
+		this->HideMainMenuText();
+	}
+	this->ShowEscapeText();
+	this->EscapeScreenVisible = true;
+}
+
+void MainMenu::SEvent_HideEscapeScreen() {
+	if (this->EventFlags.Credits) {
+		this->ShowCreditsImagesText();
+	}
+	else {
+		this->ShowMainMenuText();
+	}
+	this->HideEscapeText();
+	this->EscapeScreenVisible = false;
 }
