@@ -39,6 +39,7 @@ protected:
 
 	struct {
 		bool ExitToTitleScreen;
+		bool IntroScreen1;
 		bool IntroScreen2;
 		bool IntroScreen3;
 		bool EditName;
@@ -61,6 +62,7 @@ public:
 
 	// Scene Events
 	void SEvent_IntroScreen1_ShowLocation();
+	void SEvent_IntroScreen1_Skip();
 	void SEvent_IntroScreen2_Show();
 	void SEvent_IntroScreen2_Skip();
 	void SEvent_IntroScreen3_Show();
