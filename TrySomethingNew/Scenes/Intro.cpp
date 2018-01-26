@@ -174,8 +174,7 @@ void Intro::Render() {
 
 void Intro::Cleanup() {
 	// Clear loaded images
-	for (std::vector<ImageData*>::iterator it = this->mImages.begin(); it != this->mImages.end(); it++)
-		delete *it;
+	this->mImages.clear();
 
 	// Stop timers
 	this->EventTimers.IntroScreen1_Date->stop();

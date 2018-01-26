@@ -261,10 +261,6 @@ void Market::Render() {
 }
 
 void Market::Cleanup() {
-	// Clear loaded images
-	for (std::vector<ImageData*>::iterator it = this->mImages.begin(); it != this->mImages.end(); it++)
-		delete *it;
-
 	// Clear vectors
 	this->mImages.clear();
 	this->MarketText.clear();

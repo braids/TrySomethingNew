@@ -228,10 +228,6 @@ void SetPrices::Render() {
 }
 
 void SetPrices::Cleanup() {
-	// Clear loaded images
-	for (std::vector<ImageData*>::iterator it = this->mImages.begin(); it != this->mImages.end(); it++)
-		delete *it;
-
 	// Clear vectors
 	this->mImages.clear();
 	this->SetPricesText.clear();

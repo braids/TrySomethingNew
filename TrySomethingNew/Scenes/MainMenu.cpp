@@ -135,10 +135,6 @@ void MainMenu::Render() {
 }
 
 void MainMenu::Cleanup() {
-	// Clear loaded images
-	for (std::vector<ImageData*>::iterator it = this->mImages.begin(); it != this->mImages.end(); it++)
-		delete *it;
-
 	// Clear vectors
 	this->mImages.clear();
 	this->MainMenuText.clear();
