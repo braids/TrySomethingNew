@@ -1,10 +1,13 @@
 #include <algorithm>
 #include <string>
 #include <vector>
+#include <SDL2\SDL.h>
+#include <SDL2\SDL_mixer.h>
 #include "Assets.h"
 #include "Data\ItemData.h"
 #include "Data\PlayerData.h"
 #include "Graphics.h"
+#include "Scenes\SalesResults.h"
 #include "Scenes\Scene.h"
 #include "SceneManager.h"
 

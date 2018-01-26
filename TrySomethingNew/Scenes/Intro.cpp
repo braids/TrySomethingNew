@@ -1,7 +1,12 @@
+#include <vector>
+#include <SDL2\SDL.h>
+#include <SDL2\SDL_mixer.h>
 #include "Assets.h"
 #include "Graphics.h"
+#include "Scenes\Intro.h"
 #include "Scenes\Scene.h"
 #include "SceneManager.h"
+#include "Timer.h"
 
 Intro::Intro() {
 	// Set current scene name

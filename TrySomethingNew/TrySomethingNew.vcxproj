@@ -168,7 +168,14 @@
     <ClInclude Include="GameObjects\GameObject.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="Scenes\DaySales.h" />
+    <ClInclude Include="Scenes\Intro.h" />
+    <ClInclude Include="Scenes\MainMenu.h" />
+    <ClInclude Include="Scenes\Market.h" />
+    <ClInclude Include="Scenes\SalesResults.h" />
     <ClInclude Include="Scenes\Scene.h" />
+    <ClInclude Include="Scenes\SetPrices.h" />
+    <ClInclude Include="Scenes\TitleScreen.h" />
     <ClInclude Include="TSN.h" />
     <ClInclude Include="Timer.h" />
   </ItemGroup>
