@@ -261,7 +261,20 @@ void Market::Render() {
 }
 
 void Market::Cleanup() {
+	// Clear loaded images
+	for (std::vector<ImageData*>::iterator it = this->mImages.begin(); it != this->mImages.end(); it++)
+		delete *it;
 
+	// Clear vectors
+	this->mImages.clear();
+	this->MarketText.clear();
+	this->SubTotalText.clear();
+	this->ItemTextBoxObjects.clear();
+	this->BuyData.clear();
+
+	// Stop timers
+	this->EventTimers.GameSaved->stop();
+	this->EventTimers.ErrorText->stop();
 }
 
 //// Market funcs
