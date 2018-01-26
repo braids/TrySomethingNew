@@ -77,6 +77,7 @@ void DaySales::SceneStart() {
 	/// Set initial vars
 	this->EventFlags.Simulation = true;
 	this->Money = 0;
+	this->CustomerSpawnInterval = 0;
 	this->CustomerSpawnTotal = 0;
 
 	// Get player inventory
@@ -208,6 +209,8 @@ void DaySales::GenerateCustomers() {
 	int numCustomers = rand() % (10 + signs + (posters * 4) + (newsAds * 8)) + (1 + signs + (posters * 3) + (newsAds * 6));
 	// Mod numCustomers with weatherMod value
 	numCustomers = (int)((double)numCustomers * weatherMod);
+	// If numCustomers ends up at 0 (or less?), spawn at least one customer.
+	if (numCustomers <= 0) numCustomers = 1;
 
 	// Get customer spawn rate
 	this->CustomerSpawnInterval = ((this->DaySegmentLength * 3) - 1000) / numCustomers;
