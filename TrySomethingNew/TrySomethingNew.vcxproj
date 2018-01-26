@@ -155,6 +155,7 @@
     <ClCompile Include="Scenes\SalesResults.cpp" />
     <ClCompile Include="Scenes\Scene.cpp" />
     <ClCompile Include="Scenes\SetPrices.cpp" />
+    <ClCompile Include="Scenes\SubScreens\EscapeScreen.cpp" />
     <ClCompile Include="Scenes\TitleScreen.cpp" />
     <ClCompile Include="TSN.cpp" />
     <ClCompile Include="Timer.cpp" />
@@ -175,6 +176,7 @@
     <ClInclude Include="Scenes\SalesResults.h" />
     <ClInclude Include="Scenes\Scene.h" />
     <ClInclude Include="Scenes\SetPrices.h" />
+    <ClInclude Include="Scenes\SubScreens\EscapeScreen.h" />
     <ClInclude Include="Scenes\TitleScreen.h" />
     <ClInclude Include="TSN.h" />
     <ClInclude Include="Timer.h" />
