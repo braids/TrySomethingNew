@@ -133,7 +133,10 @@ void SalesResults::Render() {
 }
 
 void SalesResults::Cleanup() {
-
+	// Clear vectors
+	this->mImages.clear();
+	this->SalesResultsText.clear();
+	this->SellItems.clear();
 }
 
 //// SetPrices funcs
