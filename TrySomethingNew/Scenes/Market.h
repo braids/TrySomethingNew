@@ -77,6 +77,7 @@ public:
 	ImageData* AddMarketText(std::string _text, int _x, int _y);
 	ImageData* AddSubTotalText(std::string _text, int _x, int _y);
 	TextBox* AddMarketTextBox(Uint32 _size, int _x, int _y);
+	void UpdateTotal();
 
 	//// Events
 	// Show/Hide Events
@@ -104,8 +105,6 @@ public:
 	void SEvent_HideSaveText();
 	// Error
 	void SEvent_HideErrorText();
-
-	void UpdateTotal();
 };
 
 #endif

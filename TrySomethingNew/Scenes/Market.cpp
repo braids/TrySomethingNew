@@ -260,6 +260,7 @@ void Market::Render() {
 	}
 }
 
+//// Market funcs
 ImageData* Market::AddMarketText(std::string _text, int _x, int _y) {
 	ImageData* textImage = this->AddText(_text, _x, _y);
 	this->MarketText.push_back(textImage);
@@ -280,6 +281,22 @@ TextBox* Market::AddMarketTextBox(Uint32 _size, int _x, int _y) {
 	return textBox;
 }
 
+void Market::UpdateTotal() {
+	this->BuyTotal = 0;
+
+	// Get all buy subtotals
+	std::vector<ItemData*>::iterator it = this->BuyData.begin();
+	for (; it != this->BuyData.end(); it++)
+		this->BuyTotal += (*it)->GetBuyPrice() * (*it)->GetQuantity();
+
+	// Update subtotal text
+	this->TextObjects.TotalAmount->SetText(std::to_string(this->BuyTotal));
+
+	// Update remaining money text
+	this->TextObjects.MoneySubTotalAmount->SetText(std::to_string(this->mPlayerData->GetMoney() - this->BuyTotal));
+}
+
+//// Scene Events
 void Market::SEvent_ShowMarketText() {
 	for (std::vector<ImageData*>::iterator it = this->MarketText.begin(); it != this->MarketText.end(); it++)
 		(*it)->SetVisible(true);
@@ -516,19 +533,4 @@ void Market::SEvent_HideSaveText() {
 void Market::SEvent_HideErrorText() {
 	this->TextObjects.ErrBuyItem->SetVisible(false);
 	this->TextObjects.ErrNoMoney->SetVisible(false);
-}
-
-void Market::UpdateTotal() {
-	this->BuyTotal = 0;
-	
-	// Get all buy subtotals
-	std::vector<ItemData*>::iterator it = this->BuyData.begin();
-	for (; it != this->BuyData.end(); it++)
-		this->BuyTotal += (*it)->GetBuyPrice() * (*it)->GetQuantity();
-	
-	// Update subtotal text
-	this->TextObjects.TotalAmount->SetText(std::to_string(this->BuyTotal));
-
-	// Update remaining money text
-	this->TextObjects.MoneySubTotalAmount->SetText(std::to_string(this->mPlayerData->GetMoney() - this->BuyTotal));
 }
