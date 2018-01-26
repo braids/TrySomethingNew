@@ -72,6 +72,7 @@ public:
 	virtual void HandleEvent(SDL_Event* Event) = 0;
 	virtual void Update(Uint32 timeStep) = 0;
 	virtual void Render() = 0;
+	virtual void Cleanup() = 0;
 };
 
 #endif

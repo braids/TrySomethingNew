@@ -260,6 +260,19 @@ void Market::Render() {
 	}
 }
 
+void Market::Cleanup() {
+	// Clear vectors
+	this->mImages.clear();
+	this->MarketText.clear();
+	this->SubTotalText.clear();
+	this->ItemTextBoxObjects.clear();
+	this->BuyData.clear();
+
+	// Stop timers
+	this->EventTimers.GameSaved->stop();
+	this->EventTimers.ErrorText->stop();
+}
+
 //// Market funcs
 ImageData* Market::AddMarketText(std::string _text, int _x, int _y) {
 	ImageData* textImage = this->AddText(_text, _x, _y);

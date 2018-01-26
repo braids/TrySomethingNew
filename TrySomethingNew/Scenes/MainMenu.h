@@ -32,6 +32,7 @@ public:
 	void HandleEvent(SDL_Event* Event);
 	void Update(Uint32 timeStep);
 	void Render();
+	void Cleanup();
 
 	void SEvent_ShowCredits();
 	void SEvent_ShowMainMenu();

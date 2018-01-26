@@ -206,8 +206,6 @@ void SetPrices::Update(Uint32 timeStep) {
 
 	// Return to title screen if quitting
 	if (this->EventFlags.ExitToTitleScreen) {
-		// Cleanup scene
-		this->Cleanup();
 		// Stop current music
 		Mix_HaltMusic();
 		// Go to title.
@@ -230,10 +228,6 @@ void SetPrices::Render() {
 }
 
 void SetPrices::Cleanup() {
-	// Clear loaded images
-	for (std::vector<ImageData*>::iterator it = this->mImages.begin(); it != this->mImages.end(); it++)
-		delete *it;
-
 	// Clear vectors
 	this->mImages.clear();
 	this->SetPricesText.clear();
@@ -448,9 +442,6 @@ void SetPrices::SEvent_OpenShop() {
 	for (std::vector<ItemData*>::iterator it = this->SellItems.begin(); it != this->SellItems.end(); it++)
 		this->mPlayerData->GetInventoryItem((*it)->GetName())->SetSellPrice((*it)->GetSellPrice());
 	
-	// Cleanup scene
-	this->Cleanup();
-
 	// Stop Music
 	Mix_HaltMusic();
 

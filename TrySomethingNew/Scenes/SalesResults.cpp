@@ -132,6 +132,13 @@ void SalesResults::Render() {
 	}
 }
 
+void SalesResults::Cleanup() {
+	// Clear vectors
+	this->mImages.clear();
+	this->SalesResultsText.clear();
+	this->SellItems.clear();
+}
+
 //// SetPrices funcs
 ImageData* SalesResults::AddSalesResultsText(std::string _text, int _x, int _y) {
 	ImageData* textImage = this->AddText(_text, _x, _y);

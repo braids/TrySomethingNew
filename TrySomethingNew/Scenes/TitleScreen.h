@@ -18,6 +18,7 @@ public:
 	void HandleEvent(SDL_Event* Event);
 	void Update(Uint32 timeStep);
 	void Render();
+	void Cleanup();
 };
 
 #endif

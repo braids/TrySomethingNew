@@ -126,11 +126,6 @@ void DaySales::Update(Uint32 timeStep) {
 
 	// Return to title screen if quitting
 	if (this->EventFlags.ExitToTitleScreen) {
-		// Make sure all timers are STOPPED.
-		this->EventTimers.CustomerSpawn->stop();
-		this->EventTimers.DayRuntime1->stop();
-		this->EventTimers.DayRuntime2->stop();
-		this->EventTimers.DayRuntime3->stop();
 		// Stop current music
 		Mix_HaltMusic();
 		// Go to title.
@@ -161,6 +156,22 @@ void DaySales::Render() {
 				this->mImages[i]->GetDrawAngle()
 			);
 	}
+}
+
+void DaySales::Cleanup() {
+	// Clear vectors
+	this->mImages.clear();
+	this->DaySalesText.clear();
+	this->SellItems.clear();
+	this->CustomerImages.clear();
+	this->Customers.clear();
+	this->CustomerObjects.clear();
+
+	// Stop timers
+	this->EventTimers.CustomerSpawn->stop();
+	this->EventTimers.DayRuntime1->stop();
+	this->EventTimers.DayRuntime2->stop();
+	this->EventTimers.DayRuntime3->stop();
 }
 
 ImageData* DaySales::AddDaySalesText(std::string _text, int _x, int _y) {
@@ -214,6 +225,8 @@ void DaySales::GenerateCustomers() {
 
 	// Get customer spawn rate
 	this->CustomerSpawnInterval = ((this->DaySegmentLength * 3) - 1000) / numCustomers;
+
+	this->mImages.reserve(this->mImages.size() + numCustomers);
 
 	// Create n customers 
 	for (int i = 0; i < numCustomers; i++) {

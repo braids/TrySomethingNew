@@ -69,6 +69,7 @@ public:
 	void HandleEvent(SDL_Event* Event);
 	void Update(Uint32 timeStep);
 	void Render();
+	void Cleanup();
 
 	// DaySales funcs
 	ImageData* AddDaySalesText(std::string _text, int _x, int _y);

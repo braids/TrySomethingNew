@@ -134,6 +134,13 @@ void MainMenu::Render() {
 	}
 }
 
+void MainMenu::Cleanup() {
+	// Clear vectors
+	this->mImages.clear();
+	this->MainMenuText.clear();
+	this->CreditsImagesText.clear();
+}
+
 void MainMenu::SEvent_ShowCredits() {
 	this->EventFlags.Credits = true;
 	for (std::vector<ImageData*>::iterator it = this->CreditsImagesText.begin(); it != this->CreditsImagesText.end(); it++)
