@@ -16,6 +16,7 @@ Intro::Intro() {
 void Intro::ResetFlags() {
 	// Set flags to false
 	this->EventFlags.ExitToTitleScreen = false;
+	this->EventFlags.IntroScreen1 = false;
 	this->EventFlags.IntroScreen2 = false;
 	this->EventFlags.IntroScreen3 = false;
 	this->EventFlags.EditName = false;
@@ -91,6 +92,9 @@ void Intro::SceneStart() {
 	
 	// Start screen timer
 	this->EventTimers.IntroScreen1_Date->StartEventTimer();
+	
+	// Set starting event flag
+	this->EventFlags.IntroScreen1 = true;
 }
 
 void Intro::HandleEvent(SDL_Event * Event) {
@@ -101,7 +105,12 @@ void Intro::HandleEvent(SDL_Event * Event) {
 			this->EventFlags.ExitToTitleScreen = true;
 		}
 		if (Event->key.keysym.sym == SDLK_RETURN) {
-			if (this->EventFlags.IntroScreen2) {
+			if (this->EventFlags.IntroScreen1) {
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
+				// Skip Intro Screen 1
+				this->SEvent_IntroScreen1_Skip();
+			}
+			else if (this->EventFlags.IntroScreen2) {
 				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 				// Skip Intro Screen 2
 				this->SEvent_IntroScreen2_Skip();
@@ -191,8 +200,18 @@ void Intro::SEvent_IntroScreen1_ShowLocation() {
 	this->EventTimers.IntroScreen1_Location->StartEventTimer();
 }
 
+void Intro::SEvent_IntroScreen1_Skip() {
+	// Halt timer
+	this->EventTimers.IntroScreen1_Date->stop();
+	this->EventTimers.IntroScreen1_Location->stop();
+
+	// Advance to next screen
+	this->SEvent_IntroScreen2_Show();
+}
+
 void Intro::SEvent_IntroScreen2_Show() {
 	// Set screen state
+	this->EventFlags.IntroScreen1 = false;
 	this->EventFlags.IntroScreen2 = true;
 
 	// Hide date/time text
