@@ -173,7 +173,15 @@ void Intro::Render() {
 }
 
 void Intro::Cleanup() {
+	// Clear loaded images
+	for (std::vector<ImageData*>::iterator it = this->mImages.begin(); it != this->mImages.end(); it++)
+		delete *it;
 
+	// Stop timers
+	this->EventTimers.IntroScreen1_Date->stop();
+	this->EventTimers.IntroScreen1_Location->stop();
+	this->EventTimers.IntroScreen2->stop();
+	this->EventTimers.IntroScreen3->stop();
 }
 
 void Intro::SEvent_IntroScreen1_ShowLocation() {
