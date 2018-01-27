@@ -100,3 +100,13 @@ void CustomerObject::UpdateAnim() {
 	this->WalkTimer.stop();
 	this->WalkTimer.start();
 }
+
+void CustomerObject::PauseWalkTimer() {
+	if (this->WalkTimer.isStarted() && !this->WalkTimer.isPaused())
+		this->WalkTimer.pause();
+}
+
+void CustomerObject::ResumeWalkTimer() {
+	if (this->WalkTimer.isStarted() && this->WalkTimer.isPaused())
+		this->WalkTimer.unpause();
+}

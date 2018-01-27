@@ -8,9 +8,10 @@
 #include "GameObjects\GameObject.h"
 #include "Data\ItemData.h"
 #include "Scenes\Scene.h"
+#include "Scenes\SubScreens\EscapeScreen.h"
 #include "Timer.h"
 
-class DaySales : public Scene {
+class DaySales : public Scene, EscapeScreen {
 protected:
 	std::vector<ImageData*> DaySalesText;
 	std::vector<ItemData*> SellItems;
@@ -80,11 +81,16 @@ public:
 	//// Events
 	// Show/Hide Events
 	void SEvent_ShowDaySalesText();
-
+	// Spawn customer
 	void SEvent_SpawnCustomer();
+	// Change daytime phase
 	void SEvent_DayRuntime2();
 	void SEvent_DayRuntime3();
 	void SEvent_DayRuntimeEnd();
+	// Exit to title
+	void SEvent_ExitToTitle();
+	void SEvent_ShowEscapeScreen();
+	void SEvent_HideEscapeScreen();
 };
 
 #endif
