@@ -9,6 +9,7 @@
 #include "Graphics.h"
 #include "Scenes\Market.h"
 #include "Scenes\Scene.h"
+#include "Scenes\SubScreens\EscapeScreen.h"
 #include "SceneManager.h"
 #include "Timer.h"
 
@@ -112,6 +113,9 @@ void Market::LoadImagesText() {
 	// Guide Descriptions
 	this->TextObjects.GuideText = this->AddText("", 7, 9);
 
+	// Load escape screen text
+	this->AddEscapeText(this);
+
 	// Hide all images
 	for (std::vector<ImageData*>::iterator it = this->mImages.begin(); it != this->mImages.end(); it++)
 		(*it)->SetVisible(false);
@@ -149,9 +153,22 @@ void Market::HandleEvent(SDL_Event * Event) {
 	switch (Event->type) {
 	case SDL_KEYDOWN:
 		//// Exit event
+		if (this->EscapeScreenVisible) {
+			if (Event->key.keysym.sym == SDLK_y) {
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
+				this->SEvent_ExitToTitle();
+			}
+			if (Event->key.keysym.sym == SDLK_n) {
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
+				this->SEvent_HideEscapeScreen();
+			}
+
+			break;
+		}
+
 		if (Event->key.keysym.sym == SDLK_ESCAPE) {
 			Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
-			this->EventFlags.ExitToTitleScreen = true;
+			this->SEvent_ShowEscapeScreen();
 		}
 		
 		//// Main selection
@@ -267,6 +284,7 @@ void Market::Cleanup() {
 	this->SubTotalText.clear();
 	this->ItemTextBoxObjects.clear();
 	this->BuyData.clear();
+	this->EscapeImagesText.clear();
 
 	// Stop timers
 	this->EventTimers.GameSaved->stop();
@@ -515,6 +533,44 @@ void Market::SEvent_Leave() {
 		this->EventTimers.ErrorText->StartEventTimer();
 		Mix_PlayChannel(1, Assets::Instance()->sounds.Buzz, 0);
 	}
+}
+
+void Market::SEvent_ExitToTitle() {
+	// Halt music
+	Mix_HaltMusic();
+
+	// Return to title screen
+	this->mManager->StartScene(Scene_TitleScreen);
+}
+
+void Market::SEvent_ShowEscapeScreen() {
+	this->PauseTimers();
+	Mix_PauseMusic();
+
+	if (this->EventFlags.EnterItemQty) {
+		SDL_StopTextInput();
+		this->ActiveBuySelection->SetActive(false);
+	}
+
+	this->EscapeScreenVisible = true;
+	this->ShowEscapeText();
+}
+
+void Market::SEvent_HideEscapeScreen() {
+	this->UnpauseTimers();
+	if (Mix_PausedMusic())
+		Mix_ResumeMusic();
+
+	if (this->EventFlags.EnterItemQty) {
+		// Flush buffered text input
+		SDL_PumpEvents();
+
+		SDL_StartTextInput();
+		this->ActiveBuySelection->SetActive(true);
+	}
+
+	this->EscapeScreenVisible = false;
+	this->HideEscapeText();
 }
 
 void Market::SEvent_Save() {

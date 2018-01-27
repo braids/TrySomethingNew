@@ -17,6 +17,21 @@ void Scene::Init(SceneManager * manager) {
 	this->SetPlayerData(mManager->GetPlayerData());
 }
 
+ImageData* Scene::AddImage(Assets::Image* _image, int _x, int _y) {
+	// Init ImageData
+	ImageData* newImage = new ImageData();
+
+	// Set image and location
+	newImage->SetImage(_image);
+	newImage->SetDrawRectXY(_x, _y);
+
+	// Add image to scene image list
+	this->mImages.push_back(newImage);
+
+	// Return image pointer
+	return newImage;
+}
+
 ImageData* Scene::AddText(std::string _text, int _x, int _y) {
 	// Init Image and ImageData
 	ImageData* textImageData = new ImageData();
@@ -52,6 +67,22 @@ EventTimer* Scene::AddEventTimer(EventTimer* _eventTimer)
 {
 	this->mEventTimers.push_back(_eventTimer);
 	return _eventTimer;
+}
+
+void Scene::PauseTimers() {
+	// If a scene timer is running, pause it
+	for (std::vector<EventTimer*>::iterator it = this->mEventTimers.begin(); it != this->mEventTimers.end(); it++) {
+		if ((*it)->isStarted())
+			(*it)->pause();
+	}
+}
+
+void Scene::UnpauseTimers() {
+	// If a scene timer is paused, unpause it
+	for (std::vector<EventTimer*>::iterator it = this->mEventTimers.begin(); it != this->mEventTimers.end(); it++) {
+		if ((*it)->isPaused())
+			(*it)->unpause();
+	}
 }
 
 void Scene::UpdateEventTimers() {

@@ -5,6 +5,7 @@
 #include "Graphics.h"
 #include "Scenes\Intro.h"
 #include "Scenes\Scene.h"
+#include "Scenes\SubScreens\EscapeScreen.h"
 #include "SceneManager.h"
 #include "Timer.h"
 
@@ -63,6 +64,9 @@ void Intro::LoadImagesText() {
 	this->TextObjects.ShopIsSetUp = this->AddText("    AFTER COBBLING TOGETHER A SMALL SHACK ON THE OUTER PERIMETER OF THE WALL, YOU HAVE 50 DEUTSCHE MARKS (DM) LEFT TO BUY WARES.", 7, 135);
 	this->TextObjects.PressReturn = this->AddText("- PRESS RETURN -", 84, 180);
 
+	// Load escape screen text
+	this->AddEscapeText(this);
+
 	// Set all images to not visible
 	for (std::vector<ImageData*>::iterator it = this->mImages.begin(); it != this->mImages.end(); it++)
 		(*it)->SetVisible(false);
@@ -100,9 +104,22 @@ void Intro::SceneStart() {
 void Intro::HandleEvent(SDL_Event * Event) {
 	switch (Event->type) {
 	case SDL_KEYDOWN:
+		if (this->EscapeScreenVisible) {
+			if (Event->key.keysym.sym == SDLK_y) {
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
+				this->SEvent_ExitToTitle();
+			}
+			if (Event->key.keysym.sym == SDLK_n) {
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
+				this->SEvent_HideEscapeScreen();
+			}
+
+			break;
+		}
+
 		if (Event->key.keysym.sym == SDLK_ESCAPE) {
 			Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
-			this->EventFlags.ExitToTitleScreen = true;
+			this->SEvent_ShowEscapeScreen();
 		}
 		if (Event->key.keysym.sym == SDLK_RETURN) {
 			if (this->EventFlags.IntroScreen1) {
@@ -184,12 +201,21 @@ void Intro::Render() {
 void Intro::Cleanup() {
 	// Clear loaded images
 	this->mImages.clear();
+	this->EscapeImagesText.clear();
+
+	// Stop music
+	Mix_HaltMusic();
 
 	// Stop timers
 	this->EventTimers.IntroScreen1_Date->stop();
 	this->EventTimers.IntroScreen1_Location->stop();
 	this->EventTimers.IntroScreen2->stop();
 	this->EventTimers.IntroScreen3->stop();
+}
+
+void Intro::SEvent_ExitToTitle() {
+	// Return to title screen
+	this->mManager->StartScene(Scene_TitleScreen);
 }
 
 void Intro::SEvent_IntroScreen1_ShowLocation() {
@@ -310,4 +336,34 @@ void Intro::SEvent_ToMarket() {
 
 	// Go to market.
 	this->mManager->StartScene(Scene_Market);
+}
+
+void Intro::SEvent_ShowEscapeScreen() {
+	this->PauseTimers();
+	Mix_PauseMusic();
+
+	if (this->EventFlags.EditName) {
+		SDL_StopTextInput();
+		this->TextBoxObjects.ShopNameEntry->SetActive(false);
+	}
+
+	this->EscapeScreenVisible = true;
+	this->ShowEscapeText();
+}
+
+void Intro::SEvent_HideEscapeScreen() {
+	this->UnpauseTimers();
+	if(Mix_PausedMusic())
+		Mix_ResumeMusic();
+
+	if (this->EventFlags.EditName) {
+		// Flush buffered text input
+		SDL_PumpEvents();
+
+		SDL_StartTextInput();
+		this->TextBoxObjects.ShopNameEntry->SetActive(true);
+	}
+
+	this->EscapeScreenVisible = false;
+	this->HideEscapeText();
 }

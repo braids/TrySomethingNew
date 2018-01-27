@@ -9,6 +9,7 @@
 #include "Graphics.h"
 #include "Scenes\SalesResults.h"
 #include "Scenes\Scene.h"
+#include "Scenes\SubScreens\EscapeScreen.h"
 #include "SceneManager.h"
 
 SalesResults::SalesResults() {
@@ -62,6 +63,10 @@ void SalesResults::LoadImagesText() {
 	// Press Return
 	this->AddSalesResultsText("- PRESS RETURN -", 84, 180);
 
+	// Load escape screen text
+	this->AddEscapeText(this);
+
+	// Hide all images
 	for (std::vector<ImageData*>::iterator it = this->mImages.begin(); it != this->mImages.end(); it++)
 		(*it)->SetVisible(false);
 }
@@ -87,10 +92,24 @@ void SalesResults::HandleEvent(SDL_Event * Event) {
 	switch (Event->type) {
 	case SDL_KEYDOWN:
 		//// Exit event
+		if (this->EscapeScreenVisible) {
+			if (Event->key.keysym.sym == SDLK_y) {
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
+				this->SEvent_ExitToTitle();
+			}
+			if (Event->key.keysym.sym == SDLK_n) {
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
+				this->SEvent_HideEscapeScreen();
+			}
+
+			break;
+		}
+
 		if (Event->key.keysym.sym == SDLK_ESCAPE) {
 			Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
-			this->EventFlags.ExitToTitleScreen = true;
+			this->SEvent_ShowEscapeScreen();
 		}
+
 		if (Event->key.keysym.sym == SDLK_RETURN) {
 			Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 			(this->EventFlags.GameOver) ? this->SEvent_GameOver_TitleScreen() : this->SEvent_LoseCheck();
@@ -108,14 +127,6 @@ void SalesResults::HandleEvent(SDL_Event * Event) {
 void SalesResults::Update(Uint32 timeStep) {
 	// Update timers
 	this->UpdateEventTimers();
-
-	// Return to title screen if quitting
-	if (this->EventFlags.ExitToTitleScreen) {
-		// Stop current music
-		Mix_HaltMusic();
-		// Go to title.
-		this->mManager->StartScene(Scene_TitleScreen);
-	}
 }
 
 void SalesResults::Render() {
@@ -137,6 +148,7 @@ void SalesResults::Cleanup() {
 	this->mImages.clear();
 	this->SalesResultsText.clear();
 	this->SellItems.clear();
+	this->EscapeImagesText.clear();
 }
 
 //// SetPrices funcs
@@ -197,4 +209,27 @@ void SalesResults::SEvent_NextDay() {
 	
 	// Start market scene
 	this->mManager->StartScene(Scene_Market);
+}
+
+void SalesResults::SEvent_ExitToTitle() {
+	// Halt music
+	Mix_HaltMusic();
+
+	// Return to title screen
+	this->mManager->StartScene(Scene_TitleScreen);
+}
+
+void SalesResults::SEvent_ShowEscapeScreen() {
+	Mix_PauseMusic();
+
+	this->EscapeScreenVisible = true;
+	this->ShowEscapeText();
+}
+
+void SalesResults::SEvent_HideEscapeScreen() {
+	if (Mix_PausedMusic())
+		Mix_ResumeMusic();
+
+	this->EscapeScreenVisible = false;
+	this->HideEscapeText();
 }

@@ -5,17 +5,13 @@
 #include <SDL2\SDL.h>
 #include "Assets.h"
 #include "Scenes\Scene.h"
+#include "Scenes\SubScreens\EscapeScreen.h"
 
 //// MainMenu scene class
-class MainMenu : public Scene {
+class MainMenu : public Scene, EscapeScreen {
 protected:
 	std::vector<ImageData*> MainMenuText;
 	std::vector<ImageData*> CreditsImagesText;
-
-	struct {
-		ImageData* JamLogo;
-		ImageData* ThemeLogo;
-	} Images;
 
 	struct {
 		bool Credits;
@@ -34,6 +30,11 @@ public:
 	void Render();
 	void Cleanup();
 
+	void ShowMainMenuText();
+	void HideMainMenuText();
+	void ShowCreditsImagesText();
+	void HideCreditsImagesText();
+
 	void SEvent_ShowCredits();
 	void SEvent_ShowMainMenu();
 
@@ -43,6 +44,8 @@ public:
 	void SEvent_LoadGame();
 	void SEvent_Quit();
 	void SEvent_Windowed();
+	void SEvent_ShowEscapeScreen();
+	void SEvent_HideEscapeScreen();
 };
 
 

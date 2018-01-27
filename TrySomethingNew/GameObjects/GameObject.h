@@ -83,6 +83,8 @@ public:
 	// Funcs
 	void Update(Uint32 ticks);
 	void UpdateAnim();
+	void PauseWalkTimer();
+	void ResumeWalkTimer();
 };
 
 #endif

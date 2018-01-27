@@ -7,10 +7,11 @@
 #include "Assets.h"
 #include "Data\ItemData.h"
 #include "Scenes\Scene.h"
+#include "Scenes\SubScreens\EscapeScreen.h"
 #include "Timer.h"
 
 //// SetPrices scene class
-class SetPrices : public Scene {
+class SetPrices : public Scene, EscapeScreen {
 protected:
 	// Set Prices screen text and text boxes
 	std::vector<ImageData*> SetPricesText;
@@ -91,6 +92,10 @@ public:
 	void SEvent_ExitGuide();
 	// Leave
 	void SEvent_OpenShop();
+	// Exit to title
+	void SEvent_ExitToTitle();
+	void SEvent_ShowEscapeScreen();
+	void SEvent_HideEscapeScreen();
 	// Error
 	void SEvent_HideErrorText();
 };

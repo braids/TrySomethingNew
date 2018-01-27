@@ -89,6 +89,9 @@
     <ClCompile Include="Scenes\SalesResults.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Scenes\SubScreens\EscapeScreen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Assets.h">
@@ -143,6 +146,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Scenes\SalesResults.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Scenes\SubScreens\EscapeScreen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

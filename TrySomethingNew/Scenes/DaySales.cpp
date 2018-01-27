@@ -61,6 +61,9 @@ void DaySales::LoadImagesText() {
 	this->TextObjects.MoneyText = this->AddDaySalesText("MONEY:", 140, 164);
 	this->TextObjects.MoneyAmt = this->AddDaySalesText(std::to_string(this->Money + this->mPlayerData->GetMoney()), 189, 164);
 
+	// Load escape screen text
+	this->AddEscapeText(this);
+
 	// Disable all image/text visibility
 	for (std::vector<ImageData*>::iterator it = this->mImages.begin(); it != this->mImages.end(); it++)
 		(*it)->SetVisible(false);
@@ -106,10 +109,24 @@ void DaySales::HandleEvent(SDL_Event * Event) {
 	switch (Event->type) {
 	case SDL_KEYDOWN:
 		//// Exit event
+		if (this->EscapeScreenVisible) {
+			if (Event->key.keysym.sym == SDLK_y) {
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
+				this->SEvent_ExitToTitle();
+			}
+			if (Event->key.keysym.sym == SDLK_n) {
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
+				this->SEvent_HideEscapeScreen();
+			}
+
+			break;
+		}
+
 		if (Event->key.keysym.sym == SDLK_ESCAPE) {
 			Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
-			this->EventFlags.ExitToTitleScreen = true;
+			this->SEvent_ShowEscapeScreen();
 		}
+
 		break;
 
 	case SDL_KEYUP:
@@ -124,22 +141,16 @@ void DaySales::Update(Uint32 timeStep) {
 	// Update timers
 	this->UpdateEventTimers();
 
-	// Return to title screen if quitting
-	if (this->EventFlags.ExitToTitleScreen) {
-		// Stop current music
-		Mix_HaltMusic();
-		// Go to title.
-		this->mManager->StartScene(Scene_TitleScreen);
-	}
-
 	// Update customers
-	for (Uint32 i = 0; i < this->CustomerSpawnTotal; i++) {
-		// Check if customers are shopping and havne't purchased yet
-		if (!this->CustomerObjects[i]->HasPurchased() && this->CustomerObjects[i]->IsShopping()) {
-			this->CustomerObjects[i]->SetPurchased(true);
-			this->GetPurchase(this->Customers[i]);
+	if (!EscapeScreenVisible) {
+		for (Uint32 i = 0; i < this->CustomerSpawnTotal; i++) {
+			// Check if customers are shopping and havne't purchased yet
+			if (!this->CustomerObjects[i]->HasPurchased() && this->CustomerObjects[i]->IsShopping()) {
+				this->CustomerObjects[i]->SetPurchased(true);
+				this->GetPurchase(this->Customers[i]);
+			}
+			this->CustomerObjects[i]->Update(timeStep);
 		}
-		this->CustomerObjects[i]->Update(timeStep);
 	}
 
 }
@@ -166,6 +177,7 @@ void DaySales::Cleanup() {
 	this->CustomerImages.clear();
 	this->Customers.clear();
 	this->CustomerObjects.clear();
+	this->EscapeImagesText.clear();
 
 	// Stop timers
 	this->EventTimers.CustomerSpawn->stop();
@@ -312,4 +324,39 @@ void DaySales::SEvent_DayRuntimeEnd() {
 		
 	// Leave Day Sales screen
 	this->mManager->StartScene(Scene_SalesResults);
+}
+
+void DaySales::SEvent_ExitToTitle() {
+	// Halt music
+	Mix_HaltMusic();
+
+	// Return to title screen
+	this->mManager->StartScene(Scene_TitleScreen);
+}
+
+void DaySales::SEvent_ShowEscapeScreen() {
+	this->PauseTimers();
+	Mix_PauseMusic();
+
+	for (Uint32 i = 0; i < this->CustomerSpawnTotal; i++) {
+		this->CustomerImages[i]->SetVisible(false);
+		this->CustomerObjects[i]->PauseWalkTimer();
+	}
+
+	this->EscapeScreenVisible = true;
+	this->ShowEscapeText();
+}
+
+void DaySales::SEvent_HideEscapeScreen() {
+	this->UnpauseTimers();
+	if (Mix_PausedMusic())
+		Mix_ResumeMusic();
+
+	for (Uint32 i = 0; i < this->CustomerSpawnTotal; i++) {
+		this->CustomerImages[i]->SetVisible(true);
+		this->CustomerObjects[i]->ResumeWalkTimer();
+	}
+
+	this->EscapeScreenVisible = false;
+	this->HideEscapeText();
 }
