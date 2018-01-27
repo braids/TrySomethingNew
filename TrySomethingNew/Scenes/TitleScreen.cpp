@@ -12,13 +12,12 @@ TitleScreen::TitleScreen() {
 }
 
 void TitleScreen::LoadTextImages() {
+	this->TitleImages.push_back(this->AddImage(&Assets::Instance()->images.Title, 0, 0));
+
+	// Load escape screen text
 	this->AddEscapeText(this);
 
-	this->Images.TitleImage = new ImageData();
-	this->Images.TitleImage->SetImage(&Assets::Instance()->images.Title);
-	this->mImages.push_back(this->Images.TitleImage);
-	this->TitleImages.push_back(this->Images.TitleImage);
-
+	// Hide all images
 	for (std::vector<ImageData*>::iterator it = this->mImages.begin(); it != this->mImages.end(); it++)
 		(*it)->SetVisible(false);
 }
@@ -31,7 +30,7 @@ void TitleScreen::SceneStart() {
 
 	this->LoadTextImages();
 
-	this->Images.TitleImage->SetVisible(true);
+	this->ShowTitleImage();
 }
 
 void TitleScreen::HandleEvent(SDL_Event * Event) {
@@ -108,14 +107,12 @@ void TitleScreen::SEvent_ToMainMenu() {
 }
 
 void TitleScreen::SEvent_ShowEscapeScreen() {
-	this->HideTitleImage();
 	this->ShowEscapeText();
 	this->EscapeScreenVisible = true;
 }
 
 void TitleScreen::SEvent_HideEscapeScreen() {
 	this->HideEscapeText();
-	this->ShowTitleImage();
 	this->EscapeScreenVisible = false;
 }
 

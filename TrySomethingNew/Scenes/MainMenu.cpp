@@ -24,9 +24,6 @@ void MainMenu::LoadImagesText() {
 	this->MainMenuText.clear();
 	this->CreditsImagesText.clear();
 
-	// Load escape screen text
-	this->AddEscapeText(this);
-
 	// Main Menu
 	this->MainMenuText.push_back(this->AddText("N)EW GAME", 105, 63));
 	this->MainMenuText.push_back(this->AddText("L)OAD GAME", 105, 81));
@@ -45,18 +42,15 @@ void MainMenu::LoadImagesText() {
 	this->CreditsImagesText.push_back(this->AddText("- PRESS RETURN -", 84, 180));
 
 	// JamLogo
-	this->Images.JamLogo = new ImageData();
-	this->Images.JamLogo->SetImage(&Assets::Instance()->images.JamLogo);
-	this->Images.JamLogo->SetDrawRectXY(14, 105);
-	this->mImages.push_back(this->Images.JamLogo);
-	this->CreditsImagesText.push_back(this->Images.JamLogo);
-	// ThemeLogo
-	this->Images.ThemeLogo = new ImageData();
-	this->Images.ThemeLogo->SetImage(&Assets::Instance()->images.ThemeLogo);
-	this->Images.ThemeLogo->SetDrawRectXY(147, 105);
-	this->mImages.push_back(this->Images.ThemeLogo);
-	this->CreditsImagesText.push_back(this->Images.ThemeLogo);
+	this->CreditsImagesText.push_back(this->AddImage(&Assets::Instance()->images.JamLogo, 14, 105));
 
+	// ThemeLogo
+	this->CreditsImagesText.push_back(this->AddImage(&Assets::Instance()->images.ThemeLogo, 147, 105));
+
+	// Load escape screen text
+	this->AddEscapeText(this);
+
+	// Hide all images
 	for (std::vector<ImageData*>::iterator it = this->mImages.begin(); it != this->mImages.end(); it++)
 		(*it)->SetVisible(false);
 }
@@ -256,23 +250,11 @@ void MainMenu::SEvent_Windowed() {
 }
 
 void MainMenu::SEvent_ShowEscapeScreen() {
-	if (this->EventFlags.Credits) {
-		this->HideCreditsImagesText();
-	}
-	else {
-		this->HideMainMenuText();
-	}
 	this->ShowEscapeText();
 	this->EscapeScreenVisible = true;
 }
 
 void MainMenu::SEvent_HideEscapeScreen() {
-	if (this->EventFlags.Credits) {
-		this->ShowCreditsImagesText();
-	}
-	else {
-		this->ShowMainMenuText();
-	}
 	this->HideEscapeText();
 	this->EscapeScreenVisible = false;
 }

@@ -14,11 +14,6 @@ protected:
 	std::vector<ImageData*> CreditsImagesText;
 
 	struct {
-		ImageData* JamLogo;
-		ImageData* ThemeLogo;
-	} Images;
-
-	struct {
 		bool Credits;
 	} EventFlags;
 

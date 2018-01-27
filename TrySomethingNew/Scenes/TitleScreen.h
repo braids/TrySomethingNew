@@ -9,11 +9,8 @@
 class TitleScreen : public Scene, EscapeScreen {
 protected:
 	std::vector<ImageData*> TitleImages;
-	bool StartMainMenu;
 
-	struct {
-		ImageData* TitleImage;
-	} Images;
+	bool StartMainMenu;
 
 public:
 	// Scene ctor
