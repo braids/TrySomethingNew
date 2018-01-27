@@ -7,8 +7,9 @@
 #include "Assets.h"
 #include "Data\ItemData.h"
 #include "Scenes\Scene.h"
+#include "Scenes\SubScreens\EscapeScreen.h"
 
-class SalesResults : public Scene {
+class SalesResults : public Scene, EscapeScreen {
 protected:
 	// Sales Results screen text and text boxes
 	std::vector<ImageData*> SalesResultsText;
@@ -48,6 +49,10 @@ public:
 	void SEvent_LoseCheck();
 	void SEvent_GameOver_TitleScreen();
 	void SEvent_NextDay();
+	// Exit to title
+	void SEvent_ExitToTitle();
+	void SEvent_ShowEscapeScreen();
+	void SEvent_HideEscapeScreen();
 };
 
 #endif
