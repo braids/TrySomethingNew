@@ -9,6 +9,7 @@
 #include "Graphics.h"
 #include "Scenes\Scene.h"
 #include "Scenes\SetPrices.h"
+#include "Scenes\SubScreens\EscapeScreen.h"
 #include "SceneManager.h"
 #include "Timer.h"
 
@@ -87,6 +88,10 @@ void SetPrices::LoadImagesText() {
 	// Guide Descriptions
 	this->TextObjects.GuideText = this->AddText("", 7, 9);
 
+	// Load escape screen text
+	this->AddEscapeText(this);
+
+	// Hide all images
 	for (std::vector<ImageData*>::iterator it = this->mImages.begin(); it != this->mImages.end(); it++)
 		(*it)->SetVisible(false);
 }
@@ -120,9 +125,22 @@ void SetPrices::HandleEvent(SDL_Event * Event) {
 	switch (Event->type) {
 	case SDL_KEYDOWN:
 		//// Exit event
+		if (this->EscapeScreenVisible) {
+			if (Event->key.keysym.sym == SDLK_y) {
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
+				this->SEvent_ExitToTitle();
+			}
+			if (Event->key.keysym.sym == SDLK_n) {
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
+				this->SEvent_HideEscapeScreen();
+			}
+
+			break;
+		}
+
 		if (Event->key.keysym.sym == SDLK_ESCAPE) {
 			Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
-			this->EventFlags.ExitToTitleScreen = true;
+			this->SEvent_ShowEscapeScreen();
 		}
 
 		//// Main selection
@@ -203,14 +221,6 @@ void SetPrices::HandleEvent(SDL_Event * Event) {
 void SetPrices::Update(Uint32 timeStep) {
 	// Update timers
 	this->UpdateEventTimers();
-
-	// Return to title screen if quitting
-	if (this->EventFlags.ExitToTitleScreen) {
-		// Stop current music
-		Mix_HaltMusic();
-		// Go to title.
-		this->mManager->StartScene(Scene_TitleScreen);
-	}
 }
 
 void SetPrices::Render() {
@@ -233,6 +243,7 @@ void SetPrices::Cleanup() {
 	this->SetPricesText.clear();
 	this->ItemTextBoxObjects.clear();
 	this->SellItems.clear();
+	this->EscapeImagesText.clear();
 
 	// Stop timers
 	this->EventTimers.ErrorText->stop();
@@ -447,6 +458,44 @@ void SetPrices::SEvent_OpenShop() {
 
 	// Leave Set Price screen
 	this->mManager->StartScene(Scene_DaySales);
+}
+
+void SetPrices::SEvent_ExitToTitle() {
+	// Halt music
+	Mix_HaltMusic();
+
+	// Return to title screen
+	this->mManager->StartScene(Scene_TitleScreen);
+}
+
+void SetPrices::SEvent_ShowEscapeScreen() {
+	this->PauseTimers();
+	Mix_PauseMusic();
+
+	if (this->EventFlags.EnterItemPrice) {
+		SDL_StopTextInput();
+		this->ActiveSellSelection->SetActive(false);
+	}
+
+	this->EscapeScreenVisible = true;
+	this->ShowEscapeText();
+}
+
+void SetPrices::SEvent_HideEscapeScreen() {
+	this->UnpauseTimers();
+	if (Mix_PausedMusic())
+		Mix_ResumeMusic();
+
+	if (this->EventFlags.EnterItemPrice) {
+		// Flush buffered text input
+		SDL_PumpEvents();
+
+		SDL_StartTextInput();
+		this->ActiveSellSelection->SetActive(true);
+	}
+
+	this->EscapeScreenVisible = false;
+	this->HideEscapeText();
 }
 
 void SetPrices::SEvent_HideErrorText() {
