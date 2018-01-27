@@ -8,6 +8,7 @@ EscapeScreen::EscapeScreen() {
 }
 
 void EscapeScreen::AddEscapeText(Scene* _scene) {
+	this->EscapeScreenVisible = false;
 	this->EscapeImagesText.push_back(_scene->AddImage(&Assets::Instance()->images.Blank, 0, 0));
 	this->EscapeImagesText.push_back(_scene->AddText("QUIT GAME?", 105, 63));
 	this->EscapeImagesText.push_back(_scene->AddText("   Y)ES", 105, 81));

@@ -113,6 +113,8 @@ void Intro::HandleEvent(SDL_Event * Event) {
 				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 				this->SEvent_HideEscapeScreen();
 			}
+
+			break;
 		}
 
 		if (Event->key.keysym.sym == SDLK_ESCAPE) {

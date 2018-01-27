@@ -6,9 +6,10 @@
 #include "Assets.h"
 #include "Data\ItemData.h"
 #include "Scenes\Scene.h"
+#include "Scenes\SubScreens\EscapeScreen.h"
 #include "Timer.h"
 
-class Market : public Scene {
+class Market : public Scene, EscapeScreen {
 protected:
 	// Main market screen text and text boxes
 	std::vector<ImageData*> MarketText;
@@ -101,6 +102,10 @@ public:
 	void SEvent_ExitGuide();
 	// Leave
 	void SEvent_Leave();
+	// Exit to title
+	void SEvent_ExitToTitle();
+	void SEvent_ShowEscapeScreen();
+	void SEvent_HideEscapeScreen();
 	// Save
 	void SEvent_Save();
 	void SEvent_HideSaveText();
