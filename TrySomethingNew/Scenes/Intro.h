@@ -5,10 +5,11 @@
 #include <SDL2\SDL.h>
 #include "Assets.h"
 #include "Scenes\Scene.h"
+#include "Scenes\SubScreens\EscapeScreen.h"
 #include "Timer.h"
 
 //// Intro scene class
-class Intro : public Scene {
+class Intro : public Scene, EscapeScreen {
 protected:
 	struct {
 		ImageData* Wall1;
@@ -61,6 +62,7 @@ public:
 	void Cleanup();
 
 	// Scene Events
+	void SEvent_ExitToTitle();
 	void SEvent_IntroScreen1_ShowLocation();
 	void SEvent_IntroScreen1_Skip();
 	void SEvent_IntroScreen2_Show();
@@ -70,6 +72,8 @@ public:
 	void SEvent_NameEntryScreen_Show();
 	void SEvent_ShopNamed();
 	void SEvent_ToMarket();
+	void SEvent_ShowEscapeScreen();
+	void SEvent_HideEscapeScreen();
 };
 
 #endif

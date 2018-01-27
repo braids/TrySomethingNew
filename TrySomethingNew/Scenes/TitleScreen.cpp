@@ -90,7 +90,7 @@ void TitleScreen::Render() {
 
 void TitleScreen::Cleanup() {
 	this->TitleImages.clear();
-	this->EscapeText.clear();
+	this->EscapeImagesText.clear();
 }
 
 void TitleScreen::ShowTitleImage() {

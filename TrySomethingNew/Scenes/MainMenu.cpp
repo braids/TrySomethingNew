@@ -105,7 +105,7 @@ void MainMenu::HandleEvent(SDL_Event* Event) {
 		
 		else {
 			// Start new game
-			if (Event->key.keysym.sym == SDLK_n && Event->key.repeat != 0) {
+			if (Event->key.keysym.sym == SDLK_n && Event->key.repeat == 0) {
 				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 				this->SEvent_NewGame();
 			}
@@ -163,6 +163,7 @@ void MainMenu::Cleanup() {
 	this->mImages.clear();
 	this->MainMenuText.clear();
 	this->CreditsImagesText.clear();
+	this->EscapeImagesText.clear();
 }
 
 void MainMenu::ShowMainMenuText() {

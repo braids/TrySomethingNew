@@ -7,7 +7,8 @@
 
 class EscapeScreen {
 protected:
-	std::vector<ImageData*> EscapeText;
+	std::vector<ImageData*> EscapeImagesText;
+
 	bool EscapeScreenVisible;
 
 public:
