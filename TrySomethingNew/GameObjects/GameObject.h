@@ -57,11 +57,10 @@ public:
 
 class CustomerObject : public GameObject {
 protected:
-	WallSide Side;
+	CustomerData* Data;
 
-	int StartPos;
-	int ShopPos;
-	int EndPos;
+	double ShopPos;
+	double EndPos;
 	int ShopTime = 500;
 	int ShopDuration;
 	
@@ -75,11 +74,12 @@ protected:
 	bool WalkOut;
 
 public:
-	CustomerObject(WallSide _side);
+	CustomerObject(ForecastEvent _event);
 	void SetActive(bool _active);
 	void SetPurchased(bool _purchase);
 	bool HasPurchased();
 	bool IsShopping();
+	CustomerData* GetData() { return this->Data; }
 	// Funcs
 	void Update(Uint32 ticks);
 	void UpdateAnim();

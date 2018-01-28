@@ -61,6 +61,7 @@ public:
 	void SetSceneName(SceneName name) { this->mSceneName = name; }
 	void SetPlayerData(PlayerData* _player) { this->mPlayerData = _player; }
 	ImageData* AddImage(Assets::Image* _image, int _x, int _y);
+	ImageData* AddImage(ImageData* _imageData);
 	ImageData* AddText(std::string _text, int _x, int _y);
 	TextBox* AddTextBox(size_t _size, int _x, int _y);
 	EventTimer* AddEventTimer(EventTimer* _eventTimer);

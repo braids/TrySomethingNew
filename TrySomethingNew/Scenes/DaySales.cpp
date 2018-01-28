@@ -62,6 +62,12 @@ void DaySales::LoadImagesText() {
 	this->TextObjects.MoneyText = this->AddDaySalesText("MONEY:", 140, 164);
 	this->TextObjects.MoneyAmt = this->AddDaySalesText(std::to_string(this->Money + this->mPlayerData->GetMoney()), 189, 164);
 
+	// Add customer images
+	std::vector<CustomerObject*>::iterator it = this->CustomerObjects.begin();
+	for (; it != this->CustomerObjects.end(); it++) {
+		this->CustomerImages.push_back(this->AddImage((*it)->GetImageData()));
+	}
+
 	// Load escape screen text
 	this->AddEscapeText(this);
 
@@ -87,12 +93,12 @@ void DaySales::SceneStart() {
 	// Get player inventory
 	this->GetCurrentPlayerInventory();
 
-	// Load Images and Text Images
-	this->LoadImagesText();
-
 	// Generate customers
 	this->GenerateCustomers();
 
+	// Load Images and Text Images
+	this->LoadImagesText();
+	
 	// Load event timers
 	this->LoadEventTimers();
 
@@ -148,7 +154,7 @@ void DaySales::Update(Uint32 timeStep) {
 			// Check if customers are shopping and havne't purchased yet
 			if (!this->CustomerObjects[i]->HasPurchased() && this->CustomerObjects[i]->IsShopping()) {
 				this->CustomerObjects[i]->SetPurchased(true);
-				this->GetPurchase(this->Customers[i]);
+				this->GetPurchase(this->CustomerObjects[i]->GetData());
 			}
 			this->CustomerObjects[i]->Update(timeStep);
 		}
@@ -176,7 +182,6 @@ void DaySales::Cleanup() {
 	this->DaySalesText.clear();
 	this->SellItems.clear();
 	this->CustomerImages.clear();
-	this->Customers.clear();
 	this->CustomerObjects.clear();
 	this->EscapeImagesText.clear();
 
@@ -207,7 +212,6 @@ void DaySales::GetCurrentPlayerInventory() {
 
 void DaySales::GenerateCustomers() {
 	// Clear current customer vector
-	this->Customers.clear();
 	this->CustomerImages.clear();
 	this->CustomerObjects.clear();
 
@@ -239,18 +243,10 @@ void DaySales::GenerateCustomers() {
 	// Get customer spawn rate
 	this->CustomerSpawnInterval = ((this->DaySegmentLength * 3) - 1000) / numCustomers;
 
-	this->mImages.reserve(this->mImages.size() + numCustomers);
-
 	// Create n customers 
 	for (int i = 0; i < numCustomers; i++) {
-		// Store customer data
-		this->Customers.push_back(new CustomerData(this->mPlayerData->GetEventForecast()));
-		// Store customer object
-		this->CustomerObjects.push_back(new CustomerObject(this->Customers[i]->GetSide()));
-		// Store customer image
-		this->mImages.push_back(this->CustomerObjects[i]->GetImageData());
-		this->CustomerImages.push_back(this->CustomerObjects[i]->GetImageData());
-		this->CustomerImages[i]->SetVisible(false);
+		// Create new customer based on day's event.
+		this->CustomerObjects.push_back( new CustomerObject(this->mPlayerData->GetEventForecast()) );
 	}
 }
 
@@ -285,7 +281,7 @@ void DaySales::SEvent_ShowDaySalesText() {
 
 void DaySales::SEvent_SpawnCustomer() {
 	// If all customers spawned, stop spawning
-	if (this->CustomerSpawnTotal >= this->Customers.size()) {
+	if (this->CustomerSpawnTotal >= this->CustomerObjects.size()) {
 		this->EventTimers.CustomerSpawn->stop();
 	} else {
 		this->CustomerObjects[this->CustomerSpawnTotal]->SetActive(true);

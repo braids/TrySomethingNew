@@ -18,7 +18,6 @@ protected:
 	std::vector<ItemData*> SellItems;
 
 	std::vector<ImageData*> CustomerImages;
-	std::vector<CustomerData*> Customers;
 	std::vector<CustomerObject*> CustomerObjects;
 	Uint32 CustomerSpawnInterval;
 	Uint32 CustomerSpawnTotal;
