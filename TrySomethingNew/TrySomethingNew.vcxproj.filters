@@ -80,9 +80,6 @@
     <ClCompile Include="Scenes\DaySales.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Data\Customer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GameObjects\CustomerObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -90,6 +87,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Scenes\SubScreens\EscapeScreen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\CustomerData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -124,9 +124,6 @@
     <ClInclude Include="Data\ItemData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Data\Customer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Scenes\TitleScreen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -149,6 +146,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Scenes\SubScreens\EscapeScreen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\CustomerData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

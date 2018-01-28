@@ -1,4 +1,4 @@
-#include "Data\Customer.h"
+#include "Data\CustomerData.h"
 #include "GameObjects\GameObject.h"
 
 CustomerObject::CustomerObject(WallSide _side) {

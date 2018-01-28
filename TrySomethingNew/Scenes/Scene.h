@@ -5,7 +5,6 @@
 #include <vector>
 #include "Assets.h"
 #include "Camera.h"
-#include "Data\Customer.h"
 #include "Data\ItemData.h"
 #include "Data\PlayerData.h"
 #include "GameObjects\GameObject.h"

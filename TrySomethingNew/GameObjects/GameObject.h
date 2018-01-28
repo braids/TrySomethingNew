@@ -3,7 +3,7 @@
 #define _GAMEOBJECT_H_
 
 #include "Assets.h"
-#include "Data\Customer.h"
+#include "Data\CustomerData.h"
 #include "Graphics.h"
 #include "Timer.h"
 

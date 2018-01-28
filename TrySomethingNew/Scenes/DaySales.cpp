@@ -4,6 +4,7 @@
 #include <SDL2\SDL.h>
 #include <SDL2\SDL_mixer.h>
 #include "Assets.h"
+#include "Data\CustomerData.h"
 #include "Data\ItemData.h"
 #include "Data\PlayerData.h"
 #include "GameObjects\GameObject.h"
@@ -243,7 +244,7 @@ void DaySales::GenerateCustomers() {
 	// Create n customers 
 	for (int i = 0; i < numCustomers; i++) {
 		// Store customer data
-		this->Customers.push_back(new Customer(this->mPlayerData->GetEventForecast()));
+		this->Customers.push_back(new CustomerData(this->mPlayerData->GetEventForecast()));
 		// Store customer object
 		this->CustomerObjects.push_back(new CustomerObject(this->Customers[i]->GetSide()));
 		// Store customer image
@@ -253,7 +254,7 @@ void DaySales::GenerateCustomers() {
 	}
 }
 
-void DaySales::GetPurchase(Customer* _customer) {
+void DaySales::GetPurchase(CustomerData* _customer) {
 	// Customer makes a purchase from available items.
 	std::vector<ItemName>* purchaseList = _customer->PurchaseList(this->SellItems);
 	

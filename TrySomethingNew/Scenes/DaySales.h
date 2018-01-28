@@ -5,8 +5,9 @@
 #include <vector>
 #include <SDL2\SDL.h>
 #include "Assets.h"
-#include "GameObjects\GameObject.h"
+#include "Data\CustomerData.h"
 #include "Data\ItemData.h"
+#include "GameObjects\GameObject.h"
 #include "Scenes\Scene.h"
 #include "Scenes\SubScreens\EscapeScreen.h"
 #include "Timer.h"
@@ -17,7 +18,7 @@ protected:
 	std::vector<ItemData*> SellItems;
 
 	std::vector<ImageData*> CustomerImages;
-	std::vector<Customer*> Customers;
+	std::vector<CustomerData*> Customers;
 	std::vector<CustomerObject*> CustomerObjects;
 	Uint32 CustomerSpawnInterval;
 	Uint32 CustomerSpawnTotal;
@@ -76,7 +77,7 @@ public:
 	ImageData* AddDaySalesText(std::string _text, int _x, int _y);
 	void GetCurrentPlayerInventory();
 	void GenerateCustomers();
-	void GetPurchase(Customer* _customer);
+	void GetPurchase(CustomerData* _customer);
 
 	//// Events
 	// Show/Hide Events

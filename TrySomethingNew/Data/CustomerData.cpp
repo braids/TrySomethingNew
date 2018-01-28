@@ -1,10 +1,10 @@
 #include <iterator>
 #include <random>
 #include <vector>
-#include "Data\Customer.h"
+#include "Data\CustomerData.h"
 #include "Data\ItemData.h"
 
-Customer::Customer(ForecastEvent _event) {
+CustomerData::CustomerData(ForecastEvent _event) {
 	int sideChance = rand() % 6;
 	WallSide sideChosen;
 	switch (_event) {
@@ -30,7 +30,7 @@ Customer::Customer(ForecastEvent _event) {
 	this->Side = sideChosen;
 }
 
-std::vector<ItemName>* Customer::PurchaseList(std::vector<ItemData*> _stock) {
+std::vector<ItemName>* CustomerData::PurchaseList(std::vector<ItemData*> _stock) {
 	// Init purchased item vector
 	std::vector<ItemName>* Purchased = new std::vector<ItemName>;
 
@@ -52,7 +52,7 @@ std::vector<ItemName>* Customer::PurchaseList(std::vector<ItemData*> _stock) {
 }
 
 template<typename Iterator>
-void Customer::PurchaseItems(Iterator Begin, Iterator End, std::vector<ItemName>* Purchased) {
+void CustomerData::PurchaseItems(Iterator Begin, Iterator End, std::vector<ItemName>* Purchased) {
 	// Item type purchased flags
 	bool PurchasedBeer = false;
 	bool PurchasedFood = false;
