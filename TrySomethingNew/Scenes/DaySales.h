@@ -19,8 +19,8 @@ protected:
 
 	std::vector<ImageData*> CustomerImages;
 	std::vector<CustomerObject*> CustomerObjects;
+	std::vector<CustomerObject*>::iterator CustomerSpawnIter;
 	Uint32 CustomerSpawnInterval;
-	Uint32 CustomerSpawnTotal;
 
 	const Uint32 DaySegmentLength = 5000;
 	int Money;
@@ -63,7 +63,6 @@ public:
 
 	// Scene funcs
 	void ResetFlags();
-	void LoadGameObjects();
 	void LoadEventTimers();
 	void LoadImagesText();
 	void SceneStart();
@@ -76,7 +75,7 @@ public:
 	ImageData* AddDaySalesText(std::string _text, int _x, int _y);
 	void GetCurrentPlayerInventory();
 	void GenerateCustomers();
-	void GetPurchase(CustomerData* _customer);
+	void GetPurchase(CustomerObject * _customer);
 
 	//// Events
 	// Show/Hide Events
