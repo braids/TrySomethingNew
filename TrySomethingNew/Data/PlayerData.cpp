@@ -34,6 +34,12 @@ bool PlayerData::HasInventoryItem(ItemName _name) {
 	return (this->GetInventoryItem(_name)->GetQuantity() > 0) ? true : false;
 }
 
+void PlayerData::SetInventory(std::vector<ItemData*>* _items) {
+	this->Inventory.clear();
+	for (std::vector<ItemData*>::iterator it = _items->begin(); it != _items->end(); it++)
+		this->Inventory.push_back(*it);
+}
+
 void PlayerData::SetInventoryQty(ItemName _name, int _qty) {
 	this->GetInventoryItem(_name)->SetQuantity(_qty);
 }
@@ -114,4 +120,19 @@ SaveFile::SaveFile(PlayerData _data) {
 	this->Day = _data.GetDay();
 	this->FWeather = _data.GetWeatherForecast();
 	this->FEvent = _data.GetEventForecast();
+	
+	std::vector<ItemData*>::iterator it = _data.GetInventory()->begin();
+	for (int i = 0; it != _data.GetInventory()->end(); i++, it++)
+		this->Inventory[i] = **it;
 }
+
+std::vector<ItemData*>* SaveFile::GetInventory()
+{
+	std::vector<ItemData*>* itemDataVec = new std::vector<ItemData*>;
+	
+	for (int i = 0; i < 9; i++)
+		itemDataVec->push_back(new ItemData(this->Inventory[i]));
+	
+	return itemDataVec;
+}
+

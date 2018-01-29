@@ -41,6 +41,7 @@ public:
 	void SetMorningState();
 	ItemData* GetInventoryItem(ItemName _name);
 	bool HasInventoryItem(ItemName _name);
+	void SetInventory(std::vector<ItemData*>* _items);
 	void SetInventoryQty(ItemName _name, int _qty);
 
 	void GenerateForecast();
@@ -64,6 +65,7 @@ protected:
 	ForecastWeather FWeather;
 	ForecastEvent FEvent;
 	char ShopName[26];
+	ItemData Inventory[9];
 
 public:
 	SaveFile();
@@ -74,6 +76,7 @@ public:
 	int GetMoney() { return this->Money; }
 	ForecastWeather GetWeatherForecast() { return this->FWeather; }
 	ForecastEvent GetEventForecast() { return this->FEvent; }
+	std::vector<ItemData*>* GetInventory();
 };
 
 std::string GetWeatherDesc(ForecastWeather _weather);

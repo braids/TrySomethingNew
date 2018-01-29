@@ -38,6 +38,7 @@ protected:
 	int			SalesTotal;
 
 public:
+	ItemData();
 	ItemData(ItemName _name);
 
 	ItemName GetName() { return this->Name; }
