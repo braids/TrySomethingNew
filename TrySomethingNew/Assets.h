@@ -158,8 +158,12 @@ public:
 		// Get current image text
 		std::string text = *this->GetText();
 		// If less than max length and text box is active, append a *
-		if (text.length() < this->MaxLength && this->IsActive())
-			text.append("*");
+		if (this->IsActive()) {
+			if (text.length() < this->MaxLength)
+				text.append("*");
+			else
+				text.append("]");
+		}
 		// Set image texture
 		this->SetTexture(Graphics::Instance()->LoadText(
 			Assets::Instance()->fonts.PrintChar21_8, text, 255,	255, 255, 0));

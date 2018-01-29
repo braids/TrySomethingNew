@@ -77,7 +77,7 @@ void Market::LoadImagesText() {
 		this->AddMarketText(buyPrice, 161, y);
 		
 		// Add purchase quantity text box
-		this->AddMarketTextBox(3, 210, y);
+		this->AddMarketTextBox(3, 203, y);
 		
 		// Add purchase subtotal text
 		this->AddSubTotalText("0", 245, y);
