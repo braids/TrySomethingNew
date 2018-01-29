@@ -141,10 +141,10 @@
   <ItemGroup>
     <ClCompile Include="Assets.cpp" />
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="Data\Customer.cpp" />
+    <ClCompile Include="Data\CustomerData.cpp" />
     <ClCompile Include="Data\PlayerData.cpp" />
     <ClCompile Include="Data\ItemData.cpp" />
-    <ClCompile Include="GameObjects\CustomerObject.cpp" />
+    <ClCompile Include="GameObjects\Customer.cpp" />
     <ClCompile Include="GameObjects\GameObject.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="SceneManager.cpp" />
@@ -163,7 +163,7 @@
   <ItemGroup>
     <ClInclude Include="Assets.h" />
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="Data\Customer.h" />
+    <ClInclude Include="Data\CustomerData.h" />
     <ClInclude Include="Data\ItemData.h" />
     <ClInclude Include="Data\PlayerData.h" />
     <ClInclude Include="GameObjects\GameObject.h" />

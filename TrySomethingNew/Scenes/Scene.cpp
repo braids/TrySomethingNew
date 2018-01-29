@@ -32,6 +32,15 @@ ImageData* Scene::AddImage(Assets::Image* _image, int _x, int _y) {
 	return newImage;
 }
 
+ImageData * Scene::AddImage(ImageData * _imageData)
+{
+	// Add image to scene image list
+	this->mImages.push_back(_imageData);
+
+	// Return image pointer
+	return _imageData;
+}
+
 ImageData* Scene::AddText(std::string _text, int _x, int _y) {
 	// Init Image and ImageData
 	ImageData* textImageData = new ImageData();

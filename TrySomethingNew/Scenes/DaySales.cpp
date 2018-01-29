@@ -4,6 +4,7 @@
 #include <SDL2\SDL.h>
 #include <SDL2\SDL_mixer.h>
 #include "Assets.h"
+#include "Data\CustomerData.h"
 #include "Data\ItemData.h"
 #include "Data\PlayerData.h"
 #include "GameObjects\GameObject.h"
@@ -61,6 +62,10 @@ void DaySales::LoadImagesText() {
 	this->TextObjects.MoneyText = this->AddDaySalesText("MONEY:", 140, 164);
 	this->TextObjects.MoneyAmt = this->AddDaySalesText(std::to_string(this->Money + this->mPlayerData->GetMoney()), 189, 164);
 
+	// Add customer images
+	for (CustomerVecIter it = this->Customers.begin(); it != this->Customers.end(); it++)
+		this->AddImage((*it)->GetImageData());
+
 	// Load escape screen text
 	this->AddEscapeText(this);
 
@@ -81,17 +86,16 @@ void DaySales::SceneStart() {
 	this->EventFlags.Simulation = true;
 	this->Money = 0;
 	this->CustomerSpawnInterval = 0;
-	this->CustomerSpawnTotal = 0;
 
 	// Get player inventory
 	this->GetCurrentPlayerInventory();
 
-	// Load Images and Text Images
-	this->LoadImagesText();
-
 	// Generate customers
 	this->GenerateCustomers();
 
+	// Load Images and Text Images
+	this->LoadImagesText();
+	
 	// Load event timers
 	this->LoadEventTimers();
 
@@ -138,21 +142,21 @@ void DaySales::HandleEvent(SDL_Event * Event) {
 }
 
 void DaySales::Update(Uint32 timeStep) {
+	// Skip update if escape screen is visible.
+	if (EscapeScreenVisible)
+		return;
+	
 	// Update timers
 	this->UpdateEventTimers();
-
+	
 	// Update customers
-	if (!EscapeScreenVisible) {
-		for (Uint32 i = 0; i < this->CustomerSpawnTotal; i++) {
-			// Check if customers are shopping and havne't purchased yet
-			if (!this->CustomerObjects[i]->HasPurchased() && this->CustomerObjects[i]->IsShopping()) {
-				this->CustomerObjects[i]->SetPurchased(true);
-				this->GetPurchase(this->Customers[i]);
-			}
-			this->CustomerObjects[i]->Update(timeStep);
-		}
-	}
+	for (CustomerVecIter it = this->Customers.begin(); it != this->Customers.end(); it++) {
+		// Check if customers are shopping and havne't purchased yet
+		if (!(*it)->HasPurchased() && (*it)->IsShopping()) 
+			this->GetPurchase((*it));
 
+		(*it)->Update(timeStep);
+	}
 }
 
 void DaySales::Render() {
@@ -174,9 +178,7 @@ void DaySales::Cleanup() {
 	this->mImages.clear();
 	this->DaySalesText.clear();
 	this->SellItems.clear();
-	this->CustomerImages.clear();
 	this->Customers.clear();
-	this->CustomerObjects.clear();
 	this->EscapeImagesText.clear();
 
 	// Stop timers
@@ -207,8 +209,6 @@ void DaySales::GetCurrentPlayerInventory() {
 void DaySales::GenerateCustomers() {
 	// Clear current customer vector
 	this->Customers.clear();
-	this->CustomerImages.clear();
-	this->CustomerObjects.clear();
 
 	// Get amount of advertising
 	int signs = this->mPlayerData->GetInventoryItem(ItemName::Item_Sign)->GetQuantity();
@@ -238,28 +238,25 @@ void DaySales::GenerateCustomers() {
 	// Get customer spawn rate
 	this->CustomerSpawnInterval = ((this->DaySegmentLength * 3) - 1000) / numCustomers;
 
-	this->mImages.reserve(this->mImages.size() + numCustomers);
-
 	// Create n customers 
 	for (int i = 0; i < numCustomers; i++) {
-		// Store customer data
-		this->Customers.push_back(new Customer(this->mPlayerData->GetEventForecast()));
-		// Store customer object
-		this->CustomerObjects.push_back(new CustomerObject(this->Customers[i]->GetSide()));
-		// Store customer image
-		this->mImages.push_back(this->CustomerObjects[i]->GetImageData());
-		this->CustomerImages.push_back(this->CustomerObjects[i]->GetImageData());
-		this->CustomerImages[i]->SetVisible(false);
+		// Create new customer based on day's event.
+		this->Customers.push_back( new Customer(this->mPlayerData->GetEventForecast()) );
 	}
+
+	this->CustomerSpawnIter = this->Customers.begin();
 }
 
 void DaySales::GetPurchase(Customer* _customer) {
+	// Set customer as purchased
+	_customer->SetPurchased(true);
+
 	// Customer makes a purchase from available items.
-	std::vector<ItemName>* purchaseList = _customer->PurchaseList(this->SellItems);
-	
+	std::vector<ItemName>* purchaseList = _customer->GetData()->PurchaseList(this->SellItems);
+
 	// Declare purchased item pointer
 	ItemData* purchasedItem;
-	
+
 	// For each item purchased
 	for (std::vector<ItemName>::iterator it = purchaseList->begin(); it != purchaseList->end(); it++) {
 		// Get purchased item from sales list
@@ -283,12 +280,9 @@ void DaySales::SEvent_ShowDaySalesText() {
 }
 
 void DaySales::SEvent_SpawnCustomer() {
-	// If all customers spawned, stop spawning
-	if (this->CustomerSpawnTotal >= this->Customers.size()) {
-		this->EventTimers.CustomerSpawn->stop();
-	} else {
-		this->CustomerObjects[this->CustomerSpawnTotal]->SetActive(true);
-		this->CustomerSpawnTotal++;
+	if (this->CustomerSpawnIter != this->Customers.end()) {
+		(*this->CustomerSpawnIter)->SetActive(true);
+		this->CustomerSpawnIter++;
 	}
 }
 
@@ -338,10 +332,8 @@ void DaySales::SEvent_ShowEscapeScreen() {
 	this->PauseTimers();
 	Mix_PauseMusic();
 
-	for (Uint32 i = 0; i < this->CustomerSpawnTotal; i++) {
-		this->CustomerImages[i]->SetVisible(false);
-		this->CustomerObjects[i]->PauseWalkTimer();
-	}
+	for(CustomerVecIter it = this->Customers.begin(); it != this->Customers.end(); it++)
+		(*it)->PauseWalkTimer();
 
 	this->EscapeScreenVisible = true;
 	this->ShowEscapeText();
@@ -352,10 +344,8 @@ void DaySales::SEvent_HideEscapeScreen() {
 	if (Mix_PausedMusic())
 		Mix_ResumeMusic();
 
-	for (Uint32 i = 0; i < this->CustomerSpawnTotal; i++) {
-		this->CustomerImages[i]->SetVisible(true);
-		this->CustomerObjects[i]->ResumeWalkTimer();
-	}
+	for (CustomerVecIter it = this->Customers.begin(); it != this->Customers.end(); it++)
+		(*it)->ResumeWalkTimer();
 
 	this->EscapeScreenVisible = false;
 	this->HideEscapeText();

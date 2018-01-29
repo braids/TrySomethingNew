@@ -5,8 +5,9 @@
 #include <vector>
 #include <SDL2\SDL.h>
 #include "Assets.h"
-#include "GameObjects\GameObject.h"
+#include "Data\CustomerData.h"
 #include "Data\ItemData.h"
+#include "GameObjects\GameObject.h"
 #include "Scenes\Scene.h"
 #include "Scenes\SubScreens\EscapeScreen.h"
 #include "Timer.h"
@@ -16,11 +17,9 @@ protected:
 	std::vector<ImageData*> DaySalesText;
 	std::vector<ItemData*> SellItems;
 
-	std::vector<ImageData*> CustomerImages;
-	std::vector<Customer*> Customers;
-	std::vector<CustomerObject*> CustomerObjects;
+	CustomerVec Customers;
+	CustomerVecIter CustomerSpawnIter;
 	Uint32 CustomerSpawnInterval;
-	Uint32 CustomerSpawnTotal;
 
 	const Uint32 DaySegmentLength = 5000;
 	int Money;
@@ -63,7 +62,6 @@ public:
 
 	// Scene funcs
 	void ResetFlags();
-	void LoadGameObjects();
 	void LoadEventTimers();
 	void LoadImagesText();
 	void SceneStart();
@@ -76,7 +74,7 @@ public:
 	ImageData* AddDaySalesText(std::string _text, int _x, int _y);
 	void GetCurrentPlayerInventory();
 	void GenerateCustomers();
-	void GetPurchase(Customer* _customer);
+	void GetPurchase(Customer * _customer);
 
 	//// Events
 	// Show/Hide Events

@@ -3,7 +3,7 @@
 #define _GAMEOBJECT_H_
 
 #include "Assets.h"
-#include "Data\Customer.h"
+#include "Data\CustomerData.h"
 #include "Graphics.h"
 #include "Timer.h"
 
@@ -55,13 +55,17 @@ public:
 	virtual void Update(Uint32 ticks) = 0;	
 };
 
-class CustomerObject : public GameObject {
-protected:
-	WallSide Side;
+class Customer;
 
-	int StartPos;
-	int ShopPos;
-	int EndPos;
+typedef std::vector<Customer*> CustomerVec;
+typedef CustomerVec::iterator CustomerVecIter;
+
+class Customer : public GameObject {
+protected:
+	CustomerData* Data;
+
+	double ShopPos;
+	double EndPos;
 	int ShopTime = 500;
 	int ShopDuration;
 	
@@ -75,11 +79,12 @@ protected:
 	bool WalkOut;
 
 public:
-	CustomerObject(WallSide _side);
+	Customer(ForecastEvent _event);
 	void SetActive(bool _active);
 	void SetPurchased(bool _purchase);
 	bool HasPurchased();
 	bool IsShopping();
+	CustomerData* GetData() { return this->Data; }
 	// Funcs
 	void Update(Uint32 ticks);
 	void UpdateAnim();
