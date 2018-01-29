@@ -17,7 +17,6 @@ protected:
 	std::vector<ImageData*> DaySalesText;
 	std::vector<ItemData*> SellItems;
 
-	std::vector<ImageData*> CustomerImages;
 	std::vector<CustomerObject*> CustomerObjects;
 	std::vector<CustomerObject*>::iterator CustomerSpawnIter;
 	Uint32 CustomerSpawnInterval;

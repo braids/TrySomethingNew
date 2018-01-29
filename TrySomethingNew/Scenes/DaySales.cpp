@@ -65,7 +65,7 @@ void DaySales::LoadImagesText() {
 	// Add customer images
 	std::vector<CustomerObject*>::iterator it = this->CustomerObjects.begin();
 	for (; it != this->CustomerObjects.end(); it++) {
-		this->CustomerImages.push_back(this->AddImage((*it)->GetImageData()));
+		this->AddImage((*it)->GetImageData());
 	}
 
 	// Load escape screen text
@@ -180,7 +180,6 @@ void DaySales::Cleanup() {
 	this->mImages.clear();
 	this->DaySalesText.clear();
 	this->SellItems.clear();
-	this->CustomerImages.clear();
 	this->CustomerObjects.clear();
 	this->EscapeImagesText.clear();
 
@@ -211,7 +210,6 @@ void DaySales::GetCurrentPlayerInventory() {
 
 void DaySales::GenerateCustomers() {
 	// Clear current customer vector
-	this->CustomerImages.clear();
 	this->CustomerObjects.clear();
 
 	// Get amount of advertising
