@@ -1,7 +1,7 @@
 #include "Data\CustomerData.h"
 #include "GameObjects\GameObject.h"
 
-CustomerObject::CustomerObject(ForecastEvent _event) {
+Customer::Customer(ForecastEvent _event) {
 	// Set game object ID
 	this->mObjectId = ObjectID::Object_Customer;
 	
@@ -44,7 +44,7 @@ CustomerObject::CustomerObject(ForecastEvent _event) {
 	this->WalkTimer.start();
 }
 
-void CustomerObject::SetActive(bool _active) {
+void Customer::SetActive(bool _active) {
 	if (_active) {
 		this->Active = true;
 		this->mImageData.SetVisible(true);
@@ -55,20 +55,20 @@ void CustomerObject::SetActive(bool _active) {
 	}
 }
 
-void CustomerObject::SetPurchased(bool _purchase) {
+void Customer::SetPurchased(bool _purchase) {
 	this->Purchased = _purchase;
 }
 
-bool CustomerObject::HasPurchased() {
+bool Customer::HasPurchased() {
 	return this->Purchased;
 }
 
-bool CustomerObject::IsShopping()
+bool Customer::IsShopping()
 {
 	return this->Shopping;
 }
 
-void CustomerObject::Update(Uint32 ticks) {
+void Customer::Update(Uint32 ticks) {
 	if (this->Active) {
 		if (this->WalkIn) {
 			this->mPosition.SetX(this->mPosition.GetX() + (((this->GetData()->GetSide() == WallSide::EastBerlin) ? -0.2 : 0.2)) * (double) ticks);
@@ -105,7 +105,7 @@ void CustomerObject::Update(Uint32 ticks) {
 	}
 }
 
-void CustomerObject::UpdateAnim() {
+void Customer::UpdateAnim() {
 	this->WalkFrame++;
 	if (this->WalkFrame >= 4) this->WalkFrame = 0;
 	(this->GetData()->GetSide() == WallSide::EastBerlin) ? this->mImageData.SetImage(&Assets::Instance()->images.ECustomer[this->WalkFrame]) : this->mImageData.SetImage(&Assets::Instance()->images.WCustomer[this->WalkFrame]);
@@ -113,12 +113,12 @@ void CustomerObject::UpdateAnim() {
 	this->WalkTimer.start();
 }
 
-void CustomerObject::PauseWalkTimer() {
+void Customer::PauseWalkTimer() {
 	if (this->WalkTimer.isStarted() && !this->WalkTimer.isPaused())
 		this->WalkTimer.pause();
 }
 
-void CustomerObject::ResumeWalkTimer() {
+void Customer::ResumeWalkTimer() {
 	if (this->WalkTimer.isStarted() && this->WalkTimer.isPaused())
 		this->WalkTimer.unpause();
 }

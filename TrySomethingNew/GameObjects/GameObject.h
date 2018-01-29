@@ -55,7 +55,12 @@ public:
 	virtual void Update(Uint32 ticks) = 0;	
 };
 
-class CustomerObject : public GameObject {
+class Customer;
+
+typedef std::vector<Customer*> CustomerVec;
+typedef CustomerVec::iterator CustomerVecIter;
+
+class Customer : public GameObject {
 protected:
 	CustomerData* Data;
 
@@ -74,7 +79,7 @@ protected:
 	bool WalkOut;
 
 public:
-	CustomerObject(ForecastEvent _event);
+	Customer(ForecastEvent _event);
 	void SetActive(bool _active);
 	void SetPurchased(bool _purchase);
 	bool HasPurchased();
