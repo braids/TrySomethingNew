@@ -23,6 +23,13 @@ void PlayerData::ClearInventory() {
 	this->Inventory = *GetInitialItemVector();
 }
 
+void PlayerData::SetMorningState() {
+	for (std::vector<ItemData*>::iterator it = this->Inventory.begin(); it != this->Inventory.end(); it++) {
+		(*it)->SetQuantity((*it)->GetBoughtQuantity());
+		(*it)->ClearSalesTotal();
+	}
+}
+
 bool PlayerData::HasInventoryItem(ItemName _name) {
 	return (this->GetInventoryItem(_name)->GetQuantity() > 0) ? true : false;
 }

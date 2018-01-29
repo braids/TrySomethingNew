@@ -38,6 +38,7 @@ public:
 
 	std::vector<ItemData*>* GetInventory() { return &this->Inventory; }
 	void ClearInventory();
+	void SetMorningState();
 	ItemData* GetInventoryItem(ItemName _name);
 	bool HasInventoryItem(ItemName _name);
 	void SetInventoryQty(ItemName _name, int _qty);

@@ -59,7 +59,7 @@ void SetPrices::LoadImagesText() {
 		this->AddSetPricesText("DM", 203, y);
 		this->AddSetPricesItemBox(3, 217, y);
 		// Add quantity amount
-		this->AddSetPricesText(std::to_string(this->SellItems[i]->GetQuantity()), 252, y);
+		this->AddSetPricesText(std::to_string(this->SellItems[i]->GetBoughtQuantity()), 252, y);
 	}
 	// Title
 	this->AddSetPricesText("SET PRICES", 105, 9);
@@ -270,7 +270,7 @@ void SetPrices::GetCurrentPlayerInventory() {
 	std::for_each(
 		this->mPlayerData->GetInventory()->begin(),
 		this->mPlayerData->GetInventory()->end(),
-		[this](ItemData* &_item) { if (_item->GetQuantity() > 0 && _item->GetType() != ItemType::ItemType_Ad) this->SellItems.push_back(_item); });
+		[this](ItemData* &_item) { if (_item->GetBoughtQuantity() > 0 && _item->GetType() != ItemType::ItemType_Ad) this->SellItems.push_back(_item); });
 }
 
 //// Scene Events
