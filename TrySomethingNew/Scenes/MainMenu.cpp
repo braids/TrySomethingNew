@@ -225,6 +225,7 @@ void MainMenu::SEvent_LoadGame() {
 	this->mPlayerData->SetDay(savedata.GetDay());
 	this->mPlayerData->SetWeatherForecast(savedata.GetWeatherForecast());
 	this->mPlayerData->SetEventForecast(savedata.GetEventForecast());
+	this->mPlayerData->SetInventory(savedata.GetInventory());
 
 	// Stop Music
 	Mix_HaltMusic();

@@ -77,10 +77,11 @@ void Market::LoadImagesText() {
 		this->AddMarketText(buyPrice, 161, y);
 		
 		// Add purchase quantity text box
-		this->AddMarketTextBox(3, 203, y);
+		ImageData* textBox = this->AddMarketTextBox(3, 203, y);
+		textBox->SetText(std::to_string(this->BuyData[i]->GetBoughtQuantity()));
 		
 		// Add purchase subtotal text
-		this->AddSubTotalText("0", 245, y);
+		this->AddSubTotalText(std::to_string(this->BuyData[i]->GetBoughtQuantity() * this->BuyData[i]->GetBuyPrice()), 245, y);
 	}
 	// Total
 	this->AddMarketText("MONEY:", 182, 144);
@@ -131,15 +132,21 @@ void Market::SceneStart() {
 	// Start with text entry off
 	SDL_StopTextInput();
 
-	// Initialize buy vectors
-	this->mPlayerData->ClearInventory();
-	this->BuyData = *GetInitialItemVector();
-	this->BuyTotal = 0;
+	// Clear player's sales totals
+	this->mPlayerData->SetMorningState();
 
+	// Add copy of player's inventory.
+	for (std::vector<ItemData*>::iterator it = this->mPlayerData->GetInventory()->begin(); it != this->mPlayerData->GetInventory()->end(); it++)
+		this->BuyData.push_back(new ItemData(**it));
+	
 	// Load Event Timers
 	this->LoadEventTimers();
+
 	// Load Images and Text Images
 	this->LoadImagesText();
+	
+	// Update total amount
+	this->UpdateTotal();
 
 	// Display main market text
 	this->SEvent_ShowMarketText();
@@ -318,7 +325,7 @@ void Market::UpdateTotal() {
 	// Get all buy subtotals
 	std::vector<ItemData*>::iterator it = this->BuyData.begin();
 	for (; it != this->BuyData.end(); it++)
-		this->BuyTotal += (*it)->GetBuyPrice() * (*it)->GetQuantity();
+		this->BuyTotal += (*it)->GetBuyPrice() * (*it)->GetBoughtQuantity();
 
 	// Update subtotal text
 	this->TextObjects.TotalAmount->SetText(std::to_string(this->BuyTotal));
@@ -504,7 +511,7 @@ void Market::SEvent_Leave() {
 	int productBought = 0;
 	// Check all non-ad items for at least one bought item
 	for (std::vector<ItemData*>::iterator it = this->BuyData.begin(); it != this->BuyData.end(); it++) {
-		if ((*it)->GetQuantity() > 0 && (*it)->GetType() != ItemType::ItemType_Ad)
+		if ((*it)->GetBoughtQuantity() > 0 && (*it)->GetType() != ItemType::ItemType_Ad)
 			productBought++;
 	}
 	// If nothing bought, prevent leaving.
@@ -519,7 +526,7 @@ void Market::SEvent_Leave() {
 		// Set player inventory equal to items purchased
 		for (std::vector<ItemData*>::iterator it = this->BuyData.begin(); it != this->BuyData.end(); it++) {
 			this->mPlayerData->GetInventoryItem((*it)->GetName())->SetQuantity((*it)->GetQuantity());
-			this->mPlayerData->GetInventoryItem((*it)->GetName())->SetBoughtQuantity((*it)->GetQuantity());
+			this->mPlayerData->GetInventoryItem((*it)->GetName())->SetBoughtQuantity((*it)->GetBoughtQuantity());
 		}
 		Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 		// Set player money

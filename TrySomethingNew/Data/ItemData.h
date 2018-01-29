@@ -38,6 +38,7 @@ protected:
 	int			SalesTotal;
 
 public:
+	ItemData();
 	ItemData(ItemName _name);
 
 	ItemName GetName() { return this->Name; }
@@ -53,6 +54,7 @@ public:
 	void SetBoughtQuantity(int _qty) { this->BoughtQuantity = _qty; }
 	void SetSellPrice(int _price) { this->SellPrice = _price; }
 	void AddSalesTotal(int _purchase) { this->SalesTotal += _purchase; }
+	void ClearSalesTotal() { this->SalesTotal = 0; }
 };
 
 ItemType GetItemType(ItemData* _item);
