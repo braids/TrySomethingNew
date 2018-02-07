@@ -204,4 +204,7 @@
       <Filter>Resource Files</Filter>
     </Media>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="res\font\FreeLicense.txt" />
+  </ItemGroup>
 </Project>

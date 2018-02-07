@@ -203,6 +203,9 @@
     <Media Include="res\snd\buy.wav" />
     <Media Include="res\snd\buzz.wav" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="res\font\FreeLicense.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
