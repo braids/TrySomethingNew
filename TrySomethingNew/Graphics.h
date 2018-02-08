@@ -58,6 +58,8 @@ public:
 	void DrawLine(int r, int g, int b, int x1, int y1, int x2, int y2);
 
 	void Render();
+
+	static void ReverseTextureColor(SDL_Texture* texture);
 };
 
 #endif

@@ -59,12 +59,31 @@ SDL_Texture* Graphics::LoadTexture(std::string filePath) {
 	if (surface == NULL)
 		return NULL;
 
-	texture = SDL_CreateTextureFromSurface(mRenderer, surface);
+	SDL_Surface* formattedSurface = SDL_ConvertSurfaceFormat(surface, SDL_GetWindowPixelFormat(mWindow), NULL);
+	
+	if (formattedSurface == NULL)
+		return NULL;
+
+	texture = SDL_CreateTexture(mRenderer, SDL_GetWindowPixelFormat(mWindow), SDL_TEXTUREACCESS_STREAMING, formattedSurface->w, formattedSurface->h);
 
 	if (texture == NULL)
 		return NULL;
 
+	// Lock texture
+	void* mPixels;
+	int mPitch;
+	SDL_LockTexture(texture, NULL, &mPixels, &mPitch);
+
+	// Copy pixels 
+	memcpy(mPixels, formattedSurface->pixels, formattedSurface->pitch * formattedSurface->h);
+
+	// Unlock texture
+	SDL_UnlockTexture(texture);
+
+	// Cleanup
+	mPixels = NULL;
 	SDL_FreeSurface(surface);
+	SDL_FreeSurface(formattedSurface);
 
 	return texture;
 }
@@ -111,6 +130,50 @@ void Graphics::Render() {
 	// Set render scale. Game area scaled to draw area (DScaleRatio), then scaled to window area (WScaleRatio).
 	SDL_RenderSetScale(mRenderer, DScaleXRatio() * WScaleRatioX, DScaleYRatio() * WScaleRatioY);
 	SDL_RenderPresent(mRenderer);
+}
+
+void Graphics::ReverseTextureColor(SDL_Texture* texture) {
+	// Get texture info
+	int textureWidth, textureHeight;
+	Uint32 format;
+	SDL_QueryTexture(texture, &format, NULL, &textureWidth, &textureHeight);
+	
+	// Get pixel format and count
+	SDL_PixelFormat* mappingFormat = SDL_AllocFormat(format);
+	int pixelCount = textureWidth * textureHeight;
+
+	// Lock texture, get pixel/pitch info
+	void* mPixels;
+	int mPitch;
+	SDL_LockTexture(texture, NULL, &mPixels, &mPitch);
+
+	// Get Uint32 pointer to pixels
+	Uint32* pixels = (Uint32*)mPixels;
+	
+	// Reverse color information
+	Uint32 reverseColor;
+	Uint8 r, g, b;
+
+	// Invert pixel color
+	for (int i = 0; i < pixelCount; i++) {
+		// Get color
+		SDL_GetRGB(pixels[i], mappingFormat, &r, &g, &b);
+		// Reverse values
+		r = 0xFF - r;
+		g = 0xFF - g;
+		b = 0xFF - b;
+		reverseColor = SDL_MapRGBA(mappingFormat, r, g, b, 0xFF);
+		// Set new color
+		pixels[i] = reverseColor;
+	}
+
+	// Unlock texture
+	SDL_UnlockTexture(texture);
+
+	// Cleanup
+	mPixels = NULL;
+	pixels = NULL;
+	SDL_FreeFormat(mappingFormat);
 }
 
 Graphics* Graphics::Instance() {
