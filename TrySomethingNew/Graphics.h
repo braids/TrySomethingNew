@@ -36,6 +36,7 @@ public:
 	static void Release();
 	static bool Initialized();
 
+	SDL_Texture* CreateTexture(SDL_Surface* surface);
 	SDL_Texture* LoadTexture(std::string filePath);
 	SDL_Texture* LoadText(TTF_Font* font, std::string text, Uint8 r, Uint8 g, Uint8 b, Uint8 a);
 	TTF_Font* LoadFont(std::string filePath, int size);
@@ -58,6 +59,8 @@ public:
 	void DrawLine(int r, int g, int b, int x1, int y1, int x2, int y2);
 
 	void Render();
+
+	static void ReverseTextureColor(SDL_Texture* texture);
 };
 
 #endif

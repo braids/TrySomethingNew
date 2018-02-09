@@ -122,7 +122,8 @@ public:
 	// Visibility methods
 	bool			IsVisible() { return this->Visible; }
 	void			SetVisible(bool _visible) { this->Visible = _visible; }
-
+	// Color manipulation
+	void			ReverseColor() { Graphics::ReverseTextureColor(this->mImage->texture); }
 };
 
 class TextBox : public ImageData {
