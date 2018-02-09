@@ -192,6 +192,9 @@
     <Image Include="res\img\ThemeLogo.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="res\img\selectionbg.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Media Include="res\snd\buzz.wav">

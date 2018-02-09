@@ -207,6 +207,7 @@
     <Image Include="res\img\customer_stand.png" />
     <Image Include="res\img\ecustomer_walk.png" />
     <Image Include="res\img\JamLogo.png" />
+    <Image Include="res\img\selectionbg.png" />
     <Image Include="res\img\shack1.png" />
     <Image Include="res\img\shack2.png" />
     <Image Include="res\img\shack3.png" />

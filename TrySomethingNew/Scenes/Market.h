@@ -20,16 +20,18 @@ protected:
 	std::vector<ItemData*>	BuyData;
 	ItemData*	ActiveItemData;
 
+	int			SelectedItem;
 	int			BuyTotal;
+
+	struct {
+		ImageData* SelectionBG;
+	} Images;
 
 	struct {
 		// Total
 		ImageData* TotalAmount;
 		ImageData* PlayerMoneyAmount;
 		ImageData* MoneySubTotalAmount;
-		// Selection
-		ImageData* SelectItem;
-		ImageData* EnterQty;
 		// Game Saved
 		ImageData* GameSaved;
 		// Errors
@@ -54,10 +56,8 @@ protected:
 	struct {
 		bool ExitToTitleScreen;
 		bool MainSelection;
-		bool SelectBuyItem;
 		bool EnterItemQty;
 		bool ShowForecast;
-		bool SelectGuideItem;
 		bool ShowGuide;
 	} EventFlags;
 
@@ -76,9 +76,12 @@ public:
 	void Cleanup();
 
 	// Market funcs
+	ImageData* AddMarketImage(Assets::Image* image, int _x, int _y);
 	ImageData* AddMarketText(std::string _text, int _x, int _y);
 	ImageData* AddSubTotalText(std::string _text, int _x, int _y);
 	TextBox* AddMarketTextBox(Uint32 _size, int _x, int _y);
+	void InitSelection();
+	void UpdateSelection();
 	void UpdateTotal();
 
 	//// Events
@@ -89,16 +92,19 @@ public:
 	void SEvent_HideForecast();
 	void SEvent_ShowGuide();
 	void SEvent_HideGuide();
+	// Selection
+	void SEvent_SelectionUp();
+	void SEvent_SelectionDown();
 	// Buy
-	void SEvent_SelectBuy();
-	void SEvent_SetBuyItem(SDL_Keycode _key);
+	void SEvent_ItemQtyEntry();
 	void SEvent_EndItemQtyEntry();
 	// Forecast
 	void SEvent_SelectForecast();
 	void SEvent_ExitForecast();
 	// Guide
-	void SEvent_SelectGuide();
-	void SEvent_SetGuideItem(SDL_Keycode _key);
+	//void SEvent_SelectGuide();
+	//void SEvent_SetGuideItem(SDL_Keycode _key);
+	void SEvent_OpenGuide();
 	void SEvent_ExitGuide();
 	// Leave
 	void SEvent_Leave();

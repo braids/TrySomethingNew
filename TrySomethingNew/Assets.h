@@ -41,6 +41,7 @@ public:
 		Image ThemeLogo;
 		Image Wall1;
 		Image Wall2;
+		Image SelectionRect;
 		Image Shack1;
 		Image Shack2;
 		Image Shack3;
