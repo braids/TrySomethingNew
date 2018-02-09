@@ -36,6 +36,7 @@ public:
 	static void Release();
 	static bool Initialized();
 
+	SDL_Texture* CreateTexture(SDL_Surface* surface);
 	SDL_Texture* LoadTexture(std::string filePath);
 	SDL_Texture* LoadText(TTF_Font* font, std::string text, Uint8 r, Uint8 g, Uint8 b, Uint8 a);
 	TTF_Font* LoadFont(std::string filePath, int size);
