@@ -22,10 +22,8 @@ void Market::ResetFlags() {
 	// Set flags to false
 	this->EventFlags.ExitToTitleScreen = false;
 	this->EventFlags.MainSelection = false;
-	this->EventFlags.SelectBuyItem = false;
 	this->EventFlags.EnterItemQty = false;
 	this->EventFlags.ShowForecast = false;
-	this->EventFlags.SelectGuideItem = false;
 	this->EventFlags.ShowGuide = false;
 }
 
@@ -57,6 +55,10 @@ void Market::LoadImagesText() {
 	this->AddMarketText("TOTAL", 238, 27);
 	this->AddMarketText("-NEWSPAPERS-", 21, 72);
 	this->AddMarketText("-ADS-", 21, 99);
+
+	// Selection
+	this->Images.SelectionBG = this->AddMarketImage(&Assets::Instance()->images.SelectionRect, 0, 0);
+
 	// Items
 	for (int i = 0; i < (int) this->BuyData.size(); i++) {
 		int menuNum = i + 1;
@@ -90,14 +92,10 @@ void Market::LoadImagesText() {
 	this->TextObjects.TotalAmount = this->AddMarketText("0", 231, 153);
 	this->AddMarketText("=", 217, 162);
 	this->TextObjects.MoneySubTotalAmount = this->AddMarketText("0", 231, 162);
-	// Selection
-	this->TextObjects.SelectItem = this->AddText("- SELECT ITEM #", 7, 153);
-	this->TextObjects.EnterQty = this->AddText("- ENTER QUANTITY", 7, 153);
 	// Options
-	this->AddMarketText("B)UY", 7, 180);
-	this->AddMarketText("F)ORECAST", 49, 180);
-	this->AddMarketText("G)UIDE", 126, 180);
-	this->AddMarketText("L)EAVE", 182, 180);
+	this->AddMarketText("F)ORECAST", 7, 180);
+	this->AddMarketText("G)UIDE", 98, 180);
+	this->AddMarketText("L)EAVE", 168, 180);
 	this->AddMarketText("S)AVE", 238, 180);
 	// Error text
 	this->TextObjects.ErrBuyItem = this->AddText("- BUY FOOD/NEWS -", 84, 171);
@@ -145,6 +143,9 @@ void Market::SceneStart() {
 	// Load Images and Text Images
 	this->LoadImagesText();
 	
+	// Initialize selection
+	this->InitSelection();
+
 	// Update total amount
 	this->UpdateTotal();
 
@@ -180,9 +181,30 @@ void Market::HandleEvent(SDL_Event * Event) {
 		
 		//// Main selection
 		if (this->EventFlags.MainSelection) {
-			if (Event->key.keysym.sym == SDLK_b) {
+			if (Event->key.keysym.sym == SDLK_UP) {
 				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
-				this->SEvent_SelectBuy();
+				this->SEvent_SelectionUp();
+			}
+			if (Event->key.keysym.sym == SDLK_DOWN) {
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
+				this->SEvent_SelectionDown();
+			}
+			if (Event->key.keysym.sym == SDLK_LEFT) {
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
+				this->SEvent_DecreaseItemQty();
+			}
+			if (Event->key.keysym.sym == SDLK_RIGHT) {
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
+				this->SEvent_IncreaseItemQty();
+			}
+			if (Event->key.keysym.sym == SDLK_DELETE || Event->key.keysym.sym == SDLK_BACKSPACE) {
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
+				this->SEvent_ZeroItemQty();
+			}
+			if (Event->key.keysym.sym == SDLK_RETURN || Event->key.keysym.sym == SDLK_KP_ENTER) {
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
+				SEvent_ItemQtyEntry();
+				break;
 			}
 			if (Event->key.keysym.sym == SDLK_f) {
 				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
@@ -190,7 +212,7 @@ void Market::HandleEvent(SDL_Event * Event) {
 			}
 			if (Event->key.keysym.sym == SDLK_g) {
 				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
-				this->SEvent_SelectGuide();
+				this->SEvent_OpenGuide();
 			}
 			if (Event->key.keysym.sym == SDLK_l) {
 				this->SEvent_Leave();
@@ -202,15 +224,11 @@ void Market::HandleEvent(SDL_Event * Event) {
 		}
 
 		//// Buy
-		// Selecting item to buy
-		if (this->EventFlags.SelectBuyItem) {
-			this->SEvent_SetBuyItem(Event->key.keysym.sym);
-		}
 		// Enterting item quantity
 		if (this->EventFlags.EnterItemQty) {
 			if(Event->key.keysym.sym == SDLK_BACKSPACE)
 				this->ActiveBuySelection->DeleteText();
-			if (Event->key.keysym.sym == SDLK_RETURN) {
+			if (Event->key.keysym.sym == SDLK_RETURN || Event->key.keysym.sym == SDLK_KP_ENTER) {
 				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 				this->SEvent_EndItemQtyEntry();
 			}
@@ -219,20 +237,16 @@ void Market::HandleEvent(SDL_Event * Event) {
 		//// Forecast
 		// Exiting Forecast screen
 		if (this->EventFlags.ShowForecast) {
-			if (Event->key.keysym.sym == SDLK_RETURN) {
+			if (Event->key.keysym.sym == SDLK_RETURN || Event->key.keysym.sym == SDLK_KP_ENTER) {
 				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 				this->SEvent_ExitForecast();
 			}
 		}
 
 		//// Guide
-		// Selecting item to inspect
-		if (this->EventFlags.SelectGuideItem) {
-			this->SEvent_SetGuideItem(Event->key.keysym.sym);
-		}
 		// Exiting Guide screen
 		if (this->EventFlags.ShowGuide) {
-			if (Event->key.keysym.sym == SDLK_RETURN) {
+			if (Event->key.keysym.sym == SDLK_RETURN || Event->key.keysym.sym == SDLK_KP_ENTER) {
 				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 				this->SEvent_ExitGuide();
 			}
@@ -298,6 +312,12 @@ void Market::Cleanup() {
 	this->EventTimers.ErrorText->stop();
 }
 
+ImageData * Market::AddMarketImage(Assets::Image* image, int _x, int _y) {
+	ImageData* imageData = this->AddImage(image, _x, _y);
+	this->MarketText.push_back(imageData);
+	return imageData;
+}
+
 //// Market funcs
 ImageData* Market::AddMarketText(std::string _text, int _x, int _y) {
 	ImageData* textImage = this->AddText(_text, _x, _y);
@@ -317,6 +337,31 @@ TextBox* Market::AddMarketTextBox(Uint32 _size, int _x, int _y) {
 	this->ItemTextBoxObjects.push_back(textBox);
 	this->MarketText.push_back(textBox);
 	return textBox;
+}
+
+void Market::InitSelection() {
+	// Set first item as initial selected item
+	this->SelectedItem = 0;
+	
+	// Update selection data
+	this->UpdateSelection();
+}
+
+void Market::UpdateSelection() {
+	// If a text box is already active, reset the color
+	if (this->ActiveItemData != nullptr)
+		this->ActiveBuySelection->ReverseColor();
+
+	// Set selection data
+	this->ActiveBuySelection = this->ItemTextBoxObjects[this->SelectedItem];
+	this->ActiveBuySubTotal = this->SubTotalText[this->SelectedItem];
+	this->ActiveItemData = this->BuyData[this->SelectedItem];
+
+	// Move Selection BG behind current selection
+	this->Images.SelectionBG->SetDrawRectXY(this->ActiveBuySelection->GetDrawRect()->x, this->ActiveBuySelection->GetDrawRect()->y - 1);
+
+	// Reverse text color
+	this->ActiveBuySelection->ReverseColor();
 }
 
 void Market::UpdateTotal() {
@@ -373,43 +418,95 @@ void Market::SEvent_HideGuide() {
 	this->TextObjects.PressReturn->SetVisible(false);
 }
 
-void Market::SEvent_SelectBuy() {
-	this->EventFlags.MainSelection = false;
-	this->TextObjects.SelectItem->SetVisible(true);
-	this->EventFlags.SelectBuyItem = true;
+void Market::SEvent_SelectionUp() {
+	// Subtract one from SelectedItem. If it's lower than 0, make it last item.
+	if (--this->SelectedItem < 0)
+		this->SelectedItem = this->BuyData.size() - 1;
+	
+	// Update selection data
+	this->UpdateSelection();
 }
 
-void Market::SEvent_SetBuyItem(SDL_Keycode _key) {
-	int keyValue = this->KeycodeNumValue(_key);
+void Market::SEvent_SelectionDown() {
+	// Add one to SelectedItem. If it's higher than last item, make it 0.
+	if (++this->SelectedItem >= (int) this->BuyData.size())
+		this->SelectedItem = 0;
 
-	if (keyValue >= 1 && keyValue <= (int) this->BuyData.size()) {
-		// Set active item if valid selection
-		this->ActiveBuySelection = this->ItemTextBoxObjects[keyValue - 1];
-		this->ActiveBuySubTotal = this->SubTotalText[keyValue - 1];
-		this->ActiveItemData = this->BuyData[keyValue - 1];
-		Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
-	}
-	else if (_key == SDLK_RETURN) {
-		// If enter is pressed, return to main selection
-		this->EventFlags.SelectBuyItem = false;
-		this->TextObjects.SelectItem->SetVisible(false);
-		this->EventFlags.MainSelection = true;
-		Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
-		return;
-	}
-	else {
-		// Ignore other inputs
-		return;
-	}
+	// Update selection data
+	this->UpdateSelection();
+}
 
+void Market::SEvent_IncreaseItemQty() {
+	int newQty = this->ActiveItemData->GetQuantity();
+	
+	// If increased quantity is greater than the max quantity value, bail
+	if (++newQty > 999)
+		return;
+
+	// Increase quantity
+	this->ActiveItemData->SetQuantity(newQty);
+	this->ActiveItemData->SetBoughtQuantity(this->ActiveItemData->GetQuantity());
+
+	// Set text to sanitized number.
+	this->ActiveBuySelection->SetText(std::to_string(this->ActiveItemData->GetQuantity()));
+	this->ActiveBuySelection->ReverseColor();
+
+	// Set subtotal price
+	int subtotal = this->ActiveItemData->GetBuyPrice() * this->ActiveItemData->GetQuantity();
+	this->ActiveBuySubTotal->SetText(std::to_string(subtotal));
+
+	// Update grand total
+	this->UpdateTotal();
+}
+
+void Market::SEvent_DecreaseItemQty() {
+	int newQty = this->ActiveItemData->GetQuantity();
+
+	// If decreased quantity is less than 0, bail
+	if (--newQty < 0)
+		return;
+
+	// Increase quantity
+	this->ActiveItemData->SetQuantity(newQty);
+	this->ActiveItemData->SetBoughtQuantity(this->ActiveItemData->GetQuantity());
+
+	// Set text to sanitized number.
+	this->ActiveBuySelection->SetText(std::to_string(this->ActiveItemData->GetQuantity()));
+	this->ActiveBuySelection->ReverseColor();
+
+	// Set subtotal price
+	int subtotal = this->ActiveItemData->GetBuyPrice() * this->ActiveItemData->GetQuantity();
+	this->ActiveBuySubTotal->SetText(std::to_string(subtotal));
+
+	// Update grand total
+	this->UpdateTotal();
+}
+
+void Market::SEvent_ZeroItemQty() {
+	// Zero out quantity
+	this->ActiveItemData->SetQuantity(0);
+	this->ActiveItemData->SetBoughtQuantity(this->ActiveItemData->GetQuantity());
+
+	// Set text to sanitized number.
+	this->ActiveBuySelection->SetText(std::to_string(this->ActiveItemData->GetQuantity()));
+	this->ActiveBuySelection->ReverseColor();
+
+	// Set subtotal price
+	int subtotal = this->ActiveItemData->GetBuyPrice() * this->ActiveItemData->GetQuantity();
+	this->ActiveBuySubTotal->SetText(std::to_string(subtotal));
+
+	// Update grand total
+	this->UpdateTotal();
+}
+
+void Market::SEvent_ItemQtyEntry() {
 	// Move into quantity entry state
-	this->EventFlags.SelectBuyItem = false;
+	this->EventFlags.MainSelection = false;
 	this->EventFlags.EnterItemQty = true;
-	
-	// Show ENTER QUANITITY text
-	this->TextObjects.SelectItem->SetVisible(false);
-	this->TextObjects.EnterQty->SetVisible(true);
-	
+	// Reverse colors
+	this->Images.SelectionBG->ReverseColor();
+	this->ActiveBuySelection->ReverseColor();
+
 	// Flush buffered text input
 	SDL_PumpEvents();
 
@@ -437,11 +534,16 @@ void Market::SEvent_EndItemQtyEntry() {
 	// Update grand total
 	this->UpdateTotal();
 	
-	// Stop text entry and return to main selection
+	// Stop text entry
 	SDL_StopTextInput();
 	this->ActiveBuySelection->SetActive(false);
+
+	// Reverse colors
+	this->Images.SelectionBG->ReverseColor();
+	this->ActiveBuySelection->ReverseColor();
+
+	// Set main selection state
 	this->EventFlags.EnterItemQty = false;
-	this->TextObjects.EnterQty->SetVisible(false);
 	this->EventFlags.MainSelection = true;
 }
 
@@ -459,40 +561,16 @@ void Market::SEvent_ExitForecast() {
 	this->SEvent_ShowMarketText();
 }
 
-void Market::SEvent_SelectGuide() {
-	this->EventFlags.MainSelection = false;
-	this->TextObjects.SelectItem->SetVisible(true);
-	this->EventFlags.SelectGuideItem = true;
-}
-
-void Market::SEvent_SetGuideItem(SDL_Keycode _key) {
-	// Select item to view description of
-	int keyValue = this->KeycodeNumValue(_key);
-
-	if (keyValue >= 1 && keyValue <= (int) this->BuyData.size()) {
-		this->TextObjects.GuideText->SetText(GetItemGuideDesc(this->BuyData[keyValue - 1]->GetName()));
-		Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
-	}
-	else if (_key == SDLK_RETURN) {
-		// If enter is pressed, return to main selection
-		this->EventFlags.SelectGuideItem = false;
-		this->TextObjects.SelectItem->SetVisible(false);
-		this->EventFlags.MainSelection = true;
-		Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
-		return;
-	}
-	else {
-		// Ignore other inputs
-		return;
-	}
-
+void Market::SEvent_OpenGuide() {
+	// Set guide text
+	this->TextObjects.GuideText->SetText(GetItemGuideDesc(this->ActiveItemData->GetName()));
+	
 	// Move into guide display state
-	this->EventFlags.SelectGuideItem = false;
+	this->EventFlags.MainSelection = false;
 	this->EventFlags.ShowGuide = true;
-
+	
 	// Show Guide text
 	this->SEvent_HideMarketText();
-	this->TextObjects.SelectItem->SetVisible(false);
 	this->SEvent_ShowGuide();
 
 	// Flush buffered text input
@@ -500,10 +578,13 @@ void Market::SEvent_SetGuideItem(SDL_Keycode _key) {
 }
 
 void Market::SEvent_ExitGuide() {
-	this->EventFlags.ShowGuide = false;
+	// Switch image display to main selection	
 	this->SEvent_HideGuide();
-	this->EventFlags.MainSelection = true;
 	this->SEvent_ShowMarketText();
+
+	// Move into main selection state
+	this->EventFlags.ShowGuide = false;
+	this->EventFlags.MainSelection = true;
 }
 
 void Market::SEvent_Leave() {

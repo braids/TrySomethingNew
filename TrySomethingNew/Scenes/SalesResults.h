@@ -13,7 +13,7 @@ class SalesResults : public Scene, EscapeScreen {
 protected:
 	// Sales Results screen text and text boxes
 	std::vector<ImageData*> SalesResultsText;
-	std::vector<ItemData*> SellItems;
+	std::vector<ItemData*> SellData;
 
 	struct {
 		ImageData* PlayerMoneyAmount;

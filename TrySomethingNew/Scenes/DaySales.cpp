@@ -177,7 +177,7 @@ void DaySales::Cleanup() {
 	// Clear vectors
 	this->mImages.clear();
 	this->DaySalesText.clear();
-	this->SellItems.clear();
+	this->SellData.clear();
 	this->Customers.clear();
 	this->EscapeImagesText.clear();
 
@@ -197,13 +197,13 @@ ImageData* DaySales::AddDaySalesText(std::string _text, int _x, int _y) {
 //// DaySales funcs
 void DaySales::GetCurrentPlayerInventory() {
 	// Clear current sell item list
-	this->SellItems.clear();
+	this->SellData.clear();
 
 	// Get all player items with inventory greater than 0
 	std::for_each(
 		this->mPlayerData->GetInventory()->begin(),
 		this->mPlayerData->GetInventory()->end(),
-		[this](ItemData* &_item) { if (_item->GetQuantity() > 0 && _item->GetType() != ItemType::ItemType_Ad) this->SellItems.push_back(_item); });
+		[this](ItemData* &_item) { if (_item->GetQuantity() > 0 && _item->GetType() != ItemType::ItemType_Ad) this->SellData.push_back(_item); });
 }
 
 void DaySales::GenerateCustomers() {
@@ -252,7 +252,7 @@ void DaySales::GetPurchase(Customer* _customer) {
 	_customer->SetPurchased(true);
 
 	// Customer makes a purchase from available items.
-	std::vector<ItemName>* purchaseList = _customer->GetData()->PurchaseList(this->SellItems);
+	std::vector<ItemName>* purchaseList = _customer->GetData()->PurchaseList(this->SellData);
 
 	// Declare purchased item pointer
 	ItemData* purchasedItem;
@@ -260,7 +260,7 @@ void DaySales::GetPurchase(Customer* _customer) {
 	// For each item purchased
 	for (std::vector<ItemName>::iterator it = purchaseList->begin(); it != purchaseList->end(); it++) {
 		// Get purchased item from sales list
-		purchasedItem = GetItemFromVector((*it), &this->SellItems);
+		purchasedItem = GetItemFromVector((*it), &this->SellData);
 		// Reduce item quantity by 1
 		purchasedItem->SubQuantity(1);
 		// Add sell price to money amount
@@ -305,7 +305,7 @@ void DaySales::SEvent_DayRuntimeEnd() {
 	this->EventTimers.CustomerSpawn->stop();
 
 	// Set player inventory
-	for (std::vector<ItemData*>::iterator it = this->SellItems.begin(); it != this->SellItems.end(); it++) {
+	for (std::vector<ItemData*>::iterator it = this->SellData.begin(); it != this->SellData.end(); it++) {
 		ItemData* item = this->mPlayerData->GetInventoryItem((*it)->GetName());
 		*item = **it;
 	}

@@ -176,17 +176,17 @@ void Graphics::ReverseTextureColor(SDL_Texture* texture) {
 	
 	// Reverse color information
 	Uint32 reverseColor = 0;
-	Uint8 r = 0x00, g = 0x00, b = 0x00;
+	Uint8 r = 0x00, g = 0x00, b = 0x00, a = 0x00;
 
 	// Invert pixel color
 	for (int i = 0; i < pixelCount; i++) {
 		// Get color
-		SDL_GetRGB(pixels[i], mappingFormat, &r, &g, &b);
+		SDL_GetRGBA(pixels[i], mappingFormat, &r, &g, &b, &a);
 		// Reverse values
 		r = 0xFF - r;
 		g = 0xFF - g;
 		b = 0xFF - b;
-		reverseColor = SDL_MapRGBA(mappingFormat, r, g, b, 0xFF);
+		reverseColor = SDL_MapRGBA(mappingFormat, r, g, b, a);
 		// Set new color
 		pixels[i] = reverseColor;
 	}

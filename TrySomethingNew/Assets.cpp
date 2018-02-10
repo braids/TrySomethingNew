@@ -24,6 +24,7 @@ void Assets::LoadAssets() {
 	this->images.ThemeLogo = { Assets::Instance()->GetTexture("ThemeLogo.png"), Graphics::CreateRect(119, 70, 0, 0) };
 	this->images.Wall1 = { Assets::Instance()->GetTexture("wall1.png"), Graphics::CreateRect(280, 162, 0, 0) };
 	this->images.Wall2 = { Assets::Instance()->GetTexture("wall2.png"), Graphics::CreateRect(280, 162, 0, 0) };
+	this->images.SelectionRect = { Assets::Instance()->GetTexture("selectionbg.png"), Graphics::CreateRect(21, 9, 0, 0) };
 	this->images.Shack1 = { Assets::Instance()->GetTexture("shack1.png"), Graphics::CreateRect(280, 96, 0, 0) };
 	this->images.Shack2 = { Assets::Instance()->GetTexture("shack2.png"), Graphics::CreateRect(280, 96, 0, 0) };
 	this->images.Shack3 = { Assets::Instance()->GetTexture("shack3.png"), Graphics::CreateRect(280, 96, 0, 0) };

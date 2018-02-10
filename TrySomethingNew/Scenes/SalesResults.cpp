@@ -33,18 +33,18 @@ void SalesResults::LoadImagesText() {
 	//// Image objects
 
 	//// Text objects
-	for (int i = 0; i < (int) this->SellItems.size(); i++) {
+	for (int i = 0; i < (int) this->SellData.size(); i++) {
 		int menuNum = i + 1;
 		int y = 36 + (i * 9);
 		// Add menu number and name
-		std::string menuName = std::to_string(menuNum) + ") " + GetItemString(this->SellItems[i]->GetName());
+		std::string menuName = std::to_string(menuNum) + ") " + GetItemString(this->SellData[i]->GetName());
 		this->AddSalesResultsText(menuName, 7, y);
 		// Display # bought
-		this->AddSalesResultsText(std::to_string(this->SellItems[i]->GetBoughtQuantity()), 161, y);
+		this->AddSalesResultsText(std::to_string(this->SellData[i]->GetBoughtQuantity()), 161, y);
 		// Display # sold
-		this->AddSalesResultsText(std::to_string(this->SellItems[i]->GetSalesTotal()), 203, y);
+		this->AddSalesResultsText(std::to_string(this->SellData[i]->GetSalesTotal()), 203, y);
 		// Display money made from sales
-		this->AddSalesResultsText("DM" + std::to_string(this->SellItems[i]->GetSalesTotal() * this->SellItems[i]->GetSellPrice()), 231, y);
+		this->AddSalesResultsText("DM" + std::to_string(this->SellData[i]->GetSalesTotal() * this->SellData[i]->GetSellPrice()), 231, y);
 	}
 
 	// Title
@@ -147,7 +147,7 @@ void SalesResults::Cleanup() {
 	// Clear vectors
 	this->mImages.clear();
 	this->SalesResultsText.clear();
-	this->SellItems.clear();
+	this->SellData.clear();
 	this->EscapeImagesText.clear();
 }
 
@@ -160,12 +160,12 @@ ImageData* SalesResults::AddSalesResultsText(std::string _text, int _x, int _y) 
 
 void SalesResults::GetCurrentPlayerInventory() {
 	// Clear current sell item list
-	this->SellItems.clear();
+	this->SellData.clear();
 	// Get all player items with inventory greater than 0
 	std::for_each(
 		this->mPlayerData->GetInventory()->begin(),
 		this->mPlayerData->GetInventory()->end(),
-		[this](ItemData* &_item) { if (_item->GetBoughtQuantity() > 0 && _item->GetType() != ItemType::ItemType_Ad) this->SellItems.push_back(_item); });
+		[this](ItemData* &_item) { if (_item->GetBoughtQuantity() > 0 && _item->GetType() != ItemType::ItemType_Ad) this->SellData.push_back(_item); });
 }
 
 //// Scene Events
