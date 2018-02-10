@@ -15,7 +15,7 @@
 class DaySales : public Scene, EscapeScreen {
 protected:
 	std::vector<ImageData*> DaySalesText;
-	std::vector<ItemData*> SellItems;
+	std::vector<ItemData*> SellData;
 
 	CustomerVec Customers;
 	CustomerVecIter CustomerSpawnIter;

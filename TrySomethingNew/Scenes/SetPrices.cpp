@@ -24,10 +24,8 @@ void SetPrices::ResetFlags() {
 	// Set flags to false
 	this->EventFlags.ExitToTitleScreen = false;
 	this->EventFlags.MainSelection = false;
-	this->EventFlags.SelectSellItem = false;
 	this->EventFlags.EnterItemPrice = false;
 	this->EventFlags.ShowForecast = false;
-	this->EventFlags.SelectGuideItem = false;
 	this->EventFlags.ShowGuide = false;
 }
 
@@ -43,25 +41,28 @@ void SetPrices::LoadImagesText() {
 
 	//// Image objects
 	
+	// Selection
+	this->Images.SelectionBG = this->AddSetPricesImage(&Assets::Instance()->images.SelectionRect, 0, 0);
+
 	//// Text objects
 	
 	// Item listings
-	for (int i = 0; i < (int) this->SellItems.size(); i++) {
+	for (int i = 0; i < (int) this->SellData.size(); i++) {
 		int menuNum = i + 1;
 		int y = 36 + (i * 9);
 		// Add menu number and name
-		std::string menuName = std::to_string(menuNum) + ") " + GetItemString(this->SellItems[i]->GetName());
+		std::string menuName = std::to_string(menuNum) + ") " + GetItemString(this->SellData[i]->GetName());
 		this->AddSetPricesText(menuName, 7, y);
 		// Add buy price
-		std::string buyPrice = "DM" + std::to_string(this->SellItems[i]->GetBuyPrice());
+		std::string buyPrice = "DM" + std::to_string(this->SellData[i]->GetBuyPrice());
 		this->AddSetPricesText(buyPrice, 161, y);
 		// Add sale price and prefix
 		this->AddSetPricesText("DM", 203, y);
 		ImageData* textBox = this->AddSetPricesItemBox(3, 217, y);
-		textBox->SetText(std::to_string(this->SellItems[i]->GetSellPrice()));
+		textBox->SetText(std::to_string(this->SellData[i]->GetSellPrice()));
 
 		// Add quantity amount
-		this->AddSetPricesText(std::to_string(this->SellItems[i]->GetBoughtQuantity()), 252, y);
+		this->AddSetPricesText(std::to_string(this->SellData[i]->GetBoughtQuantity()), 252, y);
 	}
 	// Title
 	this->AddSetPricesText("SET PRICES", 105, 9);
@@ -70,13 +71,9 @@ void SetPrices::LoadImagesText() {
 	this->AddSetPricesText("COST", 161, 27);
 	this->AddSetPricesText("SELL", 203, 27);
 	this->AddSetPricesText("QTY", 252, 27);
-	// Selection
-	this->TextObjects.SelectItem = this->AddText("- SELECT ITEM #", 7, 153);
-	this->TextObjects.EnterPrice = this->AddText("- ENTER PRICE", 7, 153);
 	// Options
-	this->AddSetPricesText("S)ET PRICE", 7, 180);
-	this->AddSetPricesText("F)ORECAST", 84, 180);
-	this->AddSetPricesText("G)UIDE", 154, 180);
+	this->AddSetPricesText("F)ORECAST", 7, 180);
+	this->AddSetPricesText("G)UIDE", 98, 180);
 	this->AddSetPricesText("O)PEN SHOP", 203, 180);
 	// Error
 	this->TextObjects.ErrSetPrice = this->AddText("- SET PRICE(S) -", 84, 171);
@@ -118,7 +115,10 @@ void SetPrices::SceneStart() {
 	// Load Images and Text Images
 	this->LoadImagesText();
 
-	// Display main market text
+	// Initialize selection
+	this->InitSelection();
+
+	// Display set prices text
 	this->SEvent_ShowSetPricesText();
 	this->EventFlags.MainSelection = true;
 }
@@ -147,9 +147,30 @@ void SetPrices::HandleEvent(SDL_Event * Event) {
 
 		//// Main selection
 		if (this->EventFlags.MainSelection) {
-			if (Event->key.keysym.sym == SDLK_s) {
+			if (Event->key.keysym.sym == SDLK_UP) {
 				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
-				this->SEvent_SelectSell();
+				this->SEvent_SelectionUp();
+			}
+			if (Event->key.keysym.sym == SDLK_DOWN) {
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
+				this->SEvent_SelectionDown();
+			}
+			if (Event->key.keysym.sym == SDLK_LEFT) {
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
+				this->SEvent_DecreaseItemSell();
+			}
+			if (Event->key.keysym.sym == SDLK_RIGHT) {
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
+				this->SEvent_IncreaseItemSell();
+			}
+			if (Event->key.keysym.sym == SDLK_DELETE || Event->key.keysym.sym == SDLK_BACKSPACE) {
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
+				this->SEvent_ZeroItemSell();
+			}
+			if (Event->key.keysym.sym == SDLK_RETURN || Event->key.keysym.sym == SDLK_KP_ENTER) {
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
+				this->SEvent_ItemSellEntry();
+				break;
 			}
 			if (Event->key.keysym.sym == SDLK_f) {
 				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
@@ -157,7 +178,7 @@ void SetPrices::HandleEvent(SDL_Event * Event) {
 			}
 			if (Event->key.keysym.sym == SDLK_g) {
 				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
-				this->SEvent_SelectGuide();
+				this->SEvent_OpenGuide();
 			}
 			if (Event->key.keysym.sym == SDLK_o) {
 				this->SEvent_OpenShop();
@@ -165,15 +186,11 @@ void SetPrices::HandleEvent(SDL_Event * Event) {
 		}
 
 		//// Set Price
-		// Selecting item to set price for
-		if (this->EventFlags.SelectSellItem) {
-			this->SEvent_SetSellItem(Event->key.keysym.sym);
-		}
 		// Enterting item price
 		if (this->EventFlags.EnterItemPrice) {
 			if (Event->key.keysym.sym == SDLK_BACKSPACE)
 				this->ActiveSellSelection->DeleteText();
-			if (Event->key.keysym.sym == SDLK_RETURN) {
+			if (Event->key.keysym.sym == SDLK_RETURN || Event->key.keysym.sym == SDLK_KP_ENTER) {
 				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 				this->SEvent_EndSellEntry();
 			}
@@ -182,20 +199,16 @@ void SetPrices::HandleEvent(SDL_Event * Event) {
 		//// Forecast
 		// Exiting Forecast screen
 		if (this->EventFlags.ShowForecast) {
-			if (Event->key.keysym.sym == SDLK_RETURN) {
+			if (Event->key.keysym.sym == SDLK_RETURN || Event->key.keysym.sym == SDLK_KP_ENTER) {
 				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 				this->SEvent_ExitForecast();
 			}
 		}
 
 		//// Guide
-		// Selecting item to inspect
-		if (this->EventFlags.SelectGuideItem) {
-			this->SEvent_SetGuideItem(Event->key.keysym.sym);
-		}
 		// Exiting Guide screen
 		if (this->EventFlags.ShowGuide) {
-			if (Event->key.keysym.sym == SDLK_RETURN) {
+			if (Event->key.keysym.sym == SDLK_RETURN || Event->key.keysym.sym == SDLK_KP_ENTER) {
 				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 				this->SEvent_ExitGuide();
 			}
@@ -244,11 +257,17 @@ void SetPrices::Cleanup() {
 	this->mImages.clear();
 	this->SetPricesText.clear();
 	this->ItemTextBoxObjects.clear();
-	this->SellItems.clear();
+	this->SellData.clear();
 	this->EscapeImagesText.clear();
 
 	// Stop timers
 	this->EventTimers.ErrorText->stop();
+}
+
+ImageData * SetPrices::AddSetPricesImage(Assets::Image * image, int _x, int _y) {
+	ImageData* imageData = this->AddImage(image, _x, _y);
+	this->SetPricesText.push_back(imageData);
+	return imageData;
 }
 
 //// SetPrices funcs
@@ -265,14 +284,38 @@ TextBox* SetPrices::AddSetPricesItemBox(Uint32 _size, int _x, int _y) {
 	return textBox;
 }
 
+void SetPrices::InitSelection() {
+	// Set first item as initial selected item
+	this->SelectedItem = 0;
+
+	// Update selection data
+	this->UpdateSelection();
+}
+
+void SetPrices::UpdateSelection() {
+	// If a text box is already active, reset the color
+	if (this->ActiveItemData != nullptr)
+		this->ActiveSellSelection->ReverseColor();
+
+	// Set selection data
+	this->ActiveSellSelection = this->ItemTextBoxObjects[this->SelectedItem];
+	this->ActiveItemData = this->SellData[this->SelectedItem];
+
+	// Move Selection BG behind current selection
+	this->Images.SelectionBG->SetDrawRectXY(this->ActiveSellSelection->GetDrawRect()->x, this->ActiveSellSelection->GetDrawRect()->y - 1);
+
+	// Reverse text color
+	this->ActiveSellSelection->ReverseColor();
+}
+
 void SetPrices::GetCurrentPlayerInventory() {
 	// Clear current sell item list
-	this->SellItems.clear();
+	this->SellData.clear();
 	// Get all player items with inventory greater than 0
 	std::for_each(this->mPlayerData->GetInventory()->begin(), this->mPlayerData->GetInventory()->end(),
 		[this](ItemData* &_item) { 
 		if (_item->GetBoughtQuantity() > 0 && _item->GetType() != ItemType::ItemType_Ad) {
-			this->SellItems.push_back(_item);
+			this->SellData.push_back(_item);
 		}
 	});
 }
@@ -316,46 +359,76 @@ void SetPrices::SEvent_HideGuide() {
 	this->TextObjects.PressReturn->SetVisible(false);
 }
 
-void SetPrices::SEvent_SelectSell() {
-	this->EventFlags.MainSelection = false;
-	this->TextObjects.SelectItem->SetVisible(true);
-	this->EventFlags.SelectSellItem = true;
+void SetPrices::SEvent_SelectionUp() {
+	// Subtract one from SelectedItem. If it's lower than 0, make it last item.
+	if (--this->SelectedItem < 0)
+		this->SelectedItem = this->SellData.size() - 1;
+
+	// Update selection data
+	this->UpdateSelection();
 }
 
-void SetPrices::SEvent_SetSellItem(SDL_Keycode _key) {
-	int keyValue = this->KeycodeNumValue(_key);
-	
-	if (keyValue >= 1 && keyValue <= (int) this->SellItems.size()) {
-		// Set active item if valid selection
-		this->ActiveSellSelection = this->ItemTextBoxObjects[keyValue - 1];
-		this->ActiveItemData = this->SellItems[keyValue - 1];
-		Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
-	}
-	else if (_key == SDLK_RETURN) {
-		// If enter is pressed, return to main selection
-		this->EventFlags.SelectSellItem = false;
-		this->TextObjects.SelectItem->SetVisible(false);
-		this->EventFlags.MainSelection = true;
-		Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
-		return;
-	}
-	else {
-		// Ignore other inputs
-		return;
-	}
+void SetPrices::SEvent_SelectionDown() {
+	// Add one to SelectedItem. If it's higher than last item, make it 0.
+	if (++this->SelectedItem >= (int) this->SellData.size())
+		this->SelectedItem = 0;
 
-	// Move into price entry state
-	this->EventFlags.SelectSellItem = false;
+	// Update selection data
+	this->UpdateSelection();
+}
+
+void SetPrices::SEvent_IncreaseItemSell() {
+	int price = this->ActiveItemData->GetSellPrice();
+
+	// If increased sell price is greater than the max quantity value, bail
+	if (++price > 999)
+		return;
+
+	// Set sell price entered. Invalid input will convert to 0.
+	this->ActiveItemData->SetSellPrice(price);
+
+	// Set text to sanitized number.
+	this->ActiveSellSelection->SetText(std::to_string(this->ActiveItemData->GetSellPrice()));
+	this->ActiveSellSelection->ReverseColor();
+}
+
+void SetPrices::SEvent_DecreaseItemSell() {
+	int price = this->ActiveItemData->GetSellPrice();
+
+	// If decreased sell price is less than 0, bail
+	if (--price < 0)
+		return;
+
+	// Set sell price entered. Invalid input will convert to 0.
+	this->ActiveItemData->SetSellPrice(price);
+
+	// Set text to sanitized number.
+	this->ActiveSellSelection->SetText(std::to_string(this->ActiveItemData->GetSellPrice()));
+	this->ActiveSellSelection->ReverseColor();
+}
+
+void SetPrices::SEvent_ZeroItemSell() {
+	// Set sell price entered. Invalid input will convert to 0.
+	this->ActiveItemData->SetSellPrice(0);
+
+	// Set text to sanitized number.
+	this->ActiveSellSelection->SetText(std::to_string(this->ActiveItemData->GetSellPrice()));
+	this->ActiveSellSelection->ReverseColor();
+}
+
+void SetPrices::SEvent_ItemSellEntry() {
+	// Move into sell price entry state
+	this->EventFlags.MainSelection = false;
 	this->EventFlags.EnterItemPrice = true;
-
-	// Show ENTER PRICE text
-	this->TextObjects.SelectItem->SetVisible(false);
-	this->TextObjects.EnterPrice->SetVisible(true);
+	
+	// Reverse colors
+	this->Images.SelectionBG->ReverseColor();
+	this->ActiveSellSelection->ReverseColor();
 
 	// Flush buffered text input
 	SDL_PumpEvents();
 
-	// Enable text entry for item price
+	// Enable text entry for item sell price
 	SDL_StartTextInput();
 	this->ActiveSellSelection->SetActive(true);
 }
@@ -372,11 +445,17 @@ void SetPrices::SEvent_EndSellEntry() {
 	// Set text to sanitized number.
 	this->ActiveSellSelection->SetText(std::to_string(this->ActiveItemData->GetSellPrice()));
 
-	// Stop text entry and return to main selection
+	// Stop text entry
 	SDL_StopTextInput();
 	this->ActiveSellSelection->SetActive(false);
+
+	// Reverse colors
+	this->Images.SelectionBG->ReverseColor();
+	this->ActiveSellSelection->ReverseColor();
+	
+	// Return to main selection
 	this->EventFlags.EnterItemPrice = false;
-	this->TextObjects.EnterPrice->SetVisible(false);
+	//this->TextObjects.EnterPrice->SetVisible(false);
 	this->EventFlags.MainSelection = true;
 }
 
@@ -394,40 +473,17 @@ void SetPrices::SEvent_ExitForecast() {
 	this->SEvent_ShowSetPricesText();
 }
 
-void SetPrices::SEvent_SelectGuide() {
-	this->EventFlags.MainSelection = false;
-	this->TextObjects.SelectItem->SetVisible(true);
-	this->EventFlags.SelectGuideItem = true;
-}
 
-void SetPrices::SEvent_SetGuideItem(SDL_Keycode _key) {
-	// Select item to view description of
-	int keyValue = this->KeycodeNumValue(_key);
-
-	if (keyValue >= 1 && keyValue <= (int) this->SellItems.size()) {
-		this->TextObjects.GuideText->SetText(GetItemGuideDesc(this->SellItems[keyValue - 1]->GetName()));
-		Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
-	}
-	else if (_key == SDLK_RETURN) {
-		// If enter is pressed, return to main selection
-		this->EventFlags.SelectGuideItem = false;
-		this->TextObjects.SelectItem->SetVisible(false);
-		this->EventFlags.MainSelection = true;
-		Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
-		return;
-	}
-	else {
-		// Ignore other inputs
-		return;
-	}
+void SetPrices::SEvent_OpenGuide() {
+	// Set guide text
+	this->TextObjects.GuideText->SetText(GetItemGuideDesc(this->ActiveItemData->GetName()));
 
 	// Move into guide display state
-	this->EventFlags.SelectGuideItem = false;
+	this->EventFlags.MainSelection = false;
 	this->EventFlags.ShowGuide = true;
 
 	// Show Guide text
 	this->SEvent_HideSetPricesText();
-	this->TextObjects.SelectItem->SetVisible(false);
 	this->SEvent_ShowGuide();
 
 	// Flush buffered text input
@@ -435,15 +491,18 @@ void SetPrices::SEvent_SetGuideItem(SDL_Keycode _key) {
 }
 
 void SetPrices::SEvent_ExitGuide() {
-	this->EventFlags.ShowGuide = false;
+	// Switch image display to main selection	
 	this->SEvent_HideGuide();
-	this->EventFlags.MainSelection = true;
 	this->SEvent_ShowSetPricesText();
+
+	// Move into main selection state
+	this->EventFlags.ShowGuide = false;
+	this->EventFlags.MainSelection = true;
 }
 
 void SetPrices::SEvent_OpenShop() {
 	// If all prices are not set, stay in shop.
-	for (std::vector<ItemData*>::iterator it = this->SellItems.begin(); it != this->SellItems.end(); it++) {
+	for (std::vector<ItemData*>::iterator it = this->SellData.begin(); it != this->SellData.end(); it++) {
 		if ((*it)->GetSellPrice() <= 0) {
 			this->TextObjects.ErrSetPrice->SetVisible(true);
 			this->EventTimers.ErrorText->StartEventTimer();
@@ -454,7 +513,7 @@ void SetPrices::SEvent_OpenShop() {
 	Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 
 	// Set player sell prices
-	for (std::vector<ItemData*>::iterator it = this->SellItems.begin(); it != this->SellItems.end(); it++)
+	for (std::vector<ItemData*>::iterator it = this->SellData.begin(); it != this->SellData.end(); it++)
 		this->mPlayerData->GetInventoryItem((*it)->GetName())->SetSellPrice((*it)->GetSellPrice());
 	
 	// Stop Music
