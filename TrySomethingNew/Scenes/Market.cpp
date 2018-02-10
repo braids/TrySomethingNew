@@ -212,8 +212,7 @@ void Market::HandleEvent(SDL_Event * Event) {
 			}
 			if (Event->key.keysym.sym == SDLK_g) {
 				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
-				void SEvent_OpenGuide();
-				//this->SEvent_SelectGuide();
+				this->SEvent_OpenGuide();
 			}
 			if (Event->key.keysym.sym == SDLK_l) {
 				this->SEvent_Leave();
@@ -245,12 +244,6 @@ void Market::HandleEvent(SDL_Event * Event) {
 		}
 
 		//// Guide
-		// Selecting item to inspect
-		/*
-		if (this->EventFlags.SelectGuideItem) {
-			this->SEvent_SetGuideItem(Event->key.keysym.sym);
-		}
-		*/
 		// Exiting Guide screen
 		if (this->EventFlags.ShowGuide) {
 			if (Event->key.keysym.sym == SDLK_RETURN || Event->key.keysym.sym == SDLK_KP_ENTER) {
@@ -567,52 +560,31 @@ void Market::SEvent_ExitForecast() {
 	this->EventFlags.MainSelection = true;
 	this->SEvent_ShowMarketText();
 }
-/*
-void Market::SEvent_SelectGuide() {
-	this->EventFlags.MainSelection = false;
-	this->TextObjects.SelectItem->SetVisible(true);
-	this->EventFlags.SelectGuideItem = true;
-}
 
-void Market::SEvent_SetGuideItem(SDL_Keycode _key) {
-	// Select item to view description of
-	int keyValue = this->KeycodeNumValue(_key);
-
-	if (keyValue >= 1 && keyValue <= (int) this->BuyData.size()) {
-		this->TextObjects.GuideText->SetText(GetItemGuideDesc(this->BuyData[keyValue - 1]->GetName()));
-		Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
-	}
-	else if (_key == SDLK_RETURN) {
-		// If enter is pressed, return to main selection
-		this->EventFlags.SelectGuideItem = false;
-		this->TextObjects.SelectItem->SetVisible(false);
-		this->EventFlags.MainSelection = true;
-		Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
-		return;
-	}
-	else {
-		// Ignore other inputs
-		return;
-	}
-
+void Market::SEvent_OpenGuide() {
+	// Set guide text
+	this->TextObjects.GuideText->SetText(GetItemGuideDesc(this->ActiveItemData->GetName()));
+	
 	// Move into guide display state
-	this->EventFlags.SelectGuideItem = false;
+	this->EventFlags.MainSelection = false;
 	this->EventFlags.ShowGuide = true;
-
+	
 	// Show Guide text
 	this->SEvent_HideMarketText();
-	this->TextObjects.SelectItem->SetVisible(false);
 	this->SEvent_ShowGuide();
 
 	// Flush buffered text input
 	SDL_PumpEvents();
 }
-*/
+
 void Market::SEvent_ExitGuide() {
-	this->EventFlags.ShowGuide = false;
+	// Switch image display to main selection	
 	this->SEvent_HideGuide();
-	this->EventFlags.MainSelection = true;
 	this->SEvent_ShowMarketText();
+
+	// Move into main selection state
+	this->EventFlags.ShowGuide = false;
+	this->EventFlags.MainSelection = true;
 }
 
 void Market::SEvent_Leave() {

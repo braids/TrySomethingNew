@@ -105,8 +105,6 @@ public:
 	void SEvent_SelectForecast();
 	void SEvent_ExitForecast();
 	// Guide
-	//void SEvent_SelectGuide();
-	//void SEvent_SetGuideItem(SDL_Keycode _key);
 	void SEvent_OpenGuide();
 	void SEvent_ExitGuide();
 	// Leave
