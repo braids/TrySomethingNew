@@ -189,7 +189,19 @@ void Market::HandleEvent(SDL_Event * Event) {
 				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 				this->SEvent_SelectionDown();
 			}
-			if (Event->key.keysym.sym == SDLK_RETURN) {
+			if (Event->key.keysym.sym == SDLK_LEFT) {
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
+				this->SEvent_DecreaseItemQty();
+			}
+			if (Event->key.keysym.sym == SDLK_RIGHT) {
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
+				this->SEvent_IncreaseItemQty();
+			}
+			if (Event->key.keysym.sym == SDLK_DELETE || Event->key.keysym.sym == SDLK_BACKSPACE) {
+				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
+				this->SEvent_ZeroItemQty();
+			}
+			if (Event->key.keysym.sym == SDLK_RETURN || Event->key.keysym.sym == SDLK_KP_ENTER) {
 				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 				SEvent_ItemQtyEntry();
 				break;
@@ -217,7 +229,7 @@ void Market::HandleEvent(SDL_Event * Event) {
 		if (this->EventFlags.EnterItemQty) {
 			if(Event->key.keysym.sym == SDLK_BACKSPACE)
 				this->ActiveBuySelection->DeleteText();
-			if (Event->key.keysym.sym == SDLK_RETURN) {
+			if (Event->key.keysym.sym == SDLK_RETURN || Event->key.keysym.sym == SDLK_KP_ENTER) {
 				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 				this->SEvent_EndItemQtyEntry();
 			}
@@ -226,7 +238,7 @@ void Market::HandleEvent(SDL_Event * Event) {
 		//// Forecast
 		// Exiting Forecast screen
 		if (this->EventFlags.ShowForecast) {
-			if (Event->key.keysym.sym == SDLK_RETURN) {
+			if (Event->key.keysym.sym == SDLK_RETURN || Event->key.keysym.sym == SDLK_KP_ENTER) {
 				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 				this->SEvent_ExitForecast();
 			}
@@ -241,7 +253,7 @@ void Market::HandleEvent(SDL_Event * Event) {
 		*/
 		// Exiting Guide screen
 		if (this->EventFlags.ShowGuide) {
-			if (Event->key.keysym.sym == SDLK_RETURN) {
+			if (Event->key.keysym.sym == SDLK_RETURN || Event->key.keysym.sym == SDLK_KP_ENTER) {
 				Mix_PlayChannel(2, Assets::Instance()->sounds.Blip, 0);
 				this->SEvent_ExitGuide();
 			}
@@ -429,6 +441,69 @@ void Market::SEvent_SelectionDown() {
 
 	// Update selection data
 	this->UpdateSelection();
+}
+
+void Market::SEvent_IncreaseItemQty() {
+	int newQty = this->ActiveItemData->GetQuantity();
+	
+	// If increased quantity is greater than the max quantity value, bail
+	if (++newQty > 999)
+		return;
+
+	// Increase quantity
+	this->ActiveItemData->SetQuantity(newQty);
+	this->ActiveItemData->SetBoughtQuantity(this->ActiveItemData->GetQuantity());
+
+	// Set text to sanitized number.
+	this->ActiveBuySelection->SetText(std::to_string(this->ActiveItemData->GetQuantity()));
+	this->ActiveBuySelection->ReverseColor();
+
+	// Set subtotal price
+	int subtotal = this->ActiveItemData->GetBuyPrice() * this->ActiveItemData->GetQuantity();
+	this->ActiveBuySubTotal->SetText(std::to_string(subtotal));
+
+	// Update grand total
+	this->UpdateTotal();
+}
+
+void Market::SEvent_DecreaseItemQty() {
+	int newQty = this->ActiveItemData->GetQuantity();
+
+	// If decreased quantity is less than 0, bail
+	if (--newQty < 0)
+		return;
+
+	// Increase quantity
+	this->ActiveItemData->SetQuantity(newQty);
+	this->ActiveItemData->SetBoughtQuantity(this->ActiveItemData->GetQuantity());
+
+	// Set text to sanitized number.
+	this->ActiveBuySelection->SetText(std::to_string(this->ActiveItemData->GetQuantity()));
+	this->ActiveBuySelection->ReverseColor();
+
+	// Set subtotal price
+	int subtotal = this->ActiveItemData->GetBuyPrice() * this->ActiveItemData->GetQuantity();
+	this->ActiveBuySubTotal->SetText(std::to_string(subtotal));
+
+	// Update grand total
+	this->UpdateTotal();
+}
+
+void Market::SEvent_ZeroItemQty() {
+	// Zero out quantity
+	this->ActiveItemData->SetQuantity(0);
+	this->ActiveItemData->SetBoughtQuantity(this->ActiveItemData->GetQuantity());
+
+	// Set text to sanitized number.
+	this->ActiveBuySelection->SetText(std::to_string(this->ActiveItemData->GetQuantity()));
+	this->ActiveBuySelection->ReverseColor();
+
+	// Set subtotal price
+	int subtotal = this->ActiveItemData->GetBuyPrice() * this->ActiveItemData->GetQuantity();
+	this->ActiveBuySubTotal->SetText(std::to_string(subtotal));
+
+	// Update grand total
+	this->UpdateTotal();
 }
 
 void Market::SEvent_ItemQtyEntry() {

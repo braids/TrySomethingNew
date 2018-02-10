@@ -96,6 +96,9 @@ public:
 	void SEvent_SelectionUp();
 	void SEvent_SelectionDown();
 	// Buy
+	void SEvent_IncreaseItemQty();
+	void SEvent_DecreaseItemQty();
+	void SEvent_ZeroItemQty();
 	void SEvent_ItemQtyEntry();
 	void SEvent_EndItemQtyEntry();
 	// Forecast
